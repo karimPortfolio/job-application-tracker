@@ -1,8 +1,8 @@
-version: "3.9"
-
 services:
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile # Ensure this exists in /backend
     container_name: ats-backend
     ports:
       - "4000:3000"
@@ -10,12 +10,15 @@ services:
       - ./backend/.env
     depends_on:
       - mongo
+      - redis
     volumes:
       - ./backend:/app
+      - /app/node_modules  # <--- CRITICAL: Prevents host node_modules from overwriting container ones
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
     container_name: ats-frontend
     ports:
       - "3000:3000"
@@ -25,6 +28,8 @@ services:
       - backend
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # <--- CRITICAL: Prevents host node_modules from overwriting container ones
+      - /app/.next        # <--- OPTIONAL: Speeds up Next.js HMR
     restart: unless-stopped
 
   mongo:
@@ -34,6 +39,13 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: ats-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped
 
 volumes:
