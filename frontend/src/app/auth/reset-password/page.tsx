@@ -1,6 +1,6 @@
 import ResetPasswordClient from './ResetPasswordClient'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'
   return {
     title: `Reset password - ${appName}`,
@@ -8,6 +8,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-export default function ResetPasswordPage({ params }: { params: { locale: string } }) {
+export default function ResetPasswordPage() {
   return <ResetPasswordClient />
 }

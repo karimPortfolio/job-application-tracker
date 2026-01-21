@@ -1,7 +1,6 @@
 import LoginClient from './LoginClient'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params
+export async function generateMetadata() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'
 
   return {
@@ -10,6 +9,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-export default function LoginPage({ params }: { params: { locale: string } }) {
+export default function LoginPage() {
   return <LoginClient />
 }

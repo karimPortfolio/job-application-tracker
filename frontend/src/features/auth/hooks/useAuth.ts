@@ -32,7 +32,8 @@ export function useAuth() {
   const fetchUser = async () => {
     try {
       const data = await fetchMe();
-      setUser(data.data);
+      console.log('Fetched user data:', data);
+      setUser(data);
     } catch (err) {
       setUser(null);
     } finally {

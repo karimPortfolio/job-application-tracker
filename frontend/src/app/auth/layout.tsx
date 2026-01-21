@@ -1,3 +1,4 @@
+import { PublicAuthGuard } from "@/components/guards/PublicAuthGuard";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function AuthLayout({
@@ -6,9 +7,9 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-        {children}
-        <Toaster richColors closeButton position="top-right" />
-    </>
+    <PublicAuthGuard>
+      {children}
+      <Toaster richColors closeButton position="top-right" />
+    </PublicAuthGuard>
   );
 }

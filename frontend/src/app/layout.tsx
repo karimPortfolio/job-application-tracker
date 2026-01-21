@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/components/AuthProvider';
 import './globals.css';
 
 export default function AppLayout({
@@ -8,7 +9,9 @@ export default function AppLayout({
   return (
     <html>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

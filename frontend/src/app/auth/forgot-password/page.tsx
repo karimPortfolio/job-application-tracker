@@ -1,6 +1,6 @@
 import ForgotPasswordClient from './ForgotPasswordClient'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'
   return {
     title: `Forgot password - ${appName}`,
@@ -8,6 +8,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-export default function ForgotPasswordPage({ params }: { params: { locale: string } }) {
+export default function ForgotPasswordPage() {
   return <ForgotPasswordClient />
 }

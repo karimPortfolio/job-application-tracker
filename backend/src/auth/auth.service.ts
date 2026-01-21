@@ -90,7 +90,6 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto) {
-    console.log(dto);
     const record = await this.passwordResetModel.findOne({
       email: dto.email,
       expiresAt: { $gt: new Date() },
