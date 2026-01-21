@@ -185,7 +185,7 @@ export default function RegisterForm() {
                   <Checkbox
                     ref={field.ref}
                     checked={field.value}
-                    onChange={(event) => field.onChange(event.target)}
+                    onCheckedChange={field.onChange}
                   />
                 </FormControl>
                 <FormLabel className="text-sm font-medium leading-none">

@@ -4,7 +4,7 @@ export async function generateMetadata() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'
 
   return {
-    title: `Login - ${appName}`,
+    title: `Sign In - ${appName}`,
     description: 'Login to your account to manage your job applications.',
   }
 }

@@ -33,7 +33,7 @@ export default function LoginForm() {
   const schema = useMemo(() => createLoginSchema(), []);
 
   const form = useForm<LoginFormValues>({
-    // resolver: zodResolver(schema),
+    resolver: zodResolver(schema),
     defaultValues: {
       email: "",
       password: "",
