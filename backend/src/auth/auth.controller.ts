@@ -1,9 +1,22 @@
-import { Body, Controller, Get, Post, Req, UseGuards, VERSION_NEUTRAL } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { RegisterDto } from './dto/register.dto'
-import { LoginDto } from './dto/login.dto'
-import { JwtAuthGuard } from './jwt-auth.guard'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import type { Response } from 'express';
 
 @Controller({
   path: 'auth',
@@ -13,25 +26,75 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto)
+  async register(
+    @Body() dto: RegisterDto,
+    @Headers('x-client-type') clientType: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.register(dto);
+
+    if (clientType === 'mobile') {
+      return { accessToken };
+    }
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return { message: 'Registered successfully' };
   }
 
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto)
+ async login(
+    @Body() dto: LoginDto,
+    @Headers('x-client-type') clientType: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.login(dto);
+
+    if (clientType === 'mobile') {
+      return { accessToken };
+    }
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return { message: 'Logged in successfully' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   logout(@Req() req) {
-    const token = req.headers.authorization?.split(' ')[1]
-    return this.authService.logout(token)
+    const token = req.headers.authorization?.split(' ')[1];
+    return this.authService.logout(token);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   me(@CurrentUser() user: any) {
-    return this.authService.me(user.sub)
+    return this.authService.me(user.sub);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.authService.sendResetPasswordEmail(dto);
+
+    return {
+      message: 'If the email exists, a reset link has been sent.',
+    };
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.authService.resetPassword(dto);
+
+    return {
+      message: 'Password reset successfully',
+    };
   }
 }

@@ -7,12 +7,14 @@ import { AuthController } from './auth.controller'
 import { JwtStrategy } from './jwt.strategy'
 import { User, UserSchema } from '../users/user.schema'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { PasswordReset, PasswordResetSchema } from './password-reset.schema'
 
 @Module({
   imports: [
     ConfigModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
+      { name: PasswordReset.name, schema: PasswordResetSchema },
     ]),
     JwtModule.registerAsync({
       inject: [ConfigService],
