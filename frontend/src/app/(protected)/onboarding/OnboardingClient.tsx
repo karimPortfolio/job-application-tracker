@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarDropdown } from "@/components/AvatarDropdown";
+import { AvatarDropdown } from "@/components/common/AvatarDropdown";
 import { Logo } from "@/components/Logo";
 import {
   Card,
@@ -47,12 +47,12 @@ export function OnboardingClient() {
   return (
     <div className="relative min-h-screen w-full px-4 py-5">
       <div className="flex justify-between items-center mb-15">
-        <Logo />
+        <Logo width={150} height={60} />
         <AvatarDropdown
           user={user}
           loading={loading}
           logout={logout}
-          avatarDropdownItems={avatarDropdownItems}
+          items={avatarDropdownItems}
         />
       </div>
       <div className="relative mx-auto flex max-w-5xl items-center justify-center">

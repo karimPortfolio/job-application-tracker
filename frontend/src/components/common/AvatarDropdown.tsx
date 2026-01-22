@@ -7,20 +7,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@/features/auth/types";
 import {
+  ChevronDown,
   CreditCardIcon,
   LogOutIcon,
   SettingsIcon,
   UserIcon,
 } from "lucide-react";
-import { Spinner } from "./ui/spinner";
+import { Spinner } from "../ui/spinner";
 import { AvatarDropdownItem } from "@/app/(protected)/onboarding/OnboardingClient";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 
 interface AvatarDropdownProps {
   user: User | null;
   logout: () => void;
-  avatarDropdownItems?: AvatarDropdownItem[];
+  items?: AvatarDropdownItem[];
   loading?: boolean;
+  showUserInfo?: boolean;
 }
 
 function getInitials(name?: string | null): string {
@@ -32,44 +35,62 @@ function getInitials(name?: string | null): string {
   return combo ? combo.toUpperCase() : "?";
 }
 
-export function AvatarDropdown({ 
-    user, 
-    logout,
-    loading,
-    avatarDropdownItems,
-  }: AvatarDropdownProps) {
+export function AvatarDropdown({
+  user,
+  logout,
+  loading,
+  items,
+  showUserInfo = false,
+}: AvatarDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-muted text-sm font-semibold uppercase text-foreground shadow-sm focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-ring"
+        <Button
+          variant="ghost"
+          className="flex items-center justify-center py-6 px-4"
           aria-label={user?.name ? `${user.name} menu` : "User menu"}
         >
           <Avatar>
-            <AvatarImage src={user?.avatarUrl ?? undefined} alt={user?.name ?? "User"} />
+            <AvatarImage
+              src={user?.avatarUrl ?? undefined}
+              alt={user?.name ?? "User"}
+            />
             <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
           </Avatar>
-        </button>
+          {showUserInfo && (
+            <>
+              <div>
+                <div className="text-start text-xs">{user?.name}</div>
+                <div className="text-start text-xs dark:text-gray-400 text-gray-600">
+                  {user?.email}
+                </div>
+              </div>
+              <ChevronDown className="ml-2 size-4" />
+            </>
+          )}
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-
-        {avatarDropdownItems &&
-          avatarDropdownItems.length > 0 &&
-          avatarDropdownItems.map((item) => (
-            <DropdownMenuItem 
-            key={item.label} 
-            disabled={item.disabled} 
-            onClick={item.onClick}
-            className="cursor-pointer"
+      <DropdownMenuContent className="w-48">
+        {items &&
+          items.length > 0 &&
+          items.map((item) => (
+            <DropdownMenuItem
+              key={item.label}
+              disabled={item.disabled}
+              onClick={item.onClick}
+              className="cursor-pointer"
             >
               {item.icon}
               {item.label}
             </DropdownMenuItem>
-        ))}
-        
+          ))}
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} variant="destructive" className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={logout}
+          variant="destructive"
+          className="cursor-pointer"
+        >
           {!loading && (
             <>
               <LogOutIcon />
