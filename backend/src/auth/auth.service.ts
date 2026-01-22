@@ -22,6 +22,7 @@ import { transporter } from '../config/transporter';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import jwt from 'jsonwebtoken';
+import { GoogleProfilePayload } from './google.strategy';
 
 @Injectable()
 export class AuthService {
@@ -42,9 +43,10 @@ export class AuthService {
       name,
       email: dto.email,
       password: hash,
+      provider: 'local',
     });
 
-    return this.sign(user);
+    return this.signToken(user);
   }
 
   async login(dto: LoginDto) {
@@ -56,10 +58,37 @@ export class AuthService {
     if (!match)
       throw new UnauthorizedException('Email or password does not match.');
 
-    return this.sign(user);
+    return this.signToken(user);
   }
 
-  private sign(user: UserDocument) {
+  async handleGoogleLogin(profile: GoogleProfilePayload) {
+    const existing = await this.userModel.findOne({
+      $or: [{ googleId: profile.googleId }, { email: profile.email }],
+    });
+
+    if (!existing) {
+      const hashedPassword = await bcrypt.hash(randomUUID(), 10);
+      const user = await this.userModel.create({
+        name: profile.name,
+        email: profile.email,
+        password: hashedPassword,
+        provider: 'google',
+        googleId: profile.googleId,
+      });
+
+      return this.signToken(user);
+    }
+
+    if (!existing.googleId) {
+      existing.googleId = profile.googleId;
+      existing.provider = 'google';
+      await existing.save();
+    }
+
+    return this.signToken(existing);
+  }
+
+  private signToken(user: UserDocument) {
     return {
       accessToken: this.jwtService.sign({
         sub: user._id.toString(),
@@ -71,7 +100,7 @@ export class AuthService {
   async sendResetPasswordEmail(dto: ForgotPasswordDto) {
     const user = await this.userModel.findOne({ email: dto.email });
 
-    if (!user) return; // silently ignore
+    if (!user) return; 
 
     const token = randomUUID();
     const hashedToken = await bcrypt.hash(token, 10);

@@ -17,6 +17,9 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import type { Response } from 'express';
+import type { Request } from 'express';
+import { GoogleAuthGuard } from './google-auth.guard';
+import type { GoogleProfilePayload } from './google.strategy';
 
 @Controller({
   path: 'auth',
@@ -47,7 +50,7 @@ export class AuthController {
   }
 
   @Post('login')
- async login(
+  async login(
     @Body() dto: LoginDto,
     @Headers('x-client-type') clientType: string,
     @Res({ passthrough: true }) res: Response,
@@ -65,6 +68,34 @@ export class AuthController {
     });
 
     return { message: 'Logged in successfully' };
+  }
+
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth() {
+    // Guard redirects to Google
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(
+    @Req() req: Request & { user: GoogleProfilePayload },
+    @Headers('x-client-type') clientType: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.handleGoogleLogin(req.user);
+
+    if (clientType === 'mobile') {
+      return { accessToken };
+    }
+
+    res.cookie(process.env.COOKIE_NAME || 'access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
   }
 
   @UseGuards(JwtAuthGuard)

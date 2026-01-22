@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import Silk from "@/components/Silk";
 import { ChevronLeft } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 type AuthHeroProps = {
   appName?: string;
@@ -30,22 +31,13 @@ export default function AuthHero({
 
       <div className="relative z-10 flex h-full flex-col justify-between p-10">
         <div>
-          <button
-            onClick={() => (window.location.href = "/")}
-            className="group mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/85 backdrop-blur transition hover:bg-white/25 hover:text-white hover:cursor-pointer"
-          >
-            <span className="inline-flex size-5 items-center justify-center transition-transform duration-200 group-hover:-translate-x-0.5">
-              <ChevronLeft className="h-4 w-4" />
-            </span>
-            <span>Back Home</span>
-          </button>
           <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-4xl xl:text-5xl">
-            {appName}
+            <Logo width={170} height={70} disableDark={true} />
           </h1>
-          <p className="mt-4 max-w-xl text-base text-white/80 sm:text-lg">
+          <p className="mt-2 max-w-xl text-base text-white sm:text-lg">
             {headline}
           </p>
-          <p className="mt-2 max-w-lg text-sm text-white/70 sm:text-base">
+          <p className=" max-w-lg text-sm text-white/70 sm:text-base">
             {subheadline}
           </p>
         </div>

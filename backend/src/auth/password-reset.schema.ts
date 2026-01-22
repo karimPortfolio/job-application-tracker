@@ -7,7 +7,7 @@ export class PasswordReset extends Document {
   email: string;
 
   @Prop({ required: true })
-  token: string; // hashed token
+  token: string;
 
   @Prop({ required: true })
   expiresAt: Date;

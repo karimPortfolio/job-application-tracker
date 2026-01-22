@@ -104,7 +104,7 @@ export function Sidebar() {
   );
 
   return (
-    <ShadcnSidebar className="bg-gradient-to-b from-slate-950 via-slate-950/90 to-slate-900/80">
+    <ShadcnSidebar className="bg-gradient-to-b dark:border-0 from-slate-950 via-slate-950/90 to-slate-900/80">
       <SidebarHeader className="px-4 py-3">
         <Logo width={130} height={60} />
       </SidebarHeader>
@@ -112,19 +112,19 @@ export function Sidebar() {
         {renderGroup("Main", mainNav)}
         {renderGroup("Workflow", workflowNav)}
       </SidebarContent>
-    <SidebarFooter className="px-4 py-3 border-t border-gray-200 dark:border-white/5">
-      <div className="flex items-center gap-3">
-        <div className="flex-shrink-0 w-8 h-8 rounded-md bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-200">
-         <Building className="size-4" />
+      <SidebarFooter className="px-4 py-3 border-t border-gray-200 dark:border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-200">
+            <Building className="size-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 truncate">
+              {user?.company?.name || "N/A"}
+            </p>
+            <p className="text-xs text-gray-500">Member</p>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 truncate">
-          {user?.company?.name || "N/A"}
-        </p>
-        <p className="text-xs text-gray-500">Member</p>
-        </div>
-      </div>
-    </SidebarFooter>
+      </SidebarFooter>
     </ShadcnSidebar>
   );
 }

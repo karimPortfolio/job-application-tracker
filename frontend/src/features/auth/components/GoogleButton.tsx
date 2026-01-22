@@ -56,7 +56,7 @@ export const GoogleButton = React.forwardRef<
         variant="outline"
         className={cn(
           "w-full border shadow-2xs bg-transparent text-black cursor-pointer  hover:bg-gray-50",
-          "dark:text-white dark:hover:bg-transparent dark:border-gray-200",
+          "dark:text-white dark:hover:bg-transparent dark:border-gray-700",
           className
         )}
         disabled={isLoading || disabled}

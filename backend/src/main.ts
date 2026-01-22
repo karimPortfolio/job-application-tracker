@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { UnprocessableEntityException, ValidationError, ValidationPipe, VersioningType } from '@nestjs/common';
+import { RequestMethod, UnprocessableEntityException, ValidationError, ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 
@@ -24,7 +24,13 @@ async function bootstrap() {
       },
     })
   );
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [
+      { path: 'auth/google', method: RequestMethod.GET },
+      { path: 'auth/google/redirect', method: RequestMethod.GET },
+      { path: 'auth/google/callback', method: RequestMethod.GET },
+    ],
+  });
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',

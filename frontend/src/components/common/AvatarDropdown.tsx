@@ -47,7 +47,11 @@ export function AvatarDropdown({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex items-center justify-center py-6 px-4"
+          className={
+            !showUserInfo
+              ? "flex items-center justify-center !bg-transparent !ring-0 py-6 px-4"
+              : "flex items-center justify-center py-6 px-4 !ring-0"
+          }
           aria-label={user?.name ? `${user.name} menu` : "User menu"}
         >
           <Avatar>
@@ -70,7 +74,7 @@ export function AvatarDropdown({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
+      <DropdownMenuContent align="end" className="w-48">
         {items &&
           items.length > 0 &&
           items.map((item) => (

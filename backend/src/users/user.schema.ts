@@ -26,6 +26,12 @@ export class User {
   @Prop({ required: true, maxLength: 255, minLength: 8 })
   password: string;
 
+  @Prop({ type: String, enum: ['local', 'google'], default: 'local' })
+  provider: 'local' | 'google';
+
+  @Prop({ type: String, unique: true, sparse: true, default: null })
+  googleId?: string | null;
+
   @Prop({ type: Types.ObjectId, ref: 'Company', default: null })
   company: Company | Types.ObjectId | null;
 
