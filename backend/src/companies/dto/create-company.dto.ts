@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength } from 'class-validator';
 
 export class CreateCompanyDto {
   @IsString()
@@ -11,11 +11,9 @@ export class CreateCompanyDto {
   @MaxLength(255)
   industry: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @MaxLength(255)
-  @Matches(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/, {
-    message: 'websiteUrl must be a valid URL (e.g., https://example.com)',
-  })
+  @IsUrl({}, { message: 'websiteUrl must be a valid URL' })
   websiteUrl: string;
 }

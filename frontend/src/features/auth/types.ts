@@ -2,22 +2,22 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  avatar_url?: string | null;
+  avatarUrl?: string | null;
   company: {
     id: number;
     name: string;
     slug?: string | null;
   };
-  membership_type: {
+  membershipType: {
     value: "owner" | "member" | "admin";
     label: string;
     color: string;
     hex_color: string;
   };
   permissions?: string[] | null; 
-  email_verified_at?: string | null;
-  created_at: string;
-  updated_at?: string| null;
+  emailVerifiedAt?: string | null;
+  createdAt: string;
+  updatedAt?: string| null;
 }
 
 export interface AuthResponse {

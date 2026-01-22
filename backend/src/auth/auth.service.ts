@@ -1,5 +1,10 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Injectable, UnauthorizedException, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Inject,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
@@ -16,6 +21,7 @@ import { ConfigService } from '@nestjs/config';
 import { transporter } from '../config/transporter';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -31,12 +37,13 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     const hash = await bcrypt.hash(dto.password, 10);
+    const name = `${dto.first_name} ${dto.last_name}`;
     const user = await this.userModel.create({
-      name: dto.name,
+      name,
       email: dto.email,
       password: hash,
     });
-    
+
     return this.sign(user);
   }
 
@@ -97,7 +104,7 @@ export class AuthService {
     if (!record) {
       throw new BadRequestException('Invalid or expired token');
     }
-    
+
     const tokenValid = await bcrypt.compare(dto.token, record.token);
     if (!tokenValid) {
       throw new BadRequestException('Invalid or expired token');
@@ -112,7 +119,15 @@ export class AuthService {
   }
 
   async logout(token: string) {
-    await this.cache.set(`bl:${token}`, true, 3600);
+    const decoded = jwt.decode(token) as { exp?: number };
+
+    if (!decoded?.exp) return;
+
+    const ttl = decoded.exp - Math.floor(Date.now() / 1000);
+
+    if (ttl > 0) {
+      await this.cache.set(`bl:${token}`, true, ttl);
+    }
   }
 
   async me(userId: string) {
@@ -122,7 +137,13 @@ export class AuthService {
       .populate('company');
   }
 
-  private getHtmlTemplate({resetUrl, appName}: {resetUrl: string, appName: string}): string {
+  private getHtmlTemplate({
+    resetUrl,
+    appName,
+  }: {
+    resetUrl: string;
+    appName: string;
+  }): string {
     const templatePath = path.join(
       process.cwd(),
       'src/templates/reset-password.html',

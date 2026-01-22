@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import Silk from "@/components/Silk";
+import { ChevronLeft } from "lucide-react";
 
 type AuthHeroProps = {
   appName?: string;
@@ -34,7 +35,7 @@ export default function AuthHero({
             className="group mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/85 backdrop-blur transition hover:bg-white/25 hover:text-white hover:cursor-pointer"
           >
             <span className="inline-flex size-5 items-center justify-center transition-transform duration-200 group-hover:-translate-x-0.5">
-              <ChevronLeftIcon className="size-3.5" />
+              <ChevronLeft className="h-4 w-4" />
             </span>
             <span>Back Home</span>
           </button>

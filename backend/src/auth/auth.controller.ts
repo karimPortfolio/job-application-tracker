@@ -37,7 +37,7 @@ export class AuthController {
       return { accessToken };
     }
 
-    res.cookie('access_token', accessToken, {
+    res.cookie(process.env.COOKIE_NAME || 'access_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -58,7 +58,7 @@ export class AuthController {
       return { accessToken };
     }
 
-    res.cookie('access_token', accessToken, {
+    res.cookie(process.env.COOKIE_NAME || 'access_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -69,9 +69,16 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(@Req() req) {
-    const token = req.headers.authorization?.split(' ')[1];
-    return this.authService.logout(token);
+  async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
+    const cookieName = process.env.COOKIE_NAME || 'access_token';
+    const token = req.cookies?.[cookieName] || req.headers.authorization?.split(' ')[1];
+
+    if (token) {
+      await this.authService.logout(token);
+    }
+
+    res.clearCookie(cookieName);
+    return { message: 'Logged out successfully' };
   }
 
   @UseGuards(JwtAuthGuard)
