@@ -84,7 +84,7 @@ export function Sidebar() {
             <SidebarMenuItem key={item.label}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname?.startsWith(item.href)}
+                isActive={pathname === item.href}
               >
                 <Link href={item.href}>
                   {item.icon}
