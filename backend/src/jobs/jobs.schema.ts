@@ -8,7 +8,7 @@ export class Job {
   @Prop() title: string
   @Prop() description: string
   @Prop() location: string
-  @Prop({ default: true }) isActive: boolean
+  @Prop({ default: true }) isPublished: boolean
   @Prop({ type: Types.ObjectId, ref: 'Company' }) company: Company | Types.ObjectId | null
   @Prop({ type: Types.ObjectId, ref: 'User' }) user: User | Types.ObjectId | null
 }

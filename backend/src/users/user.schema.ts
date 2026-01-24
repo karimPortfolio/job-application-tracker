@@ -29,11 +29,14 @@ export class User {
   @Prop({ type: String, enum: ['local', 'google'], default: 'local' })
   provider: 'local' | 'google';
 
-  @Prop({ type: String, unique: true, sparse: true, default: null })
+  @Prop({ type: String, unique: true, sparse: true, default: undefined })
   googleId?: string | null;
 
   @Prop({ type: Types.ObjectId, ref: 'Company', default: null })
   company: Company | Types.ObjectId | null;
+
+  @Prop({ type: Date, default: null })
+  emailVerifiedAt: Date | null;
 
   createdAt: Date;
 }

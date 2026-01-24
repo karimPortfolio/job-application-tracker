@@ -11,16 +11,18 @@ import mongoose, { Model } from 'mongoose';
 import { AppModule } from '../src/app.module';
 import { Company } from '../src/companies/company.schema';
 import { User } from '../src/users/user.schema';
+import cookieParser from 'cookie-parser';
 
 describe('Companies E2E Tests', () => {
   let app: INestApplication;
   let mongo: MongoMemoryServer;
-  let token: string;
+  let cookie: string;
   let companyModel: Model<Company>;
   let userModel: Model<User>;
 
   const user = {
-    name: 'Test Test',
+    first_name: 'Test',
+    last_name: 'User',
     email: 'test@example.com',
     password: 'testtest',
   };
@@ -42,6 +44,7 @@ describe('Companies E2E Tests', () => {
       type: VersioningType.URI,
       defaultVersion: '1',
     });
+    app.use(cookieParser());
     companyModel = moduleFixture.get<Model<Company>>(
       getModelToken(Company.name),
     );
@@ -55,11 +58,14 @@ describe('Companies E2E Tests', () => {
 
     const loginRes = await request(app.getHttpServer())
       .post('/api/auth/login')
-      .send(user)
+      .send({ email: user.email, password: user.password })
       .expect(201);
 
-    token = loginRes.body.accessToken;
-    expect(token).toBeDefined();
+    cookie = loginRes.get('set-cookie')[0];
+    expect(cookie).toBeDefined();
+
+    // mark email as verified for guard
+    await userModel.updateOne({ email: user.email }, { emailVerifiedAt: new Date() });
   });
 
   const company = {
@@ -82,14 +88,14 @@ describe('Companies E2E Tests', () => {
   it('POST /api/v1/company validation checks', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/company')
-      .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
       .expect(400);
   });
 
   it('POST /api/v1/company → create company', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/company')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', cookie)
       .send(company)
       .expect(201);
 
@@ -105,14 +111,14 @@ describe('Companies E2E Tests', () => {
   it('GET /api/v1/company → get company', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/v1/company')
-      .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
       .expect(200);
   });
 
   it('PATCH /api/v1/company → update company', async () => {
     const res = await request(app.getHttpServer())
       .patch('/api/v1/company')
-      .set('Authorization', `Bearer ${token}`)
+        .set('Cookie', cookie)
       .send(company.name)
       .expect(200);
   });
@@ -120,7 +126,7 @@ describe('Companies E2E Tests', () => {
   it('POST /api/v1/company → forbid creating second company', async () => {
     await request(app.getHttpServer())
       .post('/api/v1/company')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', cookie)
       .send({
         name: 'Another Company',
         industry: 'Industry'

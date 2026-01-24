@@ -6,8 +6,9 @@ import type { UserDocument } from '../users/user.schema';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { UpdateCompanyDto } from './dto/udate-company.dto';
 import type { JwtPayload } from '../auth/types/jwt-payload.type';
+import { EmailVerifiedGuard } from '../auth/email-verified.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard)
 @Controller({
   path: 'company',
   version: '1',

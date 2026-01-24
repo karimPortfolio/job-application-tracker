@@ -8,7 +8,8 @@ import {
   googleOAuthRedirectRequest,
   forgotPasswordRequest,
   resetPasswordRequest,
-  emailVerficationRequest,
+  emailVerificationRequest,
+  verifyEmailRequest,
 } from "../services/auth.service";
 import { useApiError } from "@/hooks/useApiError";
 import {
@@ -112,12 +113,12 @@ export function useAuth() {
     }
   };
 
-  const verifyEmail = async () => {
+  const resentVerification = async () => {
     clearError();
     setLoading(true);
 
     try {
-      await emailVerficationRequest();
+      await emailVerificationRequest();
     } catch (err) {
       handleError(err);
       throw err;
@@ -125,6 +126,20 @@ export function useAuth() {
       setLoading(false);
     }
   };
+
+  const verifyEmail = async (token: string, email: string) => {
+    clearError();
+    setLoading(true);
+
+    try {
+      await verifyEmailRequest(token, email);
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const googleOAuthRedirect = () => {
     clearError();
@@ -154,6 +169,7 @@ export function useAuth() {
     resetPassword,
     googleOAuthRedirect,
     verifyEmail,
+    resentVerification,
 
     apiError: error,
     clearApiError: clearError,

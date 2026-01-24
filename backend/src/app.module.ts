@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
 import { CompaniesModule } from './companies/companies.module'
+import { DepartmentsModule } from './departments/departments.module'
 // import { JobsModule } from './jobs/jobs.module'
 // import { ApplicationsModule } from './applications/applications.module'
 import { RedisCacheModule } from './common/cache/redis.module'
@@ -27,6 +28,7 @@ import { RedisCacheModule } from './common/cache/redis.module'
     AuthModule,
     UsersModule,
     CompaniesModule,
+    DepartmentsModule,
     // JobsModule,
     // ApplicationsModule,
   ],

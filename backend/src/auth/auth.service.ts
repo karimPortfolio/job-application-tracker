@@ -23,6 +23,8 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import jwt from 'jsonwebtoken';
 import { GoogleProfilePayload } from './google.strategy';
+import { EmailVerification } from './email-verification.schema';
+import { EmailVerificationDto } from './dto/email-verification.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +33,8 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectModel(PasswordReset.name)
     private readonly passwordResetModel: Model<PasswordReset>,
+    @InjectModel(EmailVerification.name)
+    private readonly emailVerificationModel: Model<EmailVerification>,
 
     private readonly config: ConfigService,
     @Inject(CACHE_MANAGER) private cache: Cache,
@@ -113,14 +117,15 @@ export class AuthService {
     });
 
     const resetUrl = `${this.config.get('FRONTEND_URL')}/auth/reset-password?token=${token}&email=${dto.email}`;
+    const appName = this.config.get('APP_NAME') || 'Hirely';
 
     await transporter.sendMail({
-      from: '"Job Tracker" <no-reply@jobtracker.com>',
+      from: '"Hirely" <no-reply@hirely.com>',
       to: dto.email,
       subject: 'Reset your password',
-      html: this.getHtmlTemplate({
-        resetUrl,
-        appName: this.config.get('APP_NAME') || 'Hirely',
+      html: this.renderTemplate('reset-password.html', {
+        RESET_URL: resetUrl,
+        APP_NAME: appName,
       }),
     });
   }
@@ -147,6 +152,66 @@ export class AuthService {
     await record.deleteOne();
   }
 
+  async sendEmailVerificationLink(user: {sub: string}) {
+
+    const userRecord = await this.userModel.findById(user.sub);
+
+    if (!userRecord) {
+      throw new BadRequestException('User not found.');
+    }
+
+    if (userRecord.emailVerifiedAt) {
+      throw new BadRequestException('Email is already verified.');
+    }
+    const token = randomUUID();
+    const hashedToken = await bcrypt.hash(token, 10);
+
+    await this.emailVerificationModel.deleteMany({ email: userRecord.email });
+    await this.emailVerificationModel.create({
+      email: userRecord.email,
+      token: hashedToken,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    });
+
+    const verifyUrl = `${this.config.get('FRONTEND_URL')}/auth/verify-email?token=${token}&email=${userRecord.email}`;
+
+    const appName = this.config.get('APP_NAME') || 'Hirely';
+    const cloudfrontUrl = this.config.get('AWS_CLOUDFRONT_URL') || '';
+
+    await transporter.sendMail({
+      from: '"Hirely" <no-reply@hirely.com>',
+      to: userRecord.email,
+      subject: 'Verify your email',
+      html: this.renderTemplate('email-verification.html', {
+        VERIFY_URL: verifyUrl,
+        APP_NAME: appName,
+        CLOUDFRONT_URL: cloudfrontUrl,
+      }),
+    });
+  }
+
+  async verifyEmail(dto: EmailVerificationDto) {
+    const record = await this.emailVerificationModel.findOne({
+      email: dto.email,
+      expiresAt: { $gt: new Date() },
+    });
+    if (!record) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+
+    const tokenValid = await bcrypt.compare(dto.token, record.token);
+    if (!tokenValid) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+    
+    await this.userModel.updateOne(
+      { email: dto.email },
+      { emailVerifiedAt: new Date() },
+    );
+
+    await record.deleteOne();
+  }
+
   async logout(token: string) {
     const decoded = jwt.decode(token) as { exp?: number };
 
@@ -166,21 +231,21 @@ export class AuthService {
       .populate('company');
   }
 
-  private getHtmlTemplate({
-    resetUrl,
-    appName,
-  }: {
-    resetUrl: string;
-    appName: string;
-  }): string {
+  private renderTemplate(
+    templateName: string,
+    replacements: Record<string, string>,
+  ): string {
     const templatePath = path.join(
       process.cwd(),
-      'src/templates/reset-password.html',
+      'src/templates',
+      templateName,
     );
 
     let html = fs.readFileSync(templatePath, 'utf8');
-    html = html.replace('{{RESET_URL}}', resetUrl);
-    html = html.replace('{{APP_NAME}}', appName);
+
+    Object.entries(replacements).forEach(([key, value]) => {
+      html = html.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    });
 
     return html;
   }

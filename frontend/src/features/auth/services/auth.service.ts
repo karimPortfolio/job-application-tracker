@@ -43,8 +43,12 @@ export const resetPasswordRequest = async (credentials: ResetPasswordCredentials
   });
 }
 
-export const emailVerficationRequest = async () => {
-  await api.post(AUTH_ROUTES.verifyEmail);
+export const emailVerificationRequest = async () => {
+  await api.post(AUTH_ROUTES.resendVerification);
+}
+
+export const verifyEmailRequest = async (token: string, email: string) => {
+  await api.post(AUTH_ROUTES.verifyEmail, { token, email });
 }
 
 export const googleOAuthRedirectRequest = () => {

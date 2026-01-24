@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Headers,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -20,6 +22,8 @@ import type { Response } from 'express';
 import type { Request } from 'express';
 import { GoogleAuthGuard } from './google-auth.guard';
 import type { GoogleProfilePayload } from './google.strategy';
+import type { UserDocument } from 'src/users/user.schema';
+import { EmailVerificationDto } from './dto/email-verification.dto';
 
 @Controller({
   path: 'auth',
@@ -134,5 +138,23 @@ export class AuthController {
     return {
       message: 'Password reset successfully',
     };
+  }
+
+  @Post('resend-verification')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async resendVerification(@CurrentUser() user) {
+    await this.authService.sendEmailVerificationLink(user);
+
+    return {
+      message: 'If the email exists, a verification link has been sent.',
+    };
+  }
+
+  @Post('verify-email')
+  async verifyEmail(@Body() body: EmailVerificationDto) {
+    await this.authService.verifyEmail(body);
+
+    return { message: 'Email verified successfully'};
   }
 }

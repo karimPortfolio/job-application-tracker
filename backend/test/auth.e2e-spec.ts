@@ -8,11 +8,12 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose, { Model } from 'mongoose'
 import { User } from '../src/users/user.schema'
 import { getModelToken } from '@nestjs/mongoose'
+import cookieParser from 'cookie-parser'
 
 describe('Auth E2E Tests', () => {
   let app: INestApplication
   let mongo: MongoMemoryServer
-  let token: string
+  let cookie: string
   let userModel: Model<User>
 
   beforeAll(async () => {
@@ -29,6 +30,7 @@ describe('Auth E2E Tests', () => {
     app = moduleFixture.createNestApplication()
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.use(cookieParser());
     userModel = moduleFixture.get<Model<User>>(getModelToken(User.name));
     await app.init()
   })
@@ -40,7 +42,8 @@ describe('Auth E2E Tests', () => {
   })
 
   const user = {
-    name: 'Test Test',
+    first_name: 'Test',
+    last_name: 'User',
     email: 'test@example.com',
     password: 'password123',
   }
@@ -53,53 +56,54 @@ describe('Auth E2E Tests', () => {
 
     const savedUser = await userModel.findOne({ email: user.email }).exec();
     expect(savedUser).toBeDefined();
-    expect(savedUser?.name).toBe(user.name);
     expect(savedUser?.email).toBe(user.email);
 
-    token = res.body.accessToken
+    cookie = res.get('set-cookie')[0]
+    expect(cookie).toBeDefined()
   })
 
   it('POST /api/auth/register checks validation', async () => {
-    const res = await request(app.getHttpServer())
-    .post('/api/auth/register')
-    .expect(400);
+    await request(app.getHttpServer())
+      .post('/api/auth/register')
+      .send({})
+      .expect(400);
   });
 
   it('POST /api/auth/login', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/auth/login')
-      .send(user)
+      .send({ email: user.email, password: user.password })
       .expect(201)
 
-    expect(res.body).toEqual({ "accessToken": res.body.accessToken })
-
-    token = res.body.accessToken
+    cookie = res.get('set-cookie')[0]
+    expect(cookie).toBeDefined()
   })
 
   it('POST /api/auth/login checks validation', async () => {
-    const res = await request(app.getHttpServer())
-    .post('/api/auth/login')
-    .expect(400);
+    await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({})
+      .expect(400);
   });
 
   it('GET /api/auth/me', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/auth/me')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', cookie)
       .expect(200);
   })
 
   it('POST /api/auth/logout', async () => {
     await request(app.getHttpServer())
       .post('/api/auth/logout')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', cookie)
       .expect(201)
   })
 
   it('GET /api/auth/me after logout → 401', async () => {
     await request(app.getHttpServer())
       .get('/api/auth/me')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Cookie', cookie)
       .expect(401)
   })
 })

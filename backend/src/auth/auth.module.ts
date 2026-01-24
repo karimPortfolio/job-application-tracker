@@ -11,6 +11,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PasswordReset, PasswordResetSchema } from './password-reset.schema'
 import { GoogleStrategy } from './google.strategy'
 import { GoogleAuthGuard } from './google-auth.guard'
+import { EmailVerification, EmailVerificationSchema } from './email-verification.schema'
+import { EmailVerifiedGuard } from './email-verified.guard'
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { GoogleAuthGuard } from './google-auth.guard'
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: PasswordReset.name, schema: PasswordResetSchema },
+      { name: EmailVerification.name, schema: EmailVerificationSchema },
     ]),
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -28,7 +31,8 @@ import { GoogleAuthGuard } from './google-auth.guard'
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, GoogleAuthGuard],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, GoogleAuthGuard, EmailVerifiedGuard],
+  exports: [EmailVerifiedGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}
