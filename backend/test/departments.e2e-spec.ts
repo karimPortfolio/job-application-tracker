@@ -155,7 +155,8 @@ describe('Departments E2E Tests', () => {
       .set('Cookie', cookie)
       .expect(200);
 
-    expect(res.body).toEqual([]);
+    expect(res.body.docs).toEqual([]);
+    expect(res.body.totalDocs).toBe(0);
   });
 
   it('POST /api/v1/departments → create department', async () => {
@@ -178,8 +179,35 @@ describe('Departments E2E Tests', () => {
       .set('Cookie', cookie)
       .expect(200);
 
-    expect(res.body.length).toBe(1);
-    expect(res.body[0].title).toBe(departmentPayload.title);
+    expect(res.body.totalDocs).toBe(1);
+    expect(res.body.docs.length).toBe(1);
+    expect(res.body.docs[0].title).toBe(departmentPayload.title);
+  });
+
+  it('GET /api/v1/departments → pagination works', async () => {
+    const extraDepartments = Array.from({ length: 4 }).map((_, i) => ({
+      title: `Dept ${i}`,
+      description: `Desc ${i}`,
+    }));
+
+    for (const dept of extraDepartments) {
+      await request(app.getHttpServer())
+        .post('/api/v1/departments')
+        .set('Cookie', cookie)
+        .send(dept)
+        .expect(201);
+    }
+
+    const res = await request(app.getHttpServer())
+      .get('/api/v1/departments?page=2&limit=2')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(res.body.limit).toBe(2);
+    expect(res.body.page).toBe(2);
+    expect(res.body.totalDocs).toBe(5);
+    expect(res.body.totalPages).toBe(3);
+    expect(res.body.docs.length).toBe(2);
   });
 
   it('GET /api/v1/departments/:id → fetch by id', async () => {

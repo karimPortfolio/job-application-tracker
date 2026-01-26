@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { DepartmentsService } from "./departments.service";
 import { AuthGuard } from "@nestjs/passport";
 import { CompanyGuard } from "src/common/guards/CompanyGuard";
 import { CreateDepartmentDto } from "./dto/create-department.dto";
+import { DepartmentQueryDto } from "./dto/department-query.dto";
+import { CurrentUser } from "src/common/decorators/current-user.decorator";
 
 
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -13,13 +15,13 @@ export class DepartmentsController {
     ) {}
 
    @Get()
-    async findAll(@Req() req) {
-        return this.departmentsService.findAllByCompany(req.companyId);
+    async findAll(@Req() req, @Query() query: DepartmentQueryDto) {
+        return this.departmentsService.findAllByCompany(req.companyId, query);
     }
 
     @Post()
-    async create(@Req() req, @Body() dto: CreateDepartmentDto) {
-        return this.departmentsService.createDepartment(dto, req.companyId);
+    async create(@Req() req, @Body() dto: CreateDepartmentDto, @CurrentUser() user) {
+        return this.departmentsService.createDepartment(dto, req.companyId, user);
     }
 
     @Get(':id')

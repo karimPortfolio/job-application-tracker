@@ -20,60 +20,60 @@ import {
 import {
   LayoutDashboard,
   Briefcase,
-  Building2,
   UserRound,
   Settings,
   Bell,
   Plus,
   Building,
+  Network,
 } from "lucide-react";
 import { Logo } from "../Logo";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
-type NavItem = {
+export type NavItem = {
   label: string;
   href: string;
   icon: React.ReactNode;
   badge?: React.ReactNode;
 };
 
+export const mainNav: NavItem[] = [
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: <LayoutDashboard size={18} />,
+  },
+  { label: "Jobs", href: "/dashboard/jobs", icon: <Briefcase size={18} /> },
+  {
+    label: "Departments",
+    href: "/dashboard/departments",
+    icon: <Network size={18} />,
+  },
+  {
+    label: "Candidates",
+    href: "/dashboard/candidates",
+    icon: <UserRound size={18} />,
+  },
+];
+
+export const workflowNav: NavItem[] = [
+  {
+    label: "Notifications",
+    href: "/dashboard/notifications",
+    icon: <Bell size={18} />,
+    badge: "12",
+  },
+  { label: "New Job", href: "/dashboard/jobs/new", icon: <Plus size={18} /> },
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    icon: <Settings size={18} />,
+  },
+];
+
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
-
-  const mainNav: NavItem[] = [
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: <LayoutDashboard size={18} />,
-    },
-    { label: "Jobs", href: "/dashboard/jobs", icon: <Briefcase size={18} /> },
-    {
-      label: "Companies",
-      href: "/dashboard/companies",
-      icon: <Building2 size={18} />,
-    },
-    {
-      label: "Candidates",
-      href: "/dashboard/candidates",
-      icon: <UserRound size={18} />,
-    },
-  ];
-
-  const workflowNav: NavItem[] = [
-    {
-      label: "Notifications",
-      href: "/dashboard/notifications",
-      icon: <Bell size={18} />,
-      badge: "12",
-    },
-    { label: "New Job", href: "/dashboard/jobs/new", icon: <Plus size={18} /> },
-    {
-      label: "Settings",
-      href: "/dashboard/settings",
-      icon: <Settings size={18} />,
-    },
-  ];
 
   const renderGroup = (title: string, items: NavItem[]) => (
     <SidebarGroup>
@@ -82,10 +82,7 @@ export function Sidebar() {
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === item.href}
-              >
+              <SidebarMenuButton asChild isActive={pathname === item.href}>
                 <Link href={item.href}>
                   {item.icon}
                   <span>{item.label}</span>

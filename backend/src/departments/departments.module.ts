@@ -6,12 +6,15 @@ import { Department, DepartmentSchema } from './departments.schema'
 import { Company, CompanySchema } from 'src/companies/company.schema'
 import { DepartmentsService } from './departments.service'
 import { DepartmentsController } from './departments.controller'
+import { Job, JobSchema } from 'src/jobs/jobs.schema'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Department.name, schema: DepartmentSchema },
       { name: Company.name, schema: CompanySchema },
+      { name: User.name, schema: UserSchema },
+      { name: Job.name, schema: JobSchema },
     ]),
     UsersModule,
   ],

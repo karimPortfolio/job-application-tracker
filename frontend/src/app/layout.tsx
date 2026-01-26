@@ -2,6 +2,7 @@ import { AuthProvider } from '@/components/AuthProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Geist, Geist_Mono } from "next/font/google";
 import './globals.css';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export default function AppLayout({
         <ThemeProvider>
           <AuthProvider>
             {children}
+            <ConfirmDialog />
           </AuthProvider>
         </ThemeProvider>
       </body>

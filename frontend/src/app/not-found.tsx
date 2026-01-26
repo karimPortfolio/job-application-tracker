@@ -49,7 +49,7 @@ export default function NotFound() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" disabled={!initialized}>
-                  <Link href={user ? '/protected/dashboard' : '/auth/login'}>
+                  <Link href={user ? '/dashboard' : '/auth/login'}>
                     {!initialized ? <Spinner className="h-4 w-4" /> : null}
                     {initialized ? (user ? 'Open dashboard' : 'Sign in') : 'Loading...'}
                   </Link>
