@@ -1,3 +1,4 @@
+![Hirely Logo](https://d1y8qqzhwlgech.cloudfront.net/assets/email-verification-icon.png)
 ## Hirely
 
 Hirely is a modern, scalable Job Application & Recruitment Management Platform designed to help companies efficiently manage their hiring workflow from a single, centralized dashboard.
