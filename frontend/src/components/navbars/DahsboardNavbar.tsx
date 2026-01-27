@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 
 export function DashboardNavbar() {
   const { user, logout, loading } = useAuth();
@@ -68,9 +69,9 @@ export function DashboardNavbar() {
             </nav>
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        <ThemeSwitcher />
         <NotificationsDropdown />
-
         <AvatarDropdown
           user={user}
           logout={logout}

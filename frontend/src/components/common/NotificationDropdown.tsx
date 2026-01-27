@@ -29,7 +29,7 @@ export function NotificationsDropdown() {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="ml-4 rounded-full w-9 h-9">
+            <Button variant="ghost" className="rounded-full w-9 h-9">
               <Bell className="size-4" />
             </Button>
           </DropdownMenuTrigger>
