@@ -21,7 +21,7 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ##### Forgot password Page
 
-<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fforgot-password-page.png?alt=media&token=15d55781-4259-4dc1-bdb2-563c7f3a527d" alt="" />
+![Forgot password Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fforgot-password-page.png?alt=media&token=15d55781-4259-4dc1-bdb2-563c7f3a527d)
 
 ##### Email Verification Page
 
