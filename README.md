@@ -123,3 +123,16 @@ EMAIL_FROM=no-reply@example.com
 
 - Sensitive env files are ignored by git (`.env*`). If you ever tracked one, remove from index and rotate secrets.
 - Filters Apply button sends a single backend request; Clear all resets filters and refetches.
+
+### Performance & Optimization
+- Redis caching for frequently accessed data
+- Lean MongoDB queries for better memory usage
+- Indexed database queries for scalability
+- Stream-based exports to prevent memory overload
+
+### Author
+
+##### Mohamed Karim Balla
+Contact me: 
+<a href="https://www.linkedin.com/in/karimballa/">Linkedin</a>
+<a href="mailto:mohamedkarimballa@gmail.com">Email</a>
