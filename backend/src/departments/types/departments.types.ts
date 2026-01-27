@@ -1,5 +1,4 @@
 import { Types } from "mongoose"
-import { UserDocument } from "src/users/user.schema"
 
 export type DepartmentWithJobsCount = {
   _id: Types.ObjectId

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { JwtModule } from '@nestjs/jwt'
+import { JwtModule, type JwtSignOptions } from '@nestjs/jwt'
 import { MongooseModule } from '@nestjs/mongoose'
 import { PassportModule } from '@nestjs/passport'
 
@@ -24,10 +24,14 @@ import { EmailVerifiedGuard } from './email-verified.guard'
     ]),
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET', 'test-secret'),
-        signOptions: { expiresIn: '1h' },
-      }),
+      useFactory: (config: ConfigService) => {
+        const expiresIn = config.get<string | number>('TOKEN_EXPIRATION', '1h') as JwtSignOptions['expiresIn']
+
+        return {
+          secret: config.get<string>('JWT_SECRET', 'test-secret'),
+          signOptions: { expiresIn },
+        }
+      },
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],

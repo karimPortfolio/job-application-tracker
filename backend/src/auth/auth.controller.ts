@@ -22,7 +22,6 @@ import type { Response } from 'express';
 import type { Request } from 'express';
 import { GoogleAuthGuard } from './google-auth.guard';
 import type { GoogleProfilePayload } from './google.strategy';
-import type { UserDocument } from 'src/users/user.schema';
 import { EmailVerificationDto } from './dto/email-verification.dto';
 
 @Controller({

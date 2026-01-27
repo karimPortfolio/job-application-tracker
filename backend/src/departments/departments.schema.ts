@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Company } from 'src/companies/company.schema';
-import { User } from 'src/users/user.schema';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { formatDistanceToNow } from 'date-fns';
 import leanVirtuals from 'mongoose-lean-virtuals';

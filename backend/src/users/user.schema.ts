@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { formatDistanceToNow } from 'date-fns';
 import { HydratedDocument, Types } from 'mongoose';
 import leanVirtuals from 'mongoose-lean-virtuals';
-import { Company } from 'src/companies/company.schema';
+import { Company } from '../companies/company.schema';
 
 export type UserDocument = HydratedDocument<User>;
 

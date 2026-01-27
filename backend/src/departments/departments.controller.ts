@@ -13,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CompanyGuard } from 'src/common/guards/CompanyGuard';
+import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { DepartmentQueryDto } from './dto/department-query.dto';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { Response } from 'express';
 
 @UseGuards(AuthGuard('jwt'), CompanyGuard)

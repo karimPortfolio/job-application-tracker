@@ -9,6 +9,7 @@ import { DepartmentsModule } from './departments/departments.module'
 // import { JobsModule } from './jobs/jobs.module'
 // import { ApplicationsModule } from './applications/applications.module'
 import { RedisCacheModule } from './common/cache/redis.module'
+import { JobsModule } from './jobs/jobs.module'
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { RedisCacheModule } from './common/cache/redis.module'
     UsersModule,
     CompaniesModule,
     DepartmentsModule,
-    // JobsModule,
+    JobsModule,
     // ApplicationsModule,
   ],
 })
