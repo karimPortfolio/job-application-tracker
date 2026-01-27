@@ -39,7 +39,7 @@ export function OnboardingForm({ onSuccess }: { onSuccess: () => void }) {
   const resolver = useMemo(() => zodResolver(onboardingSchema), []);
 
   const form = useForm<OnboardingPayload>({
-    // resolver,
+    resolver,
     defaultValues: {
       name: "",
       industry: "",

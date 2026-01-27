@@ -4,12 +4,13 @@ interface PageHeaderProps {
     title: string;
     description?: string;
     actionLabel?: string;
+    actionIcon?: React.ReactNode;
     action?: () => void;
     children?: React.ReactNode;
     actions?: React.ReactNode;
 }
 
-export function PageHeader({ title, description, actionLabel, action, children, actions }: PageHeaderProps) {
+export function PageHeader({ title, description, actionLabel, actionIcon, action, children, actions }: PageHeaderProps) {
     if (children) {
         return children;
     }
@@ -24,7 +25,8 @@ export function PageHeader({ title, description, actionLabel, action, children, 
                 <Button
                     onClick={action}
                     className="btn btn-primary"
-                >
+                >   
+                    {actionIcon && actionIcon}
                     {actionLabel}
                 </Button>
             )}

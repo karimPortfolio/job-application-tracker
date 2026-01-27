@@ -1,22 +1,26 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { Funnel, FunnelX, RotateCcw, SlidersHorizontal, X } from "lucide-react"
-import { useFiltersBar, type FilterGroup, type FilterValue } from "../../hooks/useFiltersBar"
-import { FilterField } from "./FilterField"
-import { ExportButton } from "../exports/ExportButton"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Funnel, FunnelX, RotateCcw, SlidersHorizontal, X } from "lucide-react";
+import {
+  useFiltersBar,
+  type FilterGroup,
+  type FilterValue,
+} from "../../hooks/useFiltersBar";
+import { FilterField } from "./FilterField";
+import { ExportButton } from "../exports/ExportButton";
 
-const EMPTY_FILTERS: Record<string, FilterValue> = {}
-const EMPTY_FILTER_GROUPS: FilterGroup[] = []
+const EMPTY_FILTERS: Record<string, FilterValue> = {};
+const EMPTY_FILTER_GROUPS: FilterGroup[] = [];
 
 const areFiltersEqual = (
   next: Record<string, FilterValue>,
@@ -26,26 +30,26 @@ const areFiltersEqual = (
     Object.keys(obj)
       .sort()
       .reduce<Record<string, FilterValue>>((acc, key) => {
-        acc[key] = obj[key]
-        return acc
-      }, {})
+        acc[key] = obj[key];
+        return acc;
+      }, {});
 
-  return JSON.stringify(normalize(next)) === JSON.stringify(normalize(current))
-}
+  return JSON.stringify(normalize(next)) === JSON.stringify(normalize(current));
+};
 
 export type FiltersBarProps = {
-  search?: string
-  onSearch?: (term: string) => void
-  searchPlaceholder?: string
-  filters?: FilterGroup[]
-  selectedFilters?: Record<string, FilterValue>
-  onFiltersChange?: (next: Record<string, FilterValue>) => void
-  onRefresh?: () => Promise<void> | void
-  isRefreshing?: boolean
-  onReset?: () => void,
-  endpoint?: string | undefined,
-  filename?: string | undefined,
-}
+  search?: string;
+  onSearch?: (term: string) => void;
+  searchPlaceholder?: string;
+  filters?: FilterGroup[];
+  selectedFilters?: Record<string, FilterValue>;
+  onFiltersChange?: (next: Record<string, FilterValue>) => void;
+  onRefresh?: () => Promise<void> | void;
+  isRefreshing?: boolean;
+  onReset?: () => void;
+  endpoint?: string | undefined;
+  filename?: string | undefined;
+};
 
 export function FiltersBar({
   search = "",
@@ -60,7 +64,6 @@ export function FiltersBar({
   endpoint,
   filename,
 }: FiltersBarProps) {
-
   const {
     search: searchValue,
     setSearch: setSearchValue,
@@ -78,41 +81,44 @@ export function FiltersBar({
     initialSearch: search,
     initialSelected: selectedFilters ?? EMPTY_FILTERS,
     onChange: useCallback(
-      ({ search: nextSearch, filters: nextFilters }: {
-        search: string
-        filters: Record<string, FilterValue>
+      ({
+        search: nextSearch,
+        filters: nextFilters,
+      }: {
+        search: string;
+        filters: Record<string, FilterValue>;
       }) => {
-        onSearch?.(nextSearch)
-        onFiltersChange?.(nextFilters)
+        onSearch?.(nextSearch);
+        onFiltersChange?.(nextFilters);
       },
       [onFiltersChange, onSearch],
     ),
     onRefresh,
-  })
+  });
 
   useEffect(() => {
-    setSearchValue(search)
-  }, [search, setSearchValue])
+    setSearchValue(search);
+  }, [search, setSearchValue]);
 
   useEffect(() => {
-    if (!selectedFilters) return
+    if (!selectedFilters) return;
     if (!areFiltersEqual(selectedFilters, selectedFiltersState)) {
-      setSelectedFilters(selectedFilters)
+      setSelectedFilters(selectedFilters);
     }
-  }, [selectedFilters, selectedFiltersState, setSelectedFilters])
+  }, [selectedFilters, selectedFiltersState, setSelectedFilters]);
 
   const handleToggle = (groupKey: string, value: string, multi: boolean) => {
-    toggleFilter(groupKey, value, multi)
-  }
+    toggleFilter(groupKey, value, multi);
+  };
 
   const handleClearFilters = () => {
-    clearFilters()
-    onReset?.()
-    submitSearch({ filters: {} })
-  }
+    clearFilters();
+    onReset?.();
+    submitSearch({ filters: {} });
+  };
 
-  const isButtonRefreshing = onRefresh ? refreshingFromHook : isRefreshing
-  const handleRefresh = onRefresh ? refresh : onRefresh
+  const isButtonRefreshing = onRefresh ? refreshingFromHook : isRefreshing;
+  const handleRefresh = onRefresh ? refresh : onRefresh;
 
   return (
     <div className="flex flex-wrap items-center gap-2 ">
@@ -122,8 +128,8 @@ export function FiltersBar({
           onChange={(e) => setSearchValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              e.preventDefault()
-              submitSearch()
+              e.preventDefault();
+              submitSearch();
             }
           }}
           placeholder={searchPlaceholder}
@@ -146,7 +152,7 @@ export function FiltersBar({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-80 space-y-4 p-3">
             {filters.map((group) => {
-              const value = selectedFiltersState[group.key]
+              const value = selectedFiltersState[group.key];
               return (
                 <FilterField
                   key={group.key}
@@ -155,11 +161,16 @@ export function FiltersBar({
                   onChange={(val) => setFilterValue(group.key, val)}
                   onToggle={(val) => handleToggle(group.key, val, true)}
                 />
-              )
+              );
             })}
 
             <div className="flex items-center justify-between gap-2 pt-2 border-t">
-              <Button variant="ghost" size="sm" onClick={handleClearFilters} className="gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearFilters}
+                className="gap-1"
+              >
                 <FunnelX className="h-4 w-4" />
                 Clear all
               </Button>
@@ -172,8 +183,8 @@ export function FiltersBar({
         </DropdownMenu>
 
         {endpoint ? (
-          <ExportButton 
-            endpoint={endpoint} 
+          <ExportButton
+            endpoint={endpoint}
             params={selectedFilters}
             filename={filename}
           />
@@ -181,17 +192,21 @@ export function FiltersBar({
 
         {onRefresh ? (
           <Button
-            variant="secondary"
-            className={cn("h-10 text-white gap-2", isButtonRefreshing && "animate-pulse")}
+            variant="outline"
+            className={cn(
+              "h-10 gap-2",
+              isButtonRefreshing && "animate-pulse",
+            )}
             onClick={handleRefresh}
             disabled={isButtonRefreshing}
           >
-            <RotateCcw className={cn("h-4 w-4", isButtonRefreshing && "animate-spin")}
+            <RotateCcw
+              className={cn("h-4 w-4", isButtonRefreshing && "animate-spin")}
             />
             <span>Refresh</span>
           </Button>
         ) : null}
       </div>
     </div>
-  )
+  );
 }

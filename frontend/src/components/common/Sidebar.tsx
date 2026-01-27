@@ -63,7 +63,6 @@ export const workflowNav: NavItem[] = [
     icon: <Bell size={18} />,
     badge: "12",
   },
-  { label: "New Job", href: "/dashboard/jobs/new", icon: <Plus size={18} /> },
   {
     label: "Settings",
     href: "/dashboard/settings",

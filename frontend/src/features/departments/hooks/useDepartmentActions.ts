@@ -1,10 +1,21 @@
-import { use, useState } from 'react';
-import type { CreateDepartmentPayload, Department, UpdateDepartmentPayload } from '../types/departments.types';
-import { createDepartment, deleteDepartment, getDepartment, updateDepartment } from '../services/departments.service';
-import { useConfirm } from '@/hooks/useConfirm';
+import { use, useState } from "react";
+import type {
+  CreateDepartmentPayload,
+  Department,
+  UpdateDepartmentPayload,
+} from "../types/departments.types";
+import {
+  createDepartment,
+  deleteDepartment,
+  getDepartment,
+  updateDepartment,
+} from "../services/departments.service";
+import { useConfirm } from "@/hooks/useConfirm";
+import { useApiError } from "@/hooks/useApiError";
 
 export function useDepartmentActions() {
   const [loading, setLoading] = useState(false);
+  const { error, clearError, handleError } = useApiError();
   const confirm = useConfirm();
 
   const findDepartment = async (id: string) => {
@@ -12,6 +23,9 @@ export function useDepartmentActions() {
     try {
       const res = await getDepartment(id);
       return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -22,19 +36,22 @@ export function useDepartmentActions() {
     try {
       const res = await createDepartment(payload);
       return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const update = async (
-    id: string,
-    payload: UpdateDepartmentPayload,
-  ) => {
+  const update = async (id: string, payload: UpdateDepartmentPayload) => {
     setLoading(true);
     try {
-      const res = await  updateDepartment(id, payload);
+      const res = await updateDepartment(id, payload);
       return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -44,6 +61,9 @@ export function useDepartmentActions() {
     setLoading(true);
     try {
       await deleteDepartment(id);
+    } catch (err) {
+      handleError(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -51,16 +71,16 @@ export function useDepartmentActions() {
 
   const confirmDelete = async (department: Department) => {
     const ok = await confirm({
-      title: 'Delete department',
+      title: "Delete department",
       description: `Are you sure you want to delete "${department.title}"? This action cannot be undone.`,
-      confirmText: 'Delete',
+      confirmText: "Delete",
       destructive: true,
-    })
+    });
 
-    if (!ok) return
+    if (!ok) return;
 
-    await destroy(department._id)
-  }
+    await destroy(department._id);
+  };
 
   return {
     loading,
@@ -69,6 +89,7 @@ export function useDepartmentActions() {
     update,
     destroy,
     confirmDelete,
+    apiError: error,
+    clearApiError: clearError,
   };
 }
-

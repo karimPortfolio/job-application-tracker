@@ -2,7 +2,8 @@ import { AuthProvider } from '@/components/AuthProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { Geist, Geist_Mono } from "next/font/google";
 import './globals.css';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { ConfirmDialog } from '@/components/common/dialogs/ConfirmDialog';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default function AppLayout({
           <AuthProvider>
             {children}
             <ConfirmDialog />
+            <Toaster richColors closeButton position="top-right" />
           </AuthProvider>
         </ThemeProvider>
       </body>
