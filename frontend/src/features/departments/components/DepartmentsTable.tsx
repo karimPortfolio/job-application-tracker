@@ -19,6 +19,8 @@ import { Department, DepartmentQuery } from '../types/departments.types'
 import { useTextTruncate } from '@/hooks/useTextTruncate'
 import { FiltersBar } from '@/components/filters/FiltersBar'
 import type { FilterGroup } from '@/hooks/useFiltersBar'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { useMemo } from 'react'
 
 interface DepartmentsTableProps {
   onEdit?: (department: Department) => void
@@ -28,6 +30,7 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
   const { departments, loading, meta, query, setQuery, refetch } = useDepartmentsList()
   const { confirmDelete, loading: isDeleting } = useDepartmentActions()
   const { truncate } = useTextTruncate()
+  const { user } = useAuth();
 
   const handlePageChange = (page: number) => {
     const totalPages = meta?.totalPages ?? 1
@@ -71,6 +74,19 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
     setQuery((prev) => ({ ...prev, status: undefined, page: 1 }))
   }
 
+  const fileName = useMemo(() => {
+    if (user?.company && user?.company.name) {
+      const sanitizedCompanyName = user.company.name.toLowerCase().replace(/\s+/g, '_');
+      return `${sanitizedCompanyName}_departments_export`;
+    }
+
+    return `departments_export`;
+  }, [user?.company.name]);
+
+  const endpoint = useMemo(() => {
+    return `${process.env.NEXT_PUBLIC_API_VERSION || ''}/departments/export`;
+  }, []);
+
   const columns: DataTableColumn<Department>[] = [
     {
       key: 'title',
@@ -99,6 +115,7 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
     { 
       key: 'createdAtDiff',
       label: 'Creation details',
+      sortable: true,
       render: (row) => (
         <span className="text-sm text-gray-700 dark:text-gray-400" title={row.description || ''}>
           {row.createdAtDiff || row.createdAt}
@@ -152,6 +169,8 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
         onRefresh={async () => {
           await refetch()
         }}
+        endpoint={endpoint}
+        filename={fileName}
       />
       <DataTable
         data={departments}

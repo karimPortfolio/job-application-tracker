@@ -7,6 +7,8 @@ import { Company, CompanySchema } from 'src/companies/company.schema'
 import { DepartmentsService } from './departments.service'
 import { DepartmentsController } from './departments.controller'
 import { Job, JobSchema } from 'src/jobs/jobs.schema'
+import { DepartmentsCsvExporter } from './exporters/departments-csv.exporter'
+import { DepartmentsXlsxExporter } from './exporters/departments-xlsx.exporter'
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { Job, JobSchema } from 'src/jobs/jobs.schema'
     UsersModule,
   ],
   exports: [MongooseModule],
-  providers: [DepartmentsService],
+  providers: [DepartmentsService, DepartmentsXlsxExporter, DepartmentsCsvExporter],
   controllers: [DepartmentsController]
 })
 export class DepartmentsModule {}

@@ -184,6 +184,25 @@ describe('Departments E2E Tests', () => {
     expect(res.body.docs[0].title).toBe(departmentPayload.title);
   });
 
+  it('GET /api/v1/departments/export?format=csv → exports CSV for current company', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/v1/departments/export?format=csv')
+      .set('Cookie', cookie)
+      .buffer(true)
+      .parse((res, cb) => {
+        const chunks: Buffer[] = [];
+        res.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+        res.on('end', () => cb(null, Buffer.concat(chunks)));
+      })
+      .expect(200);
+
+    expect(res.headers['content-type']).toContain('text/csv');
+    expect(res.headers['content-disposition']).toContain('departments.csv');
+    const csv = res.body.toString('utf8');
+    expect(csv).toContain('Title');
+    expect(csv).toContain(departmentPayload.title);
+  });
+
   it('GET /api/v1/departments → pagination works', async () => {
     const extraDepartments = Array.from({ length: 4 }).map((_, i) => ({
       title: `Dept ${i}`,

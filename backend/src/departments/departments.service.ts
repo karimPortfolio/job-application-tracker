@@ -18,6 +18,8 @@ import { buildDepartmentSort } from './filters/department.sort';
 import { User, UserDocument } from 'src/users/user.schema';
 import { Job, JobDocument } from 'src/jobs/jobs.schema';
 import { DepartmentWithJobsCount } from './types/departments.types';
+import { DepartmentsCsvExporter } from './exporters/departments-csv.exporter';
+import { DepartmentsXlsxExporter } from './exporters/departments-xlsx.exporter';
 
 @Injectable()
 export class DepartmentsService {
@@ -27,6 +29,8 @@ export class DepartmentsService {
     @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Job.name) private jobModel: Model<JobDocument>,
+    private readonly csvExporter: DepartmentsCsvExporter,
+    private readonly xlsxExporter: DepartmentsXlsxExporter,
   ) {}
 
   async findAllByCompany(companyId: string, query: DepartmentQueryDto) {
@@ -121,6 +125,30 @@ export class DepartmentsService {
     await this.departmentModel.deleteOne({ _id: departmentId });
 
     return { message: 'Department deleted successfully' };
+  }
+
+  async exportDepartments(
+    companyId: string,
+    format: 'csv' | 'xlsx',
+    query: any,
+  ) {
+    const company = await this.getCompanyOrThrow(companyId);
+    const departments =
+      await this.getDepartmentsForExport(company, query);
+
+    console.log('Exporting departments:', departments.length);
+
+    if (format === 'xlsx') {
+      return this.xlsxExporter.export(departments)
+    }
+
+    return this.csvExporter.export(departments)
+  }
+
+  private async getDepartmentsForExport(company: string, query: any) {
+    return this.departmentModel
+      .find(buildDepartmentFilter(company, query))
+      .lean()
   }
 
   private async getCompanyOrThrow(companyId: string) {

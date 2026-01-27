@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { Funnel, FunnelX, RotateCcw, SlidersHorizontal, X } from "lucide-react"
 import { useFiltersBar, type FilterGroup, type FilterValue } from "../../hooks/useFiltersBar"
 import { FilterField } from "./FilterField"
+import { ExportButton } from "../exports/ExportButton"
 
 const EMPTY_FILTERS: Record<string, FilterValue> = {}
 const EMPTY_FILTER_GROUPS: FilterGroup[] = []
@@ -41,7 +42,9 @@ export type FiltersBarProps = {
   onFiltersChange?: (next: Record<string, FilterValue>) => void
   onRefresh?: () => Promise<void> | void
   isRefreshing?: boolean
-  onReset?: () => void
+  onReset?: () => void,
+  endpoint?: string | undefined,
+  filename?: string | undefined,
 }
 
 export function FiltersBar({
@@ -54,6 +57,8 @@ export function FiltersBar({
   onRefresh,
   isRefreshing = false,
   onReset,
+  endpoint,
+  filename,
 }: FiltersBarProps) {
 
   const {
@@ -165,6 +170,14 @@ export function FiltersBar({
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {endpoint ? (
+          <ExportButton 
+            endpoint={endpoint} 
+            params={selectedFilters}
+            filename={filename}
+          />
+        ) : null}
 
         {onRefresh ? (
           <Button
