@@ -1,6 +1,6 @@
 import { FormDialog } from "@/components/common/dialogs/FormDialog";
 import { useEffect, useMemo, useState } from "react";
-import { useDepartmentsActions } from "../hooks/useDepartmentsActions";
+import { useDepartmentActions } from "../hooks/useDepartmentActions";
 import {
   Form,
   FormControl,
@@ -28,7 +28,7 @@ export function CreateDepartmentFormDialog({
   open = false,
   setOpen,
 }: CreateDepartmentFormDialogProps) {
-  const { create, loading, apiError, clearApiError } = useDepartmentsActions();
+  const { create, loading, apiError, clearApiError } = useDepartmentActions();
   const resolver = useMemo(() => zodResolver(createDepartmentSchema), []);
 
   const form = useForm<CreateDepartmentPayload>({

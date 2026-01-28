@@ -13,7 +13,7 @@ import {
 import { useConfirm } from "@/hooks/useConfirm";
 import { useApiError } from "@/hooks/useApiError";
 
-export function useDepartmentActions() {
+export function useDepartmentsActions() {
   const [loading, setLoading] = useState(false);
   const { error, clearError, handleError } = useApiError();
   const confirm = useConfirm();
@@ -79,7 +79,7 @@ export function useDepartmentActions() {
 
     if (!ok) return;
 
-    await destroy(department._id);
+    await destroy(department.id ?? department._id);
   };
 
   return {

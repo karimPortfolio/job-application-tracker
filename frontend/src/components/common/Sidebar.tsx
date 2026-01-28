@@ -110,7 +110,7 @@ export function Sidebar() {
       </SidebarContent>
       <SidebarFooter className="px-4 py-3 border-t border-gray-200 dark:border-white/5">
         <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-200">
+          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-primary flex items-center justify-center text-xs font-semibold text-slate-200">
             <Building className="size-4" />
           </div>
           <div className="flex-1 min-w-0">

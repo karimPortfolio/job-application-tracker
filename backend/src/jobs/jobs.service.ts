@@ -12,6 +12,7 @@ import { DepartmentDocument } from '../departments/departments.schema';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobsCsvExporter } from './exporters/jobs-csv.exporter';
 import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
+import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 
 @Injectable()
 export class JobsService {
@@ -35,17 +36,18 @@ export class JobsService {
     const company = await this.getCompanyOrThrow(companyId);
     const filter = buildJobFilter(company, query);
     const sort = buildJobSort(query);
-    
+
     return this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,
       sort,
       populate: [
         { path: 'department', select: 'title' },
-        { path: 'user', select: 'name email' },
+        { path: 'user', select: 'name' },
       ],
       lean: true,
-    });
+      leanWithVirtuals: true,
+    } as any);
   }
 
   async createJob(companyId: string, user: { sub: string }, dto: CreateJobDto) {
@@ -132,8 +134,8 @@ export class JobsService {
   }
 
   async deleteJob(jobId: string, companyId: string) {
+    console.log(jobId);
     const job = await this.jobModel.findById(jobId);
-
     if (!job) throw new BadRequestException('Job not found');
 
     if (job.company?.toString() !== companyId) {
@@ -172,6 +174,24 @@ export class JobsService {
     return this.csvExporter.export(exportRows);
   }
 
+  async updateJobStatus(
+    jobId: string,
+    companyId: string,
+    dto: UpdateJobStatusDto,
+  ) {
+    const job = await this.jobModel.findById(jobId);
+
+    if (!job) throw new BadRequestException('Job not found');
+
+    if (job.company?.toString() !== companyId) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
+
+    job.status = dto.status;
+    await job.save();
+
+    return job;
+  }
 
   
   private async getCompanyOrThrow(companyId: string) {

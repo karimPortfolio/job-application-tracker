@@ -37,7 +37,7 @@ export class Job {
   @Prop() salaryMax?: number;
   @Prop({ default: 0 }) applicationsCount: number;
   @Prop({ default: 0 }) viewsCount: number;
-  //intentionally using string IDs for compatibility with auth context & guards
+  //==== intentionally using string IDs for compatibility with auth context & guards
   @Prop({ type: String, ref: 'Company' }) company: Company | String | null;
   @Prop({ type: String, ref: 'Department' }) department:
     | Department
@@ -50,6 +50,8 @@ export class Job {
 
 export const JobSchema = SchemaFactory.createForClass(Job);
 
+JobSchema.plugin(leanVirtuals);
+
 JobSchema.virtual('createdAtDiff').get(function (this: JobDocument) {
   const createdAt = this.createdAt ?? (this as any)?.createdAt;
   if (!createdAt) return null;
@@ -59,5 +61,6 @@ JobSchema.virtual('createdAtDiff').get(function (this: JobDocument) {
 JobSchema.index({ company: 1, status: 1 });
 JobSchema.index({ company: 1, department: 1 });
 JobSchema.index({ status: 1, createdAt: -1 });
-JobSchema.plugin(leanVirtuals);
+JobSchema.set('toJSON', { virtuals: true });
+JobSchema.set('toObject', { virtuals: true });
 JobSchema.plugin(mongoosePaginate);

@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react'
 
 import { useDepartmentsList } from '../hooks/useDepartmentsList'
-import { useDepartmentActions } from '../hooks/useDepartmentActions'
+import { useDepartmentsActions } from '../hooks/useDepartmentsActions'
 import { Department, DepartmentQuery } from '../types/departments.types'
 import { useTextTruncate } from '@/hooks/useTextTruncate'
 import { FiltersBar } from '@/components/filters/FiltersBar'
@@ -28,7 +28,7 @@ interface DepartmentsTableProps {
 
 export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
   const { departments, loading, meta, query, setQuery, refetch } = useDepartmentsList()
-  const { confirmDelete, loading: isDeleting } = useDepartmentActions()
+  const { confirmDelete, loading: isDeleting } = useDepartmentsActions()
   const { truncate } = useTextTruncate()
   const { user } = useAuth();
 

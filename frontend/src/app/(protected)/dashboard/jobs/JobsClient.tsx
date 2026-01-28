@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { JobsTable } from "@/features/jobs/components/JobsTable";
 
 export function JobsClient() {
   return (
@@ -7,6 +8,7 @@ export function JobsClient() {
         title="Jobs"
         description="Manage your company jobs effectively."
       />
+      <JobsTable />
     </div>
   );
 }
