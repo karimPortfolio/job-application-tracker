@@ -76,7 +76,7 @@ export function JobsTable({ onEdit }: JobsTableProps) {
   const handleSortChange = (
     sort: { key: string; direction: "asc" | "desc" } | null,
   ) => {
-    if (!sort) return;
+    if (!sort) sort = { key: "createdAt", direction: "desc" };
 
     const allowed: JobQuery["sortBy"][] = [
       "title",
@@ -90,6 +90,7 @@ export function JobsTable({ onEdit }: JobsTableProps) {
       : "createdAt") as JobQuery["sortBy"];
     const order: JobQuery["order"] = sort.direction ?? "desc";
 
+    console.log("Sorting by:", sortKey);
     setQuery((prev) => ({ ...prev, sortBy: sortKey, order, page: 1 }));
   };
 
