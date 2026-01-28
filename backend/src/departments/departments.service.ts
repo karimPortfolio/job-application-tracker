@@ -9,7 +9,6 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-// import type { Cache } from 'cache-manager';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { DepartmentQueryDto } from './dto/department-query.dto';
@@ -31,6 +30,7 @@ export class DepartmentsService {
     @InjectModel(Job.name) private jobModel: Model<JobDocument>,
     private readonly csvExporter: DepartmentsCsvExporter,
     private readonly xlsxExporter: DepartmentsXlsxExporter,
+    @Inject('CACHE_MANAGER') private cache: any,
   ) {}
 
   async findAllByCompany(companyId: string, query: DepartmentQueryDto) {
@@ -77,6 +77,15 @@ export class DepartmentsService {
   }
 
   async findDepartmentById(departmentId: string, companyId: string) {
+    const chachedDepartment = await this.getChachedDepartment(
+      departmentId,
+      companyId,
+    );
+
+    if (chachedDepartment) {
+      return chachedDepartment;
+    }
+
     const department = await this.departmentModel.findById(departmentId);
 
     if (!department) {
@@ -86,6 +95,8 @@ export class DepartmentsService {
     if (department.company?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
+
+    await this.cache.set(this.getCacheKey(departmentId), department, 60 * 1000); //60s
 
     return department;
   }
@@ -95,34 +106,42 @@ export class DepartmentsService {
     dto: UpdateDepartmentDto,
     companyId: string,
   ) {
-    const department = await this.departmentModel.findById(departmentId);
+    const department = await this.departmentModel.findOne({
+      _id: departmentId,
+      company: companyId,
+    });
 
     if (!department) {
-      throw new BadRequestException('Department not found');
-    }
-
-    if (department.company?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
-    Object.assign(department, dto);
-    await department.save();
+    await this.departmentModel.updateOne({ _id: departmentId }, { $set: dto });
 
-    return department;
+    const updatedDepartment =
+      await this.departmentModel.findById(departmentId);
+
+    await this.cache.set(
+      this.getCacheKey(departmentId),
+      updatedDepartment,
+      60 * 1000,
+    ); //60s
+
+    return updatedDepartment;
   }
 
   async deleteDepartment(departmentId: string, companyId: string) {
-    const department = await this.departmentModel.findById(departmentId);
+    const department = await this.departmentModel.findOne({
+      _id: departmentId,
+      company: companyId,
+    });
 
     if (!department) {
-      throw new BadRequestException('Department not found');
-    }
-
-    if (department.company?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
     await this.departmentModel.deleteOne({ _id: departmentId });
+
+    await this.cache.del(this.getCacheKey(departmentId));
 
     return { message: 'Department deleted successfully' };
   }
@@ -133,22 +152,35 @@ export class DepartmentsService {
     query: any,
   ) {
     const company = await this.getCompanyOrThrow(companyId);
-    const departments =
-      await this.getDepartmentsForExport(company, query);
-
-    console.log('Exporting departments:', departments.length);
+    const departments = await this.getDepartmentsForExport(company, query);
 
     if (format === 'xlsx') {
-      return this.xlsxExporter.export(departments)
+      return this.xlsxExporter.export(departments);
     }
 
-    return this.csvExporter.export(departments)
+    return this.csvExporter.export(departments);
+  }
+
+  private async getChachedDepartment(departmentId: string, companyId: string) {
+    const chachedDepartment = await this.cache.get(
+      this.getCacheKey(departmentId),
+    );
+
+    if (!chachedDepartment) {
+      return null;
+    }
+
+    if (chachedDepartment.company?.toString() !== companyId) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
+
+    return chachedDepartment;
   }
 
   private async getDepartmentsForExport(company: string, query: any) {
     return this.departmentModel
       .find(buildDepartmentFilter(company, query))
-      .lean()
+      .lean();
   }
 
   private async getCompanyOrThrow(companyId: string) {
@@ -196,5 +228,9 @@ export class DepartmentsService {
     ]);
 
     return Object.fromEntries(counts.map((j) => [j._id.toString(), j.count]));
+  }
+
+  private getCacheKey(departmentId: string) {
+    return `department:${departmentId}`;
   }
 }

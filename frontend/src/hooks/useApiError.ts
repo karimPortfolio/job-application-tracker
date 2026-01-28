@@ -1,14 +1,14 @@
 "use client"
 
-import { ApiErrorState } from '@/types/api-error.types';
-import { use, useState } from 'react'
+import { ApiErrorState } from '@/types/api-error.types'
+import { useCallback, useState } from 'react'
 
 export function useApiError() {
   const [error, setError] = useState<ApiErrorState | null>(null)
 
-  const clearError = () => setError(null)
+  const clearError = useCallback(() => setError(null), [])
 
-  const handleError = (err: any) => {
+  const handleError = useCallback((err: any) => {
     const status = err?.response?.status
     const data = err?.response?.data
     switch (status) {
@@ -44,7 +44,7 @@ export function useApiError() {
           validationErrors: data?.errors ?? {},
         })
         break
-      
+
       case 429:
         setError({
           title: 'Too Many Requests',
@@ -68,7 +68,7 @@ export function useApiError() {
           message: 'An unexpected error occurred. Please try again.',
         })
     }
-  }
+  }, [])
 
   return {
     error,

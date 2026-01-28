@@ -11,7 +11,7 @@ import type { Cache } from 'cache-manager';
 import { Company, CompanyDocument } from './company.schema';
 import { User, UserDocument } from '../users/user.schema';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UpdateCompanyDto } from './dto/udate-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 
 @Injectable()
 export class CompaniesService {
@@ -41,28 +41,55 @@ export class CompaniesService {
     return company;
   }
 
-  async findMyCompany(user: UserDocument) {
-    if (!user.company) return null;
+  async findMyCompany(user: any) {
+    let companyId = user.company;
 
-    const key = this.cacheKey(user.company.toString());
+    if (!companyId) {
+      const dbUser = await this.userModel.findById(user.sub).lean();
+      companyId = dbUser?.company;
+    }
+
+    if (!companyId) return null;
+
+    const key = this.cacheKey(companyId.toString());
 
     const cached = await this.cache.get<Company>(key);
+    console.log('cached company:', cached);
     if (cached) return cached;
 
-    const company = await this.companyModel.findById(user.company).lean();
+    const company = await this.companyModel.findById(companyId).lean();
 
     if (company) {
-      await this.cache.set(key, company, 60); //60s
+      await this.cache.set(key, company, 60 * 1000); // 60s
     }
 
     return company;
   }
 
-  async update(dto: UpdateCompanyDto, user: UserDocument) {
-    if (user.company) throw new ForbiddenException('User has no company.');
+  async update(dto: UpdateCompanyDto, user: any) {
+    let companyId = user.company;
 
-    return await this.companyModel.findByIdAndUpdate(user.company, dto, {
-      new: true,
-    });
+    if (!companyId) {
+      const dbUser = await this.userModel.findById(user.sub).lean();
+      companyId = dbUser?.company;
+    }
+
+    if (!companyId) throw new ForbiddenException('User has no company.');
+
+    const company = await this.companyModel
+      .findByIdAndUpdate(companyId, dto, {
+        new: true,
+      })
+      .lean();
+
+    if (company) {
+      await this.cache.set(
+        this.cacheKey(companyId.toString()),
+        company,
+        60 * 1000,
+      );
+    }
+
+    return company;
   }
 }

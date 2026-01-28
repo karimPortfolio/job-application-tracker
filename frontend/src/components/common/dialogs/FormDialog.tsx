@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Save } from "lucide-react";
-import type { SubmitHandler } from "react-hook-form";
+import type { FieldValues, SubmitHandler } from "react-hook-form";
 
-interface FormDialogProps{
+interface FormDialogProps<T extends FieldValues = any>{
   title: string;
   description?: string;
   isOpen?: boolean;
@@ -15,7 +15,7 @@ interface FormDialogProps{
   formId: string;
 }
 
-export function FormDialog({
+export function FormDialog<T extends FieldValues>({
   title,
   description,
   isOpen,
@@ -25,7 +25,7 @@ export function FormDialog({
   loading,
   children,
   formId
-}: FormDialogProps) {
+}: FormDialogProps<T>) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
         <DialogContent className="sm:max-w-[425px]">

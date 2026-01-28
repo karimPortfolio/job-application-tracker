@@ -23,11 +23,19 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMemo } from 'react'
 
 interface DepartmentsTableProps {
-  onEdit?: (department: Department) => void
+  onEdit?: (id: string) => void
+  list?: ReturnType<typeof useDepartmentsList>
 }
 
-export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
-  const { departments, loading, meta, query, setQuery, refetch } = useDepartmentsList()
+export function DepartmentsTable({ onEdit, list }: DepartmentsTableProps) {
+  const {
+    departments,
+    loading,
+    meta,
+    query,
+    setQuery,
+    refetch,
+  } = list ?? useDepartmentsList()
   const { confirmDelete, loading: isDeleting } = useDepartmentActions()
   const { truncate } = useTextTruncate()
   const { user } = useAuth();
@@ -134,11 +142,11 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row)}>
+            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row._id)}>
               <Eye className="mr-2 h-4 w-4" />
               Show
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row)}>
+            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row._id)}>
               <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
@@ -147,7 +155,10 @@ export function DepartmentsTable({ onEdit }: DepartmentsTableProps) {
               variant='destructive'
               className='cursor-pointer'
               disabled={isDeleting}
-              onClick={() => confirmDelete(row)}
+              onClick={async () => {
+                await confirmDelete(row)
+                await refetch()
+              }}
             >
               <Trash className="mr-2 h-4 w-4" />
               Delete

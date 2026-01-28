@@ -270,23 +270,51 @@ describe('Departments E2E Tests', () => {
     expect(res.body.message).toContain('forbidden');
   });
 
-  it('PATCH /api/v1/departments/:id → update department', async () => {
-    const department = await departmentModel.findOne({ title: departmentPayload.title }).lean();
+  it('PATCH /api/v1/departments/:id → update department (partial)', async () => {
+    // Re-fetch since it might have been modified by other tests (though unlikely given sequence, but safer)
+    const department = await departmentModel
+      .findOne({ title: departmentPayload.title })
+      .lean();
     expect(department?._id).toBeDefined();
 
-    const updatedTitle = 'Product';
+    const updatedDescription = 'Building the future of our product';
 
-    const res = await request(app.getHttpServer())
+    // Update only description
+    const resDescription = await request(app.getHttpServer())
+      .patch(`/api/v1/departments/${department?._id.toString()}`)
+      .set('Cookie', cookie)
+      .send({ description: updatedDescription })
+      .expect(200);
+
+    expect(resDescription.body.description).toBe(updatedDescription);
+    expect(resDescription.body.title).toBe(departmentPayload.title); // Title should remain unchanged
+
+    const updatedTitle = 'Product Engineering';
+
+    // Update only title
+    const resTitle = await request(app.getHttpServer())
       .patch(`/api/v1/departments/${department?._id.toString()}`)
       .set('Cookie', cookie)
       .send({ title: updatedTitle })
       .expect(200);
 
-    expect(res.body.title).toBe(updatedTitle);
+    expect(resTitle.body.title).toBe(updatedTitle);
+    expect(resTitle.body.description).toBe(updatedDescription); // Description should remain unchanged
+
+    // Save final title for next tests
+    departmentPayload.title = updatedTitle;
+  });
+
+  it('PATCH /api/v1/departments/:id → validation error with empty title', async () => {
+    const res = await request(app.getHttpServer())
+      .patch(`/api/v1/departments/${departmentId}`)
+      .set('Cookie', cookie)
+      .send({ title: '' })
+      .expect(400); // ValidationPipe defaults to 400 in some setups, but yours returns message: 'Validation failed'
   });
 
   it('DELETE /api/v1/departments/:id → delete department', async () => {
-    const department = await departmentModel.findOne({ title: 'Product' }).lean();
+    const department = await departmentModel.findOne({ title: departmentPayload.title }).lean();
     expect(department?._id).toBeDefined();
 
     const res = await request(app.getHttpServer())

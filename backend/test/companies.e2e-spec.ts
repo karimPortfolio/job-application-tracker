@@ -118,9 +118,11 @@ describe('Companies E2E Tests', () => {
   it('PATCH /api/v1/company → update company', async () => {
     const res = await request(app.getHttpServer())
       .patch('/api/v1/company')
-        .set('Cookie', cookie)
-      .send(company.name)
+      .set('Cookie', cookie)
+      .send({ name: 'Updated Company Name' })
       .expect(200);
+
+    expect(res.body.name).toBe('Updated Company Name');
   });
 
   it('POST /api/v1/company → forbid creating second company', async () => {

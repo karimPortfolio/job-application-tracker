@@ -4,7 +4,7 @@ import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import type { UserDocument } from '../users/user.schema';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { UpdateCompanyDto } from './dto/udate-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 import type { JwtPayload } from '../auth/types/jwt-payload.type';
 import { EmailVerifiedGuard } from '../auth/email-verified.guard';
 

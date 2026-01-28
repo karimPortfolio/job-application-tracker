@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useCallback, useState } from "react";
 import type {
   CreateDepartmentPayload,
   Department,
@@ -18,69 +18,84 @@ export function useDepartmentActions() {
   const { error, clearError, handleError } = useApiError();
   const confirm = useConfirm();
 
-  const findDepartment = async (id: string) => {
-    setLoading(true);
-    try {
-      const res = await getDepartment(id);
-      return res.data;
-    } catch (err) {
-      handleError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const findDepartment = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      try {
+        const res = await getDepartment(id);
+        return res.data;
+      } catch (err) {
+        handleError(err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
 
-  const create = async (payload: CreateDepartmentPayload) => {
-    setLoading(true);
-    try {
-      const res = await createDepartment(payload);
-      return res.data;
-    } catch (err) {
-      handleError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const create = useCallback(
+    async (payload: CreateDepartmentPayload) => {
+      setLoading(true);
+      try {
+        const res = await createDepartment(payload);
+        return res.data;
+      } catch (err) {
+        handleError(err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
 
-  const update = async (id: string, payload: UpdateDepartmentPayload) => {
-    setLoading(true);
-    try {
-      const res = await updateDepartment(id, payload);
-      return res.data;
-    } catch (err) {
-      handleError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const update = useCallback(
+    async (id: string, payload: UpdateDepartmentPayload) => {
+      setLoading(true);
+      try {
+        const res = await updateDepartment(id, payload);
+        return res.data;
+      } catch (err) {
+        handleError(err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
 
-  const destroy = async (id: string) => {
-    setLoading(true);
-    try {
-      await deleteDepartment(id);
-    } catch (err) {
-      handleError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const destroy = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      try {
+        await deleteDepartment(id);
+      } catch (err) {
+        handleError(err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleError],
+  );
 
-  const confirmDelete = async (department: Department) => {
-    const ok = await confirm({
-      title: "Delete department",
-      description: `Are you sure you want to delete "${department.title}"? This action cannot be undone.`,
-      confirmText: "Delete",
-      destructive: true,
-    });
+  const confirmDelete = useCallback(
+    async (department: Department) => {
+      const ok = await confirm({
+        title: "Delete department",
+        description: `Are you sure you want to delete "${department.title}"? This action cannot be undone.`,
+        confirmText: "Delete",
+        destructive: true,
+      });
 
-    if (!ok) return;
+      if (!ok) return;
 
-    await destroy(department._id);
-  };
+      await destroy(department._id);
+    },
+    [confirm, destroy],
+  );
 
   return {
     loading,

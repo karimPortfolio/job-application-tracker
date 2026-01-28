@@ -1,6 +1,6 @@
 import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
-import * as redisStore from 'cache-manager-redis-store'
+import { redisStore } from 'cache-manager-redis-store'
 
 @Module({
   imports: [
@@ -9,7 +9,7 @@ import * as redisStore from 'cache-manager-redis-store'
       store: redisStore,
       host: process.env.REDIS_HOST,
       port: Number(process.env.REDIS_PORT),
-      ttl: 60,
+      ttl: 60 * 1000, // 60s
     }),
   ],
 })

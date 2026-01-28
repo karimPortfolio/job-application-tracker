@@ -3,17 +3,30 @@
 import { PageHeader } from "@/components/PageHeader";
 import { CreateDepartmentFormDialog } from "@/features/departments/components/CreateDepartmentFormDialog";
 import { DepartmentsTable } from "@/features/departments/components/DepartmentsTable";
+import { UpdateDepartmentFormDialog } from "@/features/departments/components/UpdateDepartmentFormDialog";
 import { useDepartmentsList } from "@/features/departments/hooks/useDepartmentsList";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export function DepartmentsClient() {
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const { refetch } = useDepartmentsList();
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null);
+  const list = useDepartmentsList();
+
+  const handleUpdate = (id: string) => {
+    setSelectedDepartmentId(id);
+    setOpenUpdateDialog(true);
+  }
 
   const handleCreateSuccess = async () => {
     setOpenCreateDialog(false);
-    await refetch();
+    await list.refetch();
+  };
+
+  const handleUpdateSuccess = async () => {
+    setOpenUpdateDialog(false);
+    await list.refetch();
   };
 
   return (
@@ -25,6 +38,13 @@ export function DepartmentsClient() {
         onSuccess={handleCreateSuccess}
       />
 
+      <UpdateDepartmentFormDialog 
+        open={openUpdateDialog}
+        setOpen={setOpenUpdateDialog}
+        onSuccess={handleUpdateSuccess}
+        id={selectedDepartmentId!}
+      />
+
       {/* PAGE CONTENT */}
       <PageHeader
         title="Departments"
@@ -33,7 +53,10 @@ export function DepartmentsClient() {
         actionIcon={<Plus className="mr-2 h-4 w-4" />}
         action={() => setOpenCreateDialog(true)}
       />
-      <DepartmentsTable />
+      <DepartmentsTable
+        onEdit={handleUpdate}
+        list={list}
+      />
     </div>
   );
 }
