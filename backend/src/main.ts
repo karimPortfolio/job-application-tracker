@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { RequestMethod, UnprocessableEntityException, ValidationError, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConsoleLogger, RequestMethod, UnprocessableEntityException, ValidationError, ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { 
+    logger: new ConsoleLogger({
+      colors: true,
+      timestamp: true,
+      logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
+    })
+  })
   app.enableCors({ origin: true, credentials: true });
   app.useGlobalPipes(
     new ValidationPipe({ 

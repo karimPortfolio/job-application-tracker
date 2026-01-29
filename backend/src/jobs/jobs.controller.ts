@@ -99,19 +99,14 @@ export class JobsController {
   }
 
   @Patch(':id/increment-applications')
-  async incrementApplicationsCount(
-    @Req() req: any,
-    @Param('id') jobId: string,
-  ) {
-    const companyId = req.user.company;
-    await this.jobsService.incrementApplicationsCount(jobId, companyId);
+  async incrementApplicationsCount(@Param('id') jobId: string) {
+    await this.jobsService.incrementApplicationsCount(jobId);
     return { message: 'Applications count incremented' };
   }
 
   @Patch(':id/increment-views')
-  async incrementViewsCount(@Req() req: any, @Param('id') jobId: string) {
-    const companyId = req.user.company;
-    await this.jobsService.incrementViewsCount(jobId, companyId);
+  async incrementViewsCount(@Param('id') jobId: string) {
+    await this.jobsService.incrementViewsCount(jobId);
     return { message: 'Views count incremented' };
   }
 
