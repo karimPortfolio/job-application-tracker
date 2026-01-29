@@ -9,7 +9,7 @@ import {
 
 export class UpdateCompanyDto {
   @ValidateIf((o, v) => v !== undefined) //====only skip if the key is MISSING
-  @IsNotEmpty({ message: 'Title cannot be empty' })
+  @IsNotEmpty({ message: 'Name cannot be empty' })
   @IsString()
   @MaxLength(255)
   name: string;
