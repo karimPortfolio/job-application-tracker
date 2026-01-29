@@ -1,13 +1,22 @@
-import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  ValidateIf,
+} from 'class-validator';
 
 export class UpdateCompanyDto {
+  @ValidateIf((o, v) => v !== undefined) //====only skip if the key is MISSING
+  @IsNotEmpty({ message: 'Title cannot be empty' })
   @IsString()
-  @IsOptional()
   @MaxLength(255)
   name: string;
 
+  @ValidateIf((o, v) => v !== undefined) //====only skip if the key is MISSING
+  @IsNotEmpty({ message: 'Title cannot be empty' })
   @IsString()
-  @IsOptional()
   @MaxLength(255)
   industry: string;
 

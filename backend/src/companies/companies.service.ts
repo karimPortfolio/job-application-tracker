@@ -69,11 +69,6 @@ export class CompaniesService {
   async update(dto: UpdateCompanyDto, user: any) {
     let companyId = user.company;
 
-    if (!companyId) {
-      const dbUser = await this.userModel.findById(user.sub).lean();
-      companyId = dbUser?.company;
-    }
-
     if (!companyId) throw new ForbiddenException('User has no company.');
 
     const company = await this.companyModel
