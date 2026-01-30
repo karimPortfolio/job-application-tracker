@@ -51,6 +51,7 @@ export interface CreateJobPayload {
   description: string;
   country: string;
   city?: string;
+  status?: 'draft' | 'published';
   employmentType: 'full-time' | 'part-time' | 'contract' | 'internship';
   experienceLevel: 'junior' | 'mid' | 'senior' | 'lead';
   isRemote?: boolean;

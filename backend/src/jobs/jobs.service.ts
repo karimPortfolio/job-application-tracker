@@ -189,6 +189,31 @@ export class JobsService {
     return updatedJob;
   }
 
+  async getCompanyDepartments(companyId: string) {
+    const company = await this.getCompanyOrThrow(companyId);
+
+    const cachedDepartments = await this.cache.get(
+      this.getCompanyDepartmentsCacheKey(company),
+    );
+
+    if (cachedDepartments) {
+      return cachedDepartments;
+    }
+
+    const departments = await this.departmentModel
+      .find({ company })
+      .select('title _id')
+      .lean();
+
+    await this.cache.set(
+      this.getCompanyDepartmentsCacheKey(company),
+      departments,
+      60 * 1000,
+    );
+
+    return departments;
+  }
+
   private async getCachedJob(jobId: string, companyId: string) {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (!cachedJob) return null;
@@ -198,6 +223,10 @@ export class JobsService {
     }
 
     return cachedJob;
+  }
+
+  private getCompanyDepartmentsCacheKey(companyId: string) {
+    return `${companyId}:jobs:departments`;
   }
 
   private getCacheKey(jobId: string) {

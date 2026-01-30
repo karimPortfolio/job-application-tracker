@@ -1,5 +1,5 @@
 import { FormDialog } from "@/components/common/dialogs/FormDialog";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { useDepartmentsActions } from "../hooks/useDepartmentsActions";
 import {
   Form,
@@ -17,6 +17,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createDepartmentSchema } from "../schemas/create-department.schema";
 
+// Static resolver to avoid recreating per render
+const createDepartmentResolver = zodResolver(createDepartmentSchema);
+
 interface CreateDepartmentFormDialogProps {
   onSuccess: () => void;
   open: boolean;
@@ -29,10 +32,9 @@ export function CreateDepartmentFormDialog({
   setOpen,
 }: CreateDepartmentFormDialogProps) {
   const { create, loading, apiError, clearApiError } = useDepartmentsActions();
-  const resolver = useMemo(() => zodResolver(createDepartmentSchema), []);
 
   const form = useForm<CreateDepartmentPayload>({
-    resolver,
+    resolver: createDepartmentResolver,
     defaultValues: {
       title: "",
       description: "",

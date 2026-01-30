@@ -22,6 +22,7 @@ import type { Response } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { JobResponseDto } from './dto/job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
+import { Department } from '../departments/departments.schema';
 
 @Controller('jobs')
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -74,6 +75,12 @@ export class JobsController {
   ) {
     const companyId = req.user.company;
     return this.jobsService.createJob(companyId, user, dto);
+  }
+
+  @Get('departments')
+  async getCompanyDepartments(@Req() req: any): Promise<Department[]> {
+    const companyId = req.user.company;
+    return this.jobsService.getCompanyDepartments(companyId);
   }
 
   @Get(':id')
