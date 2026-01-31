@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -8,19 +8,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import type { Control, ControllerRenderProps } from "react-hook-form";
+import type { Control, Path } from "react-hook-form";
 import { useCountries } from "@/shared/hooks/useCountries";
-import type { CreateJobPayload } from "../../types/jobs.types";
+import type { CreateJobPayload, UpdateJobPayload } from "../../types/jobs.types";
 
-interface CountrySelectProps {
-  control: Control<CreateJobPayload>;
+type JobFormValues = CreateJobPayload | UpdateJobPayload;
+
+interface CountrySelectProps<T extends JobFormValues = CreateJobPayload> {
+  control: Control<T>;
 }
 
-// Lazy-load country options only after first open to keep dialog snappy
-export function CountrySelect({ control }: CountrySelectProps) {
+export function CountrySelect<T extends JobFormValues = CreateJobPayload>({
+  control,
+}: CountrySelectProps<T>) {
   const { countries } = useCountries();
-  const [showOptions, setShowOptions] = useState(false);
+  const countryField = "country" as Path<T>;
 
   const options = useMemo(
     () =>
@@ -32,36 +34,36 @@ export function CountrySelect({ control }: CountrySelectProps) {
       )),
     [countries],
   );
-
+  
   return (
     <>
       <FormField
         control={control}
-        name="country"
-        render={({ field }: { field: ControllerRenderProps<CreateJobPayload, "country"> }) => (
-          <FormItem>
-            <FormLabel>Country</FormLabel>
-            <FormControl>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value ?? ""}
-                onOpenChange={(open) => {
-                  if (open && !showOptions) setShowOptions(true);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select country" />
-                </SelectTrigger>
-                {showOptions && (
+        name={countryField}
+        render={({ field }) => {
+          const fieldValue = typeof field.value === "string" ? field.value : "";
+          return (
+            <FormItem>
+              <FormLabel>Country</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={String(fieldValue)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectGroup>{options}</SelectGroup>
+                    <SelectGroup>
+                      {options}
+                    </SelectGroup>
                   </SelectContent>
-                )}
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
     </>
   );

@@ -213,7 +213,7 @@ const CityInput = memo(function CityInput({
         <FormItem>
           <FormLabel>City</FormLabel>
           <FormControl>
-            <Input placeholder="e.g. Marketing" {...field} value={field.value ?? ""} />
+            <Input placeholder="e.g. New York" {...field} value={field.value ?? ""} />
           </FormControl>
           <FormMessage />
         </FormItem>

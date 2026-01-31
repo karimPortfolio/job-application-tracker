@@ -15,23 +15,28 @@ import {
 } from "@/components/ui/select";
 import { JOB_EMPLOYMENT_TYPE_OPTIONS, JOB_EXPERIENCE_LEVEL_OPTIONS } from "@/features/jobs/constants/job-constants";
 import { JobEmploymentTypeOption, JobExperienceLevelOption } from "@/features/types/jobs.types";
-import { Control } from "react-hook-form";
-import { CreateJobPayload } from "../../types/jobs.types";
+import { Control, Path } from "react-hook-form";
+import { CreateJobPayload, UpdateJobPayload } from "../../types/jobs.types";
 
-interface ExperienceLevelSelectProps {
-  control: Control<CreateJobPayload>;
+type JobFormValues = CreateJobPayload | UpdateJobPayload;
+
+interface ExperienceLevelSelectProps<T extends JobFormValues = CreateJobPayload> {
+  control: Control<T>;
 }
 
-export function ExperienceLevelSelect({ control }: ExperienceLevelSelectProps) {
+export function ExperienceLevelSelect<T extends JobFormValues = CreateJobPayload>({
+  control,
+}: ExperienceLevelSelectProps<T>) {
+  const experienceLevelField = "experienceLevel" as Path<T>;
   return (
     <FormField
       control={control}
-      name="experienceLevel"
+      name={experienceLevelField}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Experience Level</FormLabel>
           <FormControl>
-            <Select onValueChange={field.onChange} value={field.value ?? ""}>
+            <Select onValueChange={field.onChange} value={typeof field.value === "string" ? field.value : ""}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select experience level" />
               </SelectTrigger>
