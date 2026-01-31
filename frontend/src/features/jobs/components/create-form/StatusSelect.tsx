@@ -1,6 +1,6 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { JOB_STATUS_OPTIONS } from "@/features/constants/job-constants";
+import { JOB_STATUS_OPTIONS } from "@/features/jobs/constants/job-constants";
 import { JobStatusOption } from "@/features/types/jobs.types";
 import { Control } from "react-hook-form";
 import { CreateJobPayload } from "../../types/jobs.types";

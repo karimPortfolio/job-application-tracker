@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { JOB_EMPLOYMENT_TYPE_OPTIONS, JOB_EXPERIENCE_LEVEL_OPTIONS } from "@/features/constants/job-constants";
+import { JOB_EMPLOYMENT_TYPE_OPTIONS, JOB_EXPERIENCE_LEVEL_OPTIONS } from "@/features/jobs/constants/job-constants";
 import { JobEmploymentTypeOption, JobExperienceLevelOption } from "@/features/types/jobs.types";
 import { Control } from "react-hook-form";
 import { CreateJobPayload } from "../../types/jobs.types";

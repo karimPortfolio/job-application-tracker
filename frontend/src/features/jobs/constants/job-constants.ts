@@ -1,9 +1,9 @@
-import { CreateJobPayload } from "../jobs/types/jobs.types";
+import { CreateJobPayload } from "../types/jobs.types";
 import {
   JobEmploymentTypeOption,
   JobExperienceLevelOption,
   JobStatusOption,
-} from "../types/jobs.types";
+} from "../../types/jobs.types";
 
 export const JOB_EMPLOYMENT_TYPE_OPTIONS: JobEmploymentTypeOption[] = [
   { label: "Full-time", value: "full-time" },

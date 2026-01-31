@@ -1,15 +1,11 @@
 "use client";
 
 import { PageHeader } from "@/components/PageHeader";
-import { CreateJobFormDialog } from "@/features/jobs/components/CreateJobFormDialog";
 import { JobsTable } from "@/features/jobs/components/JobsTable";
-import { useJobsList } from "@/features/jobs/hooks/useJobsList";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export function JobsClient() {
-  const { refetch } = useJobsList();
   const router = useRouter();
 
   const handleCreateJob = () => {

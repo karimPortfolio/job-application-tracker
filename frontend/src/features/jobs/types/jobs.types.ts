@@ -74,6 +74,15 @@ export interface UpdateJobPayload {
   department?: string;
 }
 
+export interface GenerateJobDescriptionPayload {
+  title: string;
+  department: string;
+  seniority?: string;
+  employmentType?: string;
+  location?: string;
+  techStack?: string[];
+}
+
 export interface PaginatedResponse<T> {
   docs: T[];
   totalDocs: number;

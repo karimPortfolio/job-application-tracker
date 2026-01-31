@@ -1,8 +1,19 @@
 import { use, useState } from "react";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useApiError } from "@/hooks/useApiError";
-import { createJob, deleteJob, getJob, updateJob } from "../services/jobs.service";
-import { CreateJobPayload, Job, UpdateJobPayload } from "../types/jobs.types";
+import {
+  createJob,
+  deleteJob,
+  generateJobDescription,
+  getJob,
+  updateJob,
+} from "../services/jobs.service";
+import {
+  CreateJobPayload,
+  GenerateJobDescriptionPayload,
+  Job,
+  UpdateJobPayload,
+} from "../types/jobs.types";
 
 export function useJobActions() {
   const [loading, setLoading] = useState(false);
@@ -73,6 +84,21 @@ export function useJobActions() {
     await destroy(job.id ?? job._id);
   };
 
+  const generateDescription = async (
+    payload: GenerateJobDescriptionPayload,
+  ) => {
+    setLoading(true);
+    try {
+      const res = await generateJobDescription(payload);
+      return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     findJob: findJob,
@@ -80,6 +106,7 @@ export function useJobActions() {
     update,
     destroy,
     confirmDelete,
+    generateDescription,
     apiError: error,
     clearApiError: clearError,
   };

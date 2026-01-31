@@ -1,5 +1,11 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Model, type PaginateModel } from 'mongoose';
 import { Job, JobDocument } from './jobs.schema';
 import { JobQueryDto } from './dto/job-query.dto';
@@ -13,6 +19,9 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { JobsCsvExporter } from './exporters/jobs-csv.exporter';
 import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
+import { GenerateJobDto } from './dto/generate-job.dto';
+import { buildJobDescriptionPrompt } from 'src/ai/prompts/job-description.prompt';
+import { AIService } from 'src/ai/ai.service';
 
 @Injectable()
 export class JobsService {
@@ -27,15 +36,13 @@ export class JobsService {
     private readonly userModel: Model<UserDocument>,
     private readonly csvExporter: JobsCsvExporter,
     private readonly xlsxExporter: JobsXlsxExporter,
+    private readonly aiService: AIService,
     @Inject('CACHE_MANAGER') private cache: any,
   ) {}
 
   private readonly logger = new Logger(JobsService.name);
 
-  async getCompanyJobs(
-    companyId: string,
-    query: JobQueryDto,
-  ) {
+  async getCompanyJobs(companyId: string, query: JobQueryDto) {
     const company = await this.getCompanyOrThrow(companyId);
     const filter = buildJobFilter(company, query);
     const sort = buildJobSort(query);
@@ -93,13 +100,10 @@ export class JobsService {
     return job;
   }
 
-  async updateJob(
-    jobId: string,
-    companyId: string,
-    dto: UpdateJobDto,
-  ) {
+  async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {
     const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
-    if (!job) throw new ForbiddenException('Access to this resource is forbidden');
+    if (!job)
+      throw new ForbiddenException('Access to this resource is forbidden');
 
     await this.jobModel.updateOne({ _id: jobId }, { $set: dto });
     const updatedJob = await this.jobModel.findById(jobId);
@@ -131,7 +135,8 @@ export class JobsService {
 
   async deleteJob(jobId: string, companyId: string) {
     const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
-    if (!job) throw new ForbiddenException('Access to this resource is forbidden');
+    if (!job)
+      throw new ForbiddenException('Access to this resource is forbidden');
 
     await this.jobModel.deleteOne({ _id: jobId });
 
@@ -214,6 +219,21 @@ export class JobsService {
     return departments;
   }
 
+  async getGeneratedJobDescription(dto: GenerateJobDto) {
+    // const prompt = buildJobDescriptionPrompt(dto);
+
+    // const text = await this.aiService.run({
+    //   prompt,
+    //   maxTokens: 1000,
+    //   feature: 'job-description',
+    //   temperature: 0.7,
+    // });
+
+    return {
+      context: 'AI generated job description context',
+    };
+  }
+
   private async getCachedJob(jobId: string, companyId: string) {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (!cachedJob) return null;
@@ -232,7 +252,7 @@ export class JobsService {
   private getCacheKey(jobId: string) {
     return `job:${jobId}`;
   }
-  
+
   private async getCompanyOrThrow(companyId: string) {
     const company = await this.companyModel.findById(companyId);
     if (!company) throw new BadRequestException('Company not found');

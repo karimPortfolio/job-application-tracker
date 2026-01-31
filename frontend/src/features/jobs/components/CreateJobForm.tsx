@@ -113,7 +113,7 @@ const JobFormContent = memo(function JobFormContent({
 
               <DepartmentSelect control={form.control} />
 
-              <DescriptionEditor control={form.control} />
+              <DescriptionEditor form={form} />
             </div>
 
             <div className="space-y-4">

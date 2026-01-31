@@ -10,6 +10,7 @@ import { DepartmentsModule } from './departments/departments.module'
 // import { ApplicationsModule } from './applications/applications.module'
 import { RedisCacheModule } from './common/cache/redis.module'
 import { JobsModule } from './jobs/jobs.module'
+import { AIModule } from './ai/ai.module'
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { JobsModule } from './jobs/jobs.module'
     CompaniesModule,
     DepartmentsModule,
     JobsModule,
+    AIModule
     // ApplicationsModule,
   ],
 })

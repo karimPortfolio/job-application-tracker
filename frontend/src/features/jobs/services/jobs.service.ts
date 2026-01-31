@@ -1,6 +1,6 @@
 import { api } from "@/lib/api/axios";
 import { JOBS_ROUTES } from "../routes/jobs.routes";
-import { CreateJobPayload, Job, JobQuery, PaginatedResponse, UpdateJobPayload } from "../types/jobs.types";
+import { CreateJobPayload, GenerateJobDescriptionPayload, Job, JobQuery, PaginatedResponse, UpdateJobPayload } from "../types/jobs.types";
 
 
 export const getJobs = (query: JobQuery) => {
@@ -28,3 +28,10 @@ export const updateJob = (
 export const deleteJob = (id: string) => {
   return api.delete(JOBS_ROUTES.deleteJob(id));
 };
+
+export const generateJobDescription = (payload: GenerateJobDescriptionPayload) => {
+  return api.post<{ context: string }>(
+    JOBS_ROUTES.generateDescription,
+    payload,
+  );
+}

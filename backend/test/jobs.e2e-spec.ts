@@ -14,6 +14,7 @@ import { Job } from '../src/jobs/jobs.schema';
 import { Company } from '../src/companies/company.schema';
 import { Department } from '../src/departments/departments.schema';
 import cookieParser from 'cookie-parser';
+import { AIService } from '../src/ai/ai.service';
 
 function binaryParser(res, callback) {
   res.setEncoding('binary');
@@ -53,7 +54,14 @@ describe('Jobs E2E Tests', () => {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(AIService)
+      .useValue({
+        run: jest
+          .fn()
+          .mockResolvedValue('Generated job description from AI mock'),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
@@ -307,6 +315,36 @@ describe('Jobs E2E Tests', () => {
       expect(res.headers['content-disposition']).toContain('jobs.xlsx');
       expect(Buffer.isBuffer(res.body)).toBe(true);
       expect(res.body.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('AI Generation', () => {
+    it('should generate job description', async () => {
+      const generateDto = {
+        title: 'Senior Software Engineer',
+        department: 'Engineering',
+        seniority: 'Senior',
+        employmentType: 'Full-time',
+        location: 'Remote',
+        techStack: ['Node.js', 'TypeScript', 'NestJS'],
+      };
+
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/jobs/generate-description')
+        .set('Cookie', cookieA)
+        .send(generateDto)
+        .expect(201);
+
+      expect(res.body).toHaveProperty('context');
+      expect(res.body.context).toBe('Generated job description from AI mock');
+    });
+
+    it('should return 400 if title or department is missing', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/jobs/generate-description')
+        .set('Cookie', cookieA)
+        .send({ title: 'Engineer' }) // Missing department
+        .expect(400);
     });
   });
 });
