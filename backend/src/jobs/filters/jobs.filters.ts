@@ -6,6 +6,10 @@ export function buildJobFilter(company: string, query: JobQueryDto) {
   };
 
   //====== exact filters
+  if (query.department) {
+    filter.department = query.department;
+  }
+
   if (query.status) {
     filter.status = query.status;
   }
@@ -31,15 +35,15 @@ export function buildJobFilter(company: string, query: JobQueryDto) {
   }
 
   //====== date range
-  if (query.createdFrom || query.createdTo) {
+  if (query.createdAtStart || query.createdAtEnd) {
     filter.createdAt = {};
 
-    if (query.createdFrom) {
-      filter.createdAt.$gte = new Date(query.createdFrom);
+    if (query.createdAtStart) {
+      filter.createdAt.$gte = new Date(query.createdAtStart);
     }
 
-    if (query.createdTo) {
-      filter.createdAt.$lte = new Date(query.createdTo);
+    if (query.createdAtEnd) {
+      filter.createdAt.$lte = new Date(query.createdAtEnd);
     }
   }
 

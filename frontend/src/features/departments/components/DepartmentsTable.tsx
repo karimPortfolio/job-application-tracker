@@ -14,13 +14,13 @@ import { Badge } from '@/components/ui/badge'
 import { Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react'
 
 import { useDepartmentsList } from '../hooks/useDepartmentsList'
-import { useDepartmentActions } from '../hooks/useDepartmentActions'
 import { Department, DepartmentQuery } from '../types/departments.types'
 import { useTextTruncate } from '@/hooks/useTextTruncate'
 import { FiltersBar } from '@/components/filters/FiltersBar'
 import type { FilterGroup } from '@/hooks/useFiltersBar'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMemo } from 'react'
+import { useDepartmentsActions } from '../hooks/useDepartmentsActions'
 
 interface DepartmentsTableProps {
   onEdit?: (id: string) => void
@@ -36,7 +36,7 @@ export function DepartmentsTable({ onEdit, list }: DepartmentsTableProps) {
     setQuery,
     refetch,
   } = list ?? useDepartmentsList()
-  const { confirmDelete, loading: isDeleting } = useDepartmentActions()
+  const { confirmDelete, loading: isDeleting } = useDepartmentsActions()
   const { truncate } = useTextTruncate()
   const { user } = useAuth();
 

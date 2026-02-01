@@ -1,6 +1,5 @@
 import { FormDialog } from "@/components/common/dialogs/FormDialog";
 import { useEffect, useMemo, useState } from "react";
-import { useDepartmentActions } from "../hooks/useDepartmentActions";
 import {
   Form,
   FormControl,
@@ -18,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateDepartmentSchema } from "../schemas/update-department.schema";
+import { useDepartmentsActions } from "../hooks/useDepartmentsActions";
 
 interface UpdateDepartmentFormDialogProps {
   onSuccess: () => void;
@@ -33,7 +33,7 @@ export function UpdateDepartmentFormDialog({
   id,
 }: UpdateDepartmentFormDialogProps) {
   const { update, loading, apiError, findDepartment, clearApiError } =
-    useDepartmentActions();
+    useDepartmentsActions();
   const resolver = useMemo(() => zodResolver(updateDepartmentSchema), []);
   const [department, setDepartment] = useState<Department | null>(null);
 

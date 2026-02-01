@@ -1,21 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { Save } from "lucide-react";
 import type { FieldValues, SubmitHandler } from "react-hook-form";
+import type { ReactNode } from "react";
 
-interface FormDialogProps<T extends FieldValues = any>{
+interface FormDialogProps<T extends FieldValues = FieldValues> {
   title: string;
   description?: string;
   isOpen?: boolean;
   onClose: () => void;
   onSubmit: SubmitHandler<T>;
   submitLabel?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   loading?: boolean;
   formId: string;
+  className?: string;
+  forceMount?: boolean;
 }
 
-export function FormDialog<T extends FieldValues>({
+export function FormDialog<T extends FieldValues = FieldValues>({
   title,
   description,
   isOpen,
@@ -24,11 +28,13 @@ export function FormDialog<T extends FieldValues>({
   submitLabel,
   loading,
   children,
-  formId
+  formId,
+  className,
+  forceMount,
 }: FormDialogProps<T>) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent forceMount={forceMount || undefined} className={cn("sm:max-w-[425px]", className)}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && (<DialogDescription>{description}</DialogDescription>)}

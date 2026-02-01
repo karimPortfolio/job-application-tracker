@@ -1,4 +1,5 @@
-import { IsEnum, IsOptional, IsString, IsNumberString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class JobQueryDto {
   @IsOptional()
@@ -10,6 +11,10 @@ export class JobQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsString()
+  department?: string;
 
   @IsOptional()
   @IsEnum(['draft', 'published', 'closed', 'archived'])
@@ -27,10 +32,10 @@ export class JobQueryDto {
   isRemote?: boolean;
 
   @IsOptional()
-  createdFrom?: string;
+  createdAtStart?: string;
 
   @IsOptional()
-  createdTo?: string;
+  createdAtEnd?: string;
 
   @IsOptional()
   @IsEnum(['createdAt', 'title', 'applicationsCount', 'viewsCount'])
@@ -39,4 +44,8 @@ export class JobQueryDto {
   @IsOptional()
   @IsEnum(['asc', 'desc'])
   sortOrder?: 'asc' | 'desc';
+
+  @IsOptional()
+  @IsEnum(['asc', 'desc'])
+  order?: 'asc' | 'desc';
 }

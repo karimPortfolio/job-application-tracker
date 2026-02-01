@@ -1,5 +1,11 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Model, type PaginateModel } from 'mongoose';
 import { Job, JobDocument } from './jobs.schema';
 import { JobQueryDto } from './dto/job-query.dto';
@@ -12,6 +18,10 @@ import { DepartmentDocument } from '../departments/departments.schema';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobsCsvExporter } from './exporters/jobs-csv.exporter';
 import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
+import { UpdateJobStatusDto } from './dto/update-job-status.dto';
+import { GenerateJobDto } from './dto/generate-job.dto';
+import { buildJobDescriptionPrompt } from 'src/ai/prompts/job-description.prompt';
+import { AIService } from 'src/ai/ai.service';
 
 @Injectable()
 export class JobsService {
@@ -26,26 +36,28 @@ export class JobsService {
     private readonly userModel: Model<UserDocument>,
     private readonly csvExporter: JobsCsvExporter,
     private readonly xlsxExporter: JobsXlsxExporter,
+    private readonly aiService: AIService,
+    @Inject('CACHE_MANAGER') private cache: any,
   ) {}
 
-  async getCompanyJobs(
-    companyId: string,
-    query: JobQueryDto,
-  ) {
+  private readonly logger = new Logger(JobsService.name);
+
+  async getCompanyJobs(companyId: string, query: JobQueryDto) {
     const company = await this.getCompanyOrThrow(companyId);
     const filter = buildJobFilter(company, query);
     const sort = buildJobSort(query);
-    
+
     return this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,
       sort,
       populate: [
         { path: 'department', select: 'title' },
-        { path: 'user', select: 'name email' },
+        { path: 'user', select: 'name' },
       ],
       lean: true,
-    });
+      leanWithVirtuals: true,
+    } as any);
   }
 
   async createJob(companyId: string, user: { sub: string }, dto: CreateJobDto) {
@@ -73,43 +85,37 @@ export class JobsService {
   }
 
   async getJobById(jobId: string, companyId: string) {
-    const job = await this.jobModel.findById(jobId);
+    const chachedJob = await this.getCachedJob(jobId, companyId);
+    if (chachedJob) return chachedJob;
 
+    const job = await this.jobModel.findById(jobId);
     if (!job) throw new BadRequestException('Job not found');
 
     if (job.company?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
+
+    await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
 
     return job;
   }
 
-  async updateJob(
-    jobId: string,
-    companyId: string,
-    dto: UpdateJobDto,
-  ) {
-    const job = await this.jobModel.findById(jobId);
-
-    if (!job) throw new BadRequestException('Job not found');
-
-    if (job.company?.toString() !== companyId) {
+  async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {
+    const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
+    if (!job)
       throw new ForbiddenException('Access to this resource is forbidden');
-    }
 
-    Object.assign(job, dto);
-    await job.save();
+    await this.jobModel.updateOne({ _id: jobId }, { $set: dto });
+    const updatedJob = await this.jobModel.findById(jobId);
 
-    return job;
+    await this.cache.set(this.getCacheKey(jobId), updatedJob, 60 * 1000);
+
+    return updatedJob;
   }
 
-  async incrementApplicationsCount(jobId: string, companyId: string) {
+  async incrementApplicationsCount(jobId: string) {
     const job = await this.jobModel.findById(jobId);
     if (!job) throw new BadRequestException('Job not found');
-
-    if (job.company?.toString() !== companyId) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
 
     job.applicationsCount = (job.applicationsCount || 0) + 1;
     await job.save();
@@ -117,13 +123,9 @@ export class JobsService {
     return job;
   }
 
-  async incrementViewsCount(jobId: string, companyId: string) {
+  async incrementViewsCount(jobId: string) {
     const job = await this.jobModel.findById(jobId);
     if (!job) throw new BadRequestException('Job not found');
-
-    if (job.company?.toString() !== companyId) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
 
     job.viewsCount = (job.viewsCount || 0) + 1;
     await job.save();
@@ -132,15 +134,13 @@ export class JobsService {
   }
 
   async deleteJob(jobId: string, companyId: string) {
-    const job = await this.jobModel.findById(jobId);
-
-    if (!job) throw new BadRequestException('Job not found');
-
-    if (job.company?.toString() !== companyId) {
+    const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
+    if (!job)
       throw new ForbiddenException('Access to this resource is forbidden');
-    }
 
     await this.jobModel.deleteOne({ _id: jobId });
+
+    await this.cache.del(this.getCacheKey(jobId));
 
     return { message: 'Job deleted successfully' };
   }
@@ -172,8 +172,87 @@ export class JobsService {
     return this.csvExporter.export(exportRows);
   }
 
+  async updateJobStatus(
+    jobId: string,
+    companyId: string,
+    dto: UpdateJobStatusDto,
+  ) {
+    const job = await this.jobModel.findById(jobId);
 
-  
+    if (!job) throw new BadRequestException('Job not found');
+
+    if (job.company?.toString() !== companyId) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
+
+    await this.jobModel.updateOne({ _id: jobId }, { $set: dto });
+
+    const updatedJob = await this.jobModel.findById(jobId);
+
+    await this.cache.set(this.getCacheKey(jobId), updatedJob, 60 * 1000);
+
+    return updatedJob;
+  }
+
+  async getCompanyDepartments(companyId: string) {
+    const company = await this.getCompanyOrThrow(companyId);
+
+    const cachedDepartments = await this.cache.get(
+      this.getCompanyDepartmentsCacheKey(company),
+    );
+
+    if (cachedDepartments) {
+      return cachedDepartments;
+    }
+
+    const departments = await this.departmentModel
+      .find({ company })
+      .select('title _id')
+      .lean();
+
+    await this.cache.set(
+      this.getCompanyDepartmentsCacheKey(company),
+      departments,
+      60 * 1000,
+    );
+
+    return departments;
+  }
+
+  async getGeneratedJobDescription(dto: GenerateJobDto) {
+    const prompt = buildJobDescriptionPrompt(dto);
+
+    const text = await this.aiService.run({
+      prompt,
+      maxTokens: 1000,
+      feature: 'job-description',
+      temperature: 0.7,
+    });
+
+    return {
+      context: text,
+    };
+  }
+
+  private async getCachedJob(jobId: string, companyId: string) {
+    const cachedJob = await this.cache.get(this.getCacheKey(jobId));
+    if (!cachedJob) return null;
+
+    if (cachedJob.company?.toString() !== companyId) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
+
+    return cachedJob;
+  }
+
+  private getCompanyDepartmentsCacheKey(companyId: string) {
+    return `${companyId}:jobs:departments`;
+  }
+
+  private getCacheKey(jobId: string) {
+    return `job:${jobId}`;
+  }
+
   private async getCompanyOrThrow(companyId: string) {
     const company = await this.companyModel.findById(companyId);
     if (!company) throw new BadRequestException('Company not found');

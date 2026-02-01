@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JobQueryDto } from './dto/job-query.dto';
@@ -7,6 +19,11 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UpdateJobDto } from './dto/update-job.dto';
 import type { Response } from 'express';
+import { plainToInstance } from 'class-transformer';
+import { JobResponseDto } from './dto/job-response.dto';
+import { UpdateJobStatusDto } from './dto/update-job-status.dto';
+import { Department } from '../departments/departments.schema';
+import { GenerateJobDto } from './dto/generate-job.dto';
 
 @Controller('jobs')
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -14,13 +31,16 @@ export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   @Get()
-  async getCompanyJobs(
-    @Req() req: any,
-    @Query() query: JobQueryDto,
-  ) {
+  async getCompanyJobs(@Req() req: any, @Query() query: JobQueryDto) {
     const companyId = req.user.company;
-
-    return this.jobsService.getCompanyJobs(companyId, query);
+    
+    const result = await this.jobsService.getCompanyJobs(companyId, query);
+    return {
+      ...result,
+      docs: plainToInstance(JobResponseDto, result.docs, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   @Get('export')
@@ -58,11 +78,19 @@ export class JobsController {
     return this.jobsService.createJob(companyId, user, dto);
   }
 
+  @Post('generate-description')
+  async generateJobDescription(@Body() dto: GenerateJobDto) {
+    return this.jobsService.getGeneratedJobDescription(dto);
+  }
+
+  @Get('departments')
+  async getCompanyDepartments(@Req() req: any): Promise<Department[]> {
+    const companyId = req.user.company;
+    return this.jobsService.getCompanyDepartments(companyId);
+  }
+
   @Get(':id')
-  async getJobById(
-    @Req() req: any,
-    @Param('id') jobId: string,
-  ) {
+  async getJobById(@Req() req: any, @Param('id') jobId: string) {
     const companyId = req.user.company;
     return this.jobsService.getJobById(jobId, companyId);
   }
@@ -78,29 +106,31 @@ export class JobsController {
   }
 
   @Delete(':id')
-  async deleteJob(
-    @Req() req: any,
-    @Param('id') jobId: string,
-  ) {
+  async deleteJob(@Param('id') id: string, @Req() req: any) {
     const companyId = req.user.company;
-    return this.jobsService.deleteJob(jobId, companyId);
+    return this.jobsService.deleteJob(id, companyId);
   }
 
   @Patch(':id/increment-applications')
-  async incrementApplicationsCount(
-    @Req() req: any,
-    @Param('id') jobId: string,
-  ) {
-    const companyId = req.user.company;
-    return this.jobsService.incrementApplicationsCount(jobId, companyId);
+  async incrementApplicationsCount(@Param('id') jobId: string) {
+    await this.jobsService.incrementApplicationsCount(jobId);
+    return { message: 'Applications count incremented' };
   }
 
   @Patch(':id/increment-views')
-  async incrementViewsCount(
+  async incrementViewsCount(@Param('id') jobId: string) {
+    await this.jobsService.incrementViewsCount(jobId);
+    return { message: 'Views count incremented' };
+  }
+
+  @Patch(':id/status')
+  async updateJobStatus(
     @Req() req: any,
     @Param('id') jobId: string,
+    @Body() dto: UpdateJobStatusDto,
   ) {
     const companyId = req.user.company;
-    return this.jobsService.incrementViewsCount(jobId, companyId);
+    await this.jobsService.updateJobStatus(jobId, companyId, dto);
+    return { message: 'Job status updated successfully' };
   }
 }
