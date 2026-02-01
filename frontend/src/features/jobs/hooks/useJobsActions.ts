@@ -2,9 +2,11 @@ import { use, useState } from "react";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useApiError } from "@/hooks/useApiError";
 import {
+  changeStatus,
   createJob,
   deleteJob,
   generateJobDescription,
+  getDepartments,
   getJob,
   updateJob,
 } from "../services/jobs.service";
@@ -15,7 +17,7 @@ import {
   UpdateJobPayload,
 } from "../types/jobs.types";
 
-export function useJobActions() {
+export function useJobActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
   const { error, clearError, handleError } = useApiError();
   const confirm = useConfirm();
@@ -63,6 +65,7 @@ export function useJobActions() {
     setLoading(true);
     try {
       await deleteJob(id);
+      if (refetch) await refetch();
     } catch (err) {
       handleError(err);
       throw err;
@@ -99,12 +102,40 @@ export function useJobActions() {
     }
   };
 
+  const refetchJobsDepartments = async () => {
+    setLoading(true);
+    try {
+      const res = await getDepartments();
+      return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const changeJobStatus = async (id: string, status: string) => {
+    setLoading(true);
+    try {
+      await changeStatus(id, status);
+      if (refetch) await refetch();
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     findJob: findJob,
     create,
     update,
     destroy,
+    changeJobStatus,
+    refetchJobsDepartments,
     confirmDelete,
     generateDescription,
     apiError: error,

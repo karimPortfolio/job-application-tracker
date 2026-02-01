@@ -1,6 +1,7 @@
 import { api } from "@/lib/api/axios";
 import { JOBS_ROUTES } from "../routes/jobs.routes";
 import { CreateJobPayload, GenerateJobDescriptionPayload, Job, JobQuery, PaginatedResponse, UpdateJobPayload } from "../types/jobs.types";
+import { Department } from "@/features/departments/types/departments.types";
 
 
 export const getJobs = (query: JobQuery) => {
@@ -34,4 +35,12 @@ export const generateJobDescription = (payload: GenerateJobDescriptionPayload) =
     JOBS_ROUTES.generateDescription,
     payload,
   );
+}
+
+export const getDepartments = () => {
+  return api.get<Department[]>(JOBS_ROUTES.departments);
+};
+
+export const changeStatus = (id: string, status: string) => {
+  return api.patch(JOBS_ROUTES.changeStatus(id), { status });
 }

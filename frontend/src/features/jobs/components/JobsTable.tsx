@@ -11,53 +11,59 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
+import {
+  ArrowRightLeft,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash,
+} from "lucide-react";
 
 import { useTextTruncate } from "@/hooks/useTextTruncate";
 import { FiltersBar } from "@/components/filters/FiltersBar";
 import type { FilterGroup } from "@/hooks/useFiltersBar";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState, useCallback, type Dispatch, type SetStateAction } from "react";
 import { Job, JobQuery, JobStatus } from "../types/jobs.types";
-import { useJobsList } from "../hooks/useJobsList";
 import { useJobActions } from "../hooks/useJobsActions";
 import { JOBS_ROUTES } from "../routes/jobs.routes";
 import { cn } from "@/lib/utils";
+import { JOB_STATUSES } from "../constants/job-constants";
+import { Department } from "@/features/departments/types/departments.types";
+import { useSorting } from "../hooks/useSorting";
+import { useFilters } from "../hooks/useFilters";
 
 interface JobsTableProps {
+  jobs: Job[];
+  meta: any; // TODO: type properly
+  loading: boolean;
+  query: JobQuery;
+  setQuery: Dispatch<SetStateAction<JobQuery>>;
+  refetch?: () => Promise<any>;
   onEdit?: (job: Job) => void;
+  onChangeStatus?: (job: Job) => void;
 }
 
-export function JobsTable({ onEdit }: JobsTableProps) {
-  const { jobs, loading, meta, query, setQuery, refetch } = useJobsList();
-  const { confirmDelete, loading: isDeleting } = useJobActions();
+export function JobsTable({
+  jobs,
+  meta,
+  loading,
+  query,
+  setQuery,
+  refetch,
+  onEdit,
+  onChangeStatus,
+}: JobsTableProps) {
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const {
+    confirmDelete,
+    loading: isDeleting,
+    refetchJobsDepartments,
+  } = useJobActions(refetch);
   const { user } = useAuth();
-
-  const jobStatuses: JobStatus[] = [
-    {
-      label: "Draft",
-      value: "draft",
-      colorClass:
-        "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
-    },
-    {
-      label: "Published",
-      value: "published",
-      colorClass:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    },
-    {
-      label: "Closed",
-      value: "closed",
-      colorClass:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-    },
-    {
-      label: "Archived",
-      value: "archived",
-      colorClass: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    },
-  ];
+  const { handleSortChange } = useSorting(setQuery);
+  const { handleFiltersChange, handleResetFilters, handleSearch } =
+    useFilters(setQuery);
 
   const handlePageChange = (page: number) => {
     const totalPages = meta?.totalPages ?? 1;
@@ -69,117 +75,12 @@ export function JobsTable({ onEdit }: JobsTableProps) {
     setQuery((prev) => ({ ...prev, limit: value, page: 1 }));
   };
 
-  const handleSearch = (term: string) => {
-    setQuery((prev) => ({ ...prev, search: term, page: 1 }));
-  };
-
-  const handleSortChange = (
-    sort: { key: string; direction: "asc" | "desc" } | null,
-  ) => {
-    if (!sort) sort = { key: "createdAt", direction: "desc" };
-
-    const allowed: JobQuery["sortBy"][] = [
-      "title",
-      "createdAt",
-      "applicationsCount",
-      "viewsCount",
-    ];
-
-    const sortKey = (allowed.includes(sort.key as any)
-      ? sort.key
-      : "createdAt") as JobQuery["sortBy"];
-    const order: JobQuery["order"] = sort.direction ?? "desc";
-
-    console.log("Sorting by:", sortKey);
-    setQuery((prev) => ({ ...prev, sortBy: sortKey, order, page: 1 }));
-  };
-
-  const filters: FilterGroup[] = useMemo(() => [
-    {
-      key: "status",
-      type: "enum",
-      label: "Status",
-      options: jobStatuses,
-    },
-    {
-      key: "employmentType",
-      type: "enum",
-      label: "Employment Type",
-      options: [
-        { label: "Full-time", value: "full-time" },
-        { label: "Part-time", value: "part-time" },
-        { label: "Contract", value: "contract" },
-        { label: "Internship", value: "internship" },
-      ],
-    },
-    {
-      key: "isRemote",
-      type: "boolean",
-      label: "Remote",
-      options: [
-        { label: "Remote", value: "true" },
-        { label: "Not Remote", value: "false" },
-      ],
-    },
-    {
-      key: "experienceLevel",
-      type: "enum",
-      label: "Experience Level",
-      options: [
-        { label: "Junior", value: "junior" },
-        { label: "Mid", value: "mid" },
-        { label: "Senior", value: "senior" },
-        { label: "Lead", value: "lead" },
-      ],
-    }
-  ], []);
-
-  const handleFiltersChange = (next: Record<string, unknown>) => {
-    const statusVal = typeof next.status === "string" ? next.status : undefined;
-    const employmentTypeVal =
-      typeof next.employmentType === "string" &&
-      ["full-time", "part-time", "contract", "internship"].includes(next.employmentType)
-        ? (next.employmentType as JobQuery["employmentType"])
-        : undefined;
-    const experienceLevelVal =
-      typeof next.experienceLevel === "string" &&
-      ["junior", "mid", "senior", "lead"].includes(next.experienceLevel)
-        ? (next.experienceLevel as JobQuery["experienceLevel"])
-        : undefined;
-    const isRemoteVal =
-      typeof next.isRemote === "string"
-        ? next.isRemote === "true"
-        : typeof next.isRemote === "boolean"
-          ? next.isRemote
-          : undefined;
-
-    setQuery((prev) => ({
-      ...prev,
-      status: statusVal,
-      employmentType: employmentTypeVal,
-      experienceLevel: experienceLevelVal,
-      isRemote: isRemoteVal,
-      page: 1,
-    }));
-  };
-
-  const handleResetFilters = () => {
-    setQuery((prev) => ({
-      ...prev,
-      status: undefined,
-      employmentType: undefined,
-      experienceLevel: undefined,
-      isRemote: undefined,
-      page: 1,
-    }));
-  };
-
   const fileName = useMemo(() => {
     if (user?.company && user?.company.name) {
       const sanitizedCompanyName = user.company.name
         .toLowerCase()
         .replace(/\s+/g, "_");
-      return `${sanitizedCompanyName}jobs_export`;
+      return `${sanitizedCompanyName}_jobs_export`;
     }
 
     return `jobs_export`;
@@ -187,9 +88,74 @@ export function JobsTable({ onEdit }: JobsTableProps) {
 
   const jobStatusMap = useMemo(() => {
     const map: Record<string, { label: string; colorClass: string }> = {};
-    for (const s of jobStatuses) map[s.value] = s;
+    for (const s of JOB_STATUSES) map[s.value] = s;
     return map;
-  }, [jobStatuses]);
+  }, [JOB_STATUSES]);
+
+  useEffect(() => {
+    async function loadDepartments() {
+      const depts = await refetchJobsDepartments();
+      setDepartments(depts);
+    }
+
+    loadDepartments();
+  }, []);
+
+  const filters: FilterGroup[] = useMemo(
+    () => [
+      {
+        key: "department",
+        type: "relation",
+        label: "Department",
+        options:
+          departments.map((dept) => ({ label: dept.title, value: dept._id })) ??
+          [],
+      },
+      {
+        key: "status",
+        type: "enum",
+        label: "Status",
+        options: JOB_STATUSES,
+      },
+      {
+        key: "employmentType",
+        type: "enum",
+        label: "Employment Type",
+        options: [
+          { label: "Full-time", value: "full-time" },
+          { label: "Part-time", value: "part-time" },
+          { label: "Contract", value: "contract" },
+          { label: "Internship", value: "internship" },
+        ],
+      },
+      {
+        key: "isRemote",
+        type: "boolean",
+        label: "Remote",
+        options: [
+          { label: "Remote", value: "true" },
+          { label: "Not Remote", value: "false" },
+        ],
+      },
+      {
+        key: "experienceLevel",
+        type: "enum",
+        label: "Experience Level",
+        options: [
+          { label: "Junior", value: "junior" },
+          { label: "Mid", value: "mid" },
+          { label: "Senior", value: "senior" },
+          { label: "Lead", value: "lead" },
+        ],
+      },
+      {
+        key: "createdAt",
+        type: "date",
+        label: "Created Date",
+      },
+    ],
+    [departments],
+  );
 
   const columns: DataTableColumn<Job>[] = useMemo(
     () => [
@@ -202,7 +168,9 @@ export function JobsTable({ onEdit }: JobsTableProps) {
             <span className="font-semibold text-gray-900 dark:text-gray-100">
               {row.title}
             </span>
-            <span className="flex text-gray-600 dark:text-gray-400" >{row.department?.title || ""}</span>
+            <span className="flex text-gray-600 dark:text-gray-400">
+              {row.department?.title || ""}
+            </span>
           </span>
         ),
       },
@@ -308,6 +276,13 @@ export function JobsTable({ onEdit }: JobsTableProps) {
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => onChangeStatus?.(row)}
+              >
+                <ArrowRightLeft className="mr-2 h-4 w-4" />
+                Change Status
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
@@ -323,7 +298,7 @@ export function JobsTable({ onEdit }: JobsTableProps) {
         ),
       },
     ],
-    [onEdit, isDeleting, confirmDelete, jobStatuses],
+    [onEdit, isDeleting, confirmDelete, JOB_STATUSES],
   );
 
   return (
@@ -335,7 +310,7 @@ export function JobsTable({ onEdit }: JobsTableProps) {
         onFiltersChange={handleFiltersChange}
         onReset={handleResetFilters}
         onRefresh={async () => {
-          await refetch();
+          if (refetch) await refetch();
         }}
         endpoint={JOBS_ROUTES.exportJobs}
         filename={fileName}

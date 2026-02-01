@@ -44,6 +44,9 @@ export interface JobQuery {
   isRemote?: boolean;
   sortBy?: 'createdAt' | 'title' | 'applicationsCount' | 'viewsCount';
   order?: 'asc' | 'desc';
+  department?: string;
+  createdAtStart?: string;
+  createdAtEnd?: string;
 }
 
 export interface CreateJobPayload {

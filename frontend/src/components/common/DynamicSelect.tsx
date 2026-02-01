@@ -36,7 +36,6 @@ export function DynamicSelect({
   const [fetchedOptions, setFetchedOptions] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
 
-  // Cache options per endpoint so dialog remounts don't refetch
   const cache = getOptionsCache();
   const inflight = getInflightRequests();
 

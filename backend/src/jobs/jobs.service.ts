@@ -220,17 +220,17 @@ export class JobsService {
   }
 
   async getGeneratedJobDescription(dto: GenerateJobDto) {
-    // const prompt = buildJobDescriptionPrompt(dto);
+    const prompt = buildJobDescriptionPrompt(dto);
 
-    // const text = await this.aiService.run({
-    //   prompt,
-    //   maxTokens: 1000,
-    //   feature: 'job-description',
-    //   temperature: 0.7,
-    // });
+    const text = await this.aiService.run({
+      prompt,
+      maxTokens: 1000,
+      feature: 'job-description',
+      temperature: 0.7,
+    });
 
     return {
-      context: 'AI generated job description context',
+      context: text,
     };
   }
 

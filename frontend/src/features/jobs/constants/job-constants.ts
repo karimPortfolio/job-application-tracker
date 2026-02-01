@@ -1,4 +1,4 @@
-import { CreateJobPayload } from "../types/jobs.types";
+import { CreateJobPayload, JobStatus } from "../types/jobs.types";
 import {
   JobEmploymentTypeOption,
   JobExperienceLevelOption,
@@ -22,4 +22,29 @@ export const JOB_EXPERIENCE_LEVEL_OPTIONS: JobExperienceLevelOption[] = [
 export const JOB_STATUS_OPTIONS: JobStatusOption[] = [
   { label: "Draft", value: "draft" },
   { label: "Published", value: "published" },
+];
+
+export const JOB_STATUSES: JobStatus[] = [
+  {
+    label: "Draft",
+    value: "draft",
+    colorClass: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
+  },
+  {
+    label: "Published",
+    value: "published",
+    colorClass:
+      "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  },
+  {
+    label: "Closed",
+    value: "closed",
+    colorClass:
+      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  },
+  {
+    label: "Archived",
+    value: "archived",
+    colorClass: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+  },
 ];

@@ -14,7 +14,6 @@ import { redirect, useParams } from "next/navigation";
 import { memo, useEffect, useState } from "react";
 
 export function UpdateJobClient() {
-  const { refetch } = useJobsList();
   const { loading, findJob } = useJobActions();
   const [job, setJob] = useState<Job | null>(null);
   const params = useParams();
@@ -38,6 +37,10 @@ export function UpdateJobClient() {
     loadJob();
   }, [id]);
 
+  const handleUpdateSuccess = async () => {
+    redirect("/dashboard/jobs");
+  }
+
   return (
     <div className="w-full">
       <PageHeader
@@ -53,7 +56,7 @@ export function UpdateJobClient() {
         )}
       />
 
-      <UpdateJobForm job={job} onSuccess={() => refetch()} />
+      <UpdateJobForm job={job} onSuccess={handleUpdateSuccess} />
     </div>
   );
 }

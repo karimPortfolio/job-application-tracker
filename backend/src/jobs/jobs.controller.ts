@@ -33,7 +33,7 @@ export class JobsController {
   @Get()
   async getCompanyJobs(@Req() req: any, @Query() query: JobQueryDto) {
     const companyId = req.user.company;
-
+    
     const result = await this.jobsService.getCompanyJobs(companyId, query);
     return {
       ...result,
@@ -80,7 +80,7 @@ export class JobsController {
 
   @Post('generate-description')
   async generateJobDescription(@Body() dto: GenerateJobDto) {
-    return this.jobsService.getGeneratedJobDescription(dto); 
+    return this.jobsService.getGeneratedJobDescription(dto);
   }
 
   @Get('departments')

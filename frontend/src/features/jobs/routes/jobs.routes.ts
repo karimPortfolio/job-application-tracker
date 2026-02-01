@@ -6,4 +6,6 @@ export const JOBS_ROUTES = {
   deleteJob: (id: string) => `${process.env.NEXT_PUBLIC_API_VERSION || ''}/jobs/${id}`,
   exportJobs: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/jobs/export`,
   generateDescription: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/jobs/generate-description`,
+  departments: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/jobs/departments`,
+  changeStatus: (id: string) => `${process.env.NEXT_PUBLIC_API_VERSION || ''}/jobs/${id}/status`,
 } as const;
