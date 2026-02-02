@@ -38,7 +38,7 @@ export function DepartmentsClient() {
   };
 
   return (
-    <div>
+    <div className="w-full">
       {/* PAGE INCLUDES */}
       <CreateDepartmentFormDialog
         open={openCreateDialog}

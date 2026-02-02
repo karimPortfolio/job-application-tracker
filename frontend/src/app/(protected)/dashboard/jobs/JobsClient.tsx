@@ -8,11 +8,13 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
 import { useJobsList } from "@/features/jobs/hooks/useJobsList";
+import { ViewJobDialog } from "@/features/jobs/components/ViewJobDialog";
 
 export function JobsClient() {
   const router = useRouter();
   const jobsList = useJobsList();
   const [open, setOpen] = useState<boolean>(false);
+  const [viewOpen, setViewOpen] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const handleCreateJob = useCallback(() => {
@@ -34,6 +36,11 @@ export function JobsClient() {
     setOpen(true);
   }, []);
 
+  const handleViewJob = useCallback((job: Job) => {
+    setSelectedJob(job);
+    setViewOpen(true);
+  }, []);
+
   return (
     <div className="w-full">
       {/* PAGE INCLUDES */}
@@ -42,6 +49,12 @@ export function JobsClient() {
         setOpen={setOpen}
         onSuccess={handleSuccess}
         job={selectedJob!}
+      />
+
+      <ViewJobDialog
+        id={selectedJob ? selectedJob.id : ""}
+        open={viewOpen}
+        setOpen={setViewOpen}
       />
 
       {/* PAGE CONTENT */}
@@ -62,6 +75,7 @@ export function JobsClient() {
         refetch={jobsList.refetch}
         onEdit={handleUpdateJob}
         onChangeStatus={handleChangeStatus}
+        onView={handleViewJob}
       />
     </div>
   );

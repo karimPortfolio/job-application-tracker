@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import './globals.css';
 import { ConfirmDialog } from '@/components/common/dialogs/ConfirmDialog';
 import { Toaster } from '@/components/ui/sonner';
+import { Viewport } from 'next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +15,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export default function AppLayout({
   children,

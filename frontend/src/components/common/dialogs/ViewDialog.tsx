@@ -54,7 +54,7 @@ export function ViewDialog({
     >
       <DialogContent className={cn("sm:max-w-125", className)}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-start" >{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {children}

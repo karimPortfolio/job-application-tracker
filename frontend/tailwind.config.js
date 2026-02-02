@@ -1,4 +1,9 @@
+const plugin = require("@tailwindcss/typography");
+
 module.exports = {
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
   theme: {
     extend: {
       animation: {

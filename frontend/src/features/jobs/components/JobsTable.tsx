@@ -42,6 +42,7 @@ interface JobsTableProps {
   refetch?: () => Promise<any>;
   onEdit?: (job: Job) => void;
   onChangeStatus?: (job: Job) => void;
+  onView?: (job: Job) => void;
 }
 
 export function JobsTable({
@@ -53,6 +54,7 @@ export function JobsTable({
   refetch,
   onEdit,
   onChangeStatus,
+  onView,
 }: JobsTableProps) {
   const [departments, setDepartments] = useState<Department[]>([]);
   const {
@@ -264,10 +266,10 @@ export function JobsTable({
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => onEdit?.(row)}
+                onClick={() => onView?.(row)}
               >
                 <Eye className="mr-2 h-4 w-4" />
-                Show
+                View Details
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"

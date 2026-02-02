@@ -145,7 +145,7 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
           <DropdownMenuContent align="end">
             <DropdownMenuItem className='cursor-pointer' onClick={() => onView?.(row._id)}>
               <Eye className="mr-2 h-4 w-4" />
-              Show
+              View Details
             </DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row._id)}>
               <Pencil className="mr-2 h-4 w-4" />

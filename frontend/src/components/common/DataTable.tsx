@@ -26,6 +26,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Card, CardContent } from "../ui/card";
+import { useIsMobile } from "@/hooks/useMobile";
 
 type Align = "left" | "center" | "right";
 
@@ -97,6 +98,7 @@ export function DataTable<T>({
   remoteSort = false,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<DataTableSort | null>(defaultSort ?? null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setSort(defaultSort ?? null);
@@ -166,8 +168,8 @@ export function DataTable<T>({
 
   if (loading) {
     return (
-      <div className="rounded-lg border">
-        <Table>
+      <div className="relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-lg border">
+        <Table className="w-full max-w-full table-auto">
           <TableHeader>
             <TableRow>
               {columns.map((col) => (
@@ -179,7 +181,7 @@ export function DataTable<T>({
             {Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
                 {columns.map((col) => (
-                  <TableCell key={String(col.key)}>
+                  <TableCell key={String(col.key)} className="whitespace-normal wrap-break-word">
                     <Skeleton className="h-4 w-full" />
                   </TableCell>
                 ))}
@@ -204,13 +206,13 @@ export function DataTable<T>({
   const footerContent = footer ? (
     <div className="border-t px-4 py-3">{footer}</div>
   ) : pagination ? (
-    <div className="border-t px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div className="text-sm text-muted-foreground">
+    <div className="border-t px-4 py-3 flex flex-wrap flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="text-start w-full sm:w-auto text-sm text-muted-foreground">
         Total: {pagination.totalItems ?? data.length}
       </div>
 
-      <div className="flex items-center text-sm gap-2">
-        Rows per page:{" "}
+      <div className="flex items-center text-sm gap-2 w-full sm:w-auto">
+       {!isMobile && `Rows per page: `} 
         <Select
           value={String(pagination.pageSize ?? pageSizeOptions[0])}
           onValueChange={(val) => pagination.onPageSizeChange?.(Number(val))}
@@ -261,8 +263,8 @@ export function DataTable<T>({
   ) : null;
 
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <Table>
+    <div className="relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-lg border">
+      <Table className="w-full max-w-full table-auto">
         {caption ? (
           <caption className="px-4 py-3 text-left text-sm text-muted-foreground">
             {caption}
@@ -322,6 +324,7 @@ export function DataTable<T>({
                 <TableCell
                   key={String(col.key)}
                   className={cn(
+                    "whitespace-normal wrap-break-word text-sm",
                     col.align && alignMap[col.align],
                     col.className,
                   )}

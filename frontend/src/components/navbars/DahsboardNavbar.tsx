@@ -40,8 +40,8 @@ export function DashboardNavbar() {
   const currentRoute = useMemo(() => pathname.split("/")[2] || "dashboard", [pathname]);
 
   return (
-    <div className="flex justify-between items-center p-3 pt-1">
-      <div className="flex items-center gap-5">
+    <div className="flex justify-between items-center p-3 pt-1 min-w-0">
+      <div className="flex items-center gap-5 min-w-0">
         <Tooltip>
           <TooltipTrigger asChild>
             <SidebarTrigger className="dark:text-dark-300 text-gray-600" />
@@ -50,7 +50,7 @@ export function DashboardNavbar() {
             <p>Toggle sidebar</p>
           </TooltipContent>
         </Tooltip>
-        <div>
+        <div className="min-w-0 hidden sm:block">
             <nav>
               <Breadcrumb>
               <BreadcrumbList>

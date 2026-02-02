@@ -95,6 +95,11 @@ export class JobsService {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
+    await job.populate([
+      { path: 'department', select: 'title' },
+      { path: 'company', select: 'name' },
+    ]);
+
     await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
 
     return job;
@@ -238,7 +243,7 @@ export class JobsService {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (!cachedJob) return null;
 
-    if (cachedJob.company?.toString() !== companyId) {
+    if (cachedJob.company?._id?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
