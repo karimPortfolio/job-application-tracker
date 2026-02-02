@@ -24,10 +24,11 @@ import { useDepartmentsActions } from '../hooks/useDepartmentsActions'
 
 interface DepartmentsTableProps {
   onEdit?: (id: string) => void
+  onView?: (id: string) => void
   list?: ReturnType<typeof useDepartmentsList>
 }
 
-export function DepartmentsTable({ onEdit, list }: DepartmentsTableProps) {
+export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps) {
   const {
     departments,
     loading,
@@ -142,7 +143,7 @@ export function DepartmentsTable({ onEdit, list }: DepartmentsTableProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row._id)}>
+            <DropdownMenuItem className='cursor-pointer' onClick={() => onView?.(row._id)}>
               <Eye className="mr-2 h-4 w-4" />
               Show
             </DropdownMenuItem>

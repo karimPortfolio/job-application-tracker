@@ -34,7 +34,7 @@ export function FormDialog<T extends FieldValues = FieldValues>({
 }: FormDialogProps<T>) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-        <DialogContent forceMount={forceMount || undefined} className={cn("sm:max-w-[425px]", className)}>
+        <DialogContent forceMount={forceMount || undefined} className={cn("sm:max-w-125", className)}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && (<DialogDescription>{description}</DialogDescription>)}
