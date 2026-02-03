@@ -6,11 +6,10 @@ import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
 import { CompaniesModule } from './companies/companies.module'
 import { DepartmentsModule } from './departments/departments.module'
-// import { JobsModule } from './jobs/jobs.module'
-// import { ApplicationsModule } from './applications/applications.module'
 import { RedisCacheModule } from './common/cache/redis.module'
 import { JobsModule } from './jobs/jobs.module'
 import { AIModule } from './ai/ai.module'
+import { ApplicationsModule } from './applications/applications.module'
 
 @Module({
   imports: [
@@ -32,8 +31,8 @@ import { AIModule } from './ai/ai.module'
     CompaniesModule,
     DepartmentsModule,
     JobsModule,
-    AIModule
-    // ApplicationsModule,
+    AIModule,
+    ApplicationsModule
   ],
 })
 export class AppModule {}

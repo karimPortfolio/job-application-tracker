@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConsoleLogger, RequestMethod, UnprocessableEntityException, ValidationError, ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { 
@@ -12,7 +13,10 @@ async function bootstrap() {
       logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
     })
   })
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({ origin: true, credentials: true });
+
   app.useGlobalPipes(
     new ValidationPipe({ 
       whitelist: true,
@@ -30,6 +34,7 @@ async function bootstrap() {
       },
     })
   );
+
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'auth/google', method: RequestMethod.GET },
@@ -37,12 +42,13 @@ async function bootstrap() {
       { path: 'auth/google/callback', method: RequestMethod.GET },
     ],
   });
+
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  app.use(helmet());
 
+  app.use(helmet());
   app.use(cookieParser());
 
   await app.listen(3000)

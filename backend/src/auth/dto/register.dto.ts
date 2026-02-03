@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, isString, IsString, MaxLength, MinLength } from 'class-validator'
+import { IsUserEmailUnique } from 'src/common/decorators/is-user-email-uniqe.validator'
 
 export class RegisterDto {
   @IsString()
@@ -13,6 +14,7 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsEmail()
+  @IsUserEmailUnique({ message: 'Email already taken' })
   email: string
 
   @IsNotEmpty()
