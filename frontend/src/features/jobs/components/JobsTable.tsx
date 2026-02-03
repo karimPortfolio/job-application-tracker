@@ -246,7 +246,6 @@ export function JobsTable({
         render: (row) => (
           <span
             className="text-sm text-gray-600 dark:text-gray-400"
-            title={row.description || ""}
           >
             {row.createdAtDiff || row.createdAt}
           </span>

@@ -8,7 +8,7 @@ export function buildApplicationSort(query: ApplicationQueryDto): Record<string,
     'phoneNumber',
     'appliedAt',
     'rating',
-    'AiScore',
+    'aiScore',
   ];
 
   const sortBy: ApplicationQueryDto['sortBy'] = allowed.includes(query.sortBy as any)

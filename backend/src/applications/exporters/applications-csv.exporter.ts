@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassThrough } from 'stream';
 import { stringify } from 'csv-stringify';
+import { APPLICATION_STAGES, APPLICATION_STATUSES } from '../constants/applications-constants';
 
 @Injectable()
 export class ApplicationsCsvExporter {
@@ -34,8 +35,8 @@ export class ApplicationsCsvExporter {
     csv.pipe(stream);
 
     for (const application of applications) {
-      const status = application.status ? capitalize(application.status) : 'N/A';
-      const stage = application.stage ? capitalize(application.stage) : 'N/A';
+      const status = application.status ? getLabel(application.status, APPLICATION_STATUSES) : 'N/A';
+      const stage = application.stage ? getLabel(application.stage, APPLICATION_STAGES) : 'N/A';
 
       csv.write({
         fullName: application.fullName ?? 'N/A',
@@ -68,7 +69,7 @@ export class ApplicationsCsvExporter {
   }
 }
 
-function capitalize(value: string) {
-  const str = String(value);
-  return str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str;
+function getLabel(value: string, records: {label: string, value: string}[]) {
+  const record = records.find((r) => r.value === value);
+  return record ? record.label : 'N/A';
 }

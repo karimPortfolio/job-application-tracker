@@ -5,6 +5,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Model, type PaginateModel } from 'mongoose';
 import { CompanyDocument } from '../companies/company.schema';
@@ -49,7 +50,11 @@ export class ApplicationsService {
       limit: query.limit || 10,
       sort,
       populate: [
-        { path: 'job', select: 'title' },
+        {
+          path: 'job',
+          select: 'title',
+          populate: { path: 'department', select: 'title' },
+        },
         { path: 'user', select: 'name' },
       ],
       lean: true,
@@ -72,6 +77,18 @@ export class ApplicationsService {
       resumeUrl = await this.uploadResumeToS3(companyId, dto.email, file);
     }
 
+    if (dto.appliedAt && new Date(dto.appliedAt) > new Date()) {
+      throw new UnprocessableEntityException({
+        message: 'Validation failed',
+        errors: [
+          {
+            field: 'appliedAt',
+            errors: ['Applied date cannot be in the future'],
+          },
+        ],
+      });
+    }
+
     const application = await this.applicationModel.create({
       fullName: dto.fullName,
       email: dto.email,
@@ -86,6 +103,7 @@ export class ApplicationsService {
       source: dto.source,
       referalName: dto.referalName,
       referalEmail: dto.referalEmail,
+      appliedAt: dto.appliedAt ?? new Date().toISOString(),
       company: company,
       user: userId,
     });
@@ -100,16 +118,20 @@ export class ApplicationsService {
     );
     if (cachedApplication) return cachedApplication;
 
-    const application = await this.applicationModel.findById(applicationId).populate([
-      { path: 'job', select: 'title' },
-    ]);
+    const application = await this.applicationModel
+      .findById(applicationId)
+      .populate([{ path: 'job', select: 'title' }]);
     if (!application) throw new BadRequestException('Application not found');
 
     if (application.company?.toString() !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
-    await this.cache.set(this.getCacheKey(applicationId), application, 60 * 1000);
+    await this.cache.set(
+      this.getCacheKey(applicationId),
+      application,
+      60 * 1000,
+    );
 
     return application;
   }
@@ -134,8 +156,12 @@ export class ApplicationsService {
     }
 
     dto.resumeUrl = resumeUrl;
-    await this.applicationModel.updateOne({ _id: applicationId }, { $set: dto });
-    const updatedApplication = await this.applicationModel.findById(applicationId);
+    await this.applicationModel.updateOne(
+      { _id: applicationId },
+      { $set: dto },
+    );
+    const updatedApplication =
+      await this.applicationModel.findById(applicationId);
 
     await this.cache.set(
       this.getCacheKey(applicationId),
@@ -159,7 +185,7 @@ export class ApplicationsService {
     }
 
     const job = application.job?.toString() || '';
-  
+
     await this.applicationModel.deleteOne({ _id: applicationId });
 
     if (job) {
@@ -223,7 +249,8 @@ export class ApplicationsService {
       { $set: { status } },
     );
 
-    const updatedApplication = await this.applicationModel.findById(applicationId);
+    const updatedApplication =
+      await this.applicationModel.findById(applicationId);
 
     await this.cache.set(
       this.getCacheKey(applicationId),
@@ -252,7 +279,8 @@ export class ApplicationsService {
       { $set: { stage } },
     );
 
-    const updatedApplication = await this.applicationModel.findById(applicationId);
+    const updatedApplication =
+      await this.applicationModel.findById(applicationId);
 
     await this.cache.set(
       this.getCacheKey(applicationId),
@@ -263,10 +291,7 @@ export class ApplicationsService {
     return updatedApplication;
   }
 
-  private async getCachedApplication(
-    applicationId: string,
-    companyId: string,
-  ) {
+  private async getCachedApplication(applicationId: string, companyId: string) {
     const cachedApplication = await this.cache.get(
       this.getCacheKey(applicationId),
     );
@@ -292,7 +317,7 @@ export class ApplicationsService {
 
   private async uploadResumeToS3(
     companyId: string,
-    email: string|undefined,
+    email: string | undefined,
     file: Express.Multer.File,
   ) {
     return this.s3Uploader.upload({

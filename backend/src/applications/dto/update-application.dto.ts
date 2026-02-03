@@ -37,11 +37,22 @@ export class UpdateApplicationDto {
 
   @IsOptional()
   @IsString()
-  status?: 'applied' | 'in_review' | 'interview' | 'offer' | 'hired' | 'rejected';
+  status?:
+    | 'applied'
+    | 'in_review'
+    | 'interview'
+    | 'offer'
+    | 'hired'
+    | 'rejected';
 
   @IsOptional()
   @IsString()
-  stage?: 'screening' | 'technical_interview' | 'hr_interview' | 'final_interview' | 'offer';
+  stage?:
+    | 'screening'
+    | 'technical_interview'
+    | 'hr_interview'
+    | 'final_interview'
+    | 'offer';
 
   @IsOptional()
   @IsString()
@@ -54,4 +65,8 @@ export class UpdateApplicationDto {
   @IsOptional()
   @IsString()
   referalEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  appliedAt?: string;
 }

@@ -13,8 +13,8 @@ export class ApplicationQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsIn(['fullName', 'createdAt', 'phoneNumber', 'appliedAt', 'rating', 'AiScore'])
-  sortBy?: 'fullName' | 'createdAt' | 'phoneNumber' | 'appliedAt' | 'rating' | 'AiScore';
+  @IsIn(['fullName', 'createdAt', 'phoneNumber', 'appliedAt', 'rating', 'aiScore'])
+  sortBy?: 'fullName' | 'createdAt' | 'phoneNumber' | 'appliedAt' | 'rating' | 'aiScore';
 
   @IsOptional()
   @IsIn(['asc', 'desc'])

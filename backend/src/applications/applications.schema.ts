@@ -4,6 +4,8 @@ import { Company } from 'src/companies/company.schema';
 import { Job } from 'src/jobs/jobs.schema';
 import { User } from 'src/users/user.schema';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import { formatDistanceToNow } from 'node_modules/date-fns/formatDistanceToNow';
+import leanVirtuals from 'mongoose-lean-virtuals';
 
 export type ApplicationDocument = HydratedDocument<Application>;
 
@@ -96,9 +98,20 @@ export class Application {
 
   @Prop()
   rejectedAt?: Date;
+
+  createdAt: Date;
 }
 
 export const ApplicationSchema = SchemaFactory.createForClass(Application);
+
+ApplicationSchema.plugin(leanVirtuals);
+
+ApplicationSchema.virtual('createdAtDiff').get(function (this: ApplicationDocument) {
+  const createdAt = this.createdAt ?? (this as any)?.createdAt;
+  if (!createdAt) return null;
+  return formatDistanceToNow(new Date(createdAt), { addSuffix: true });
+});
+
 
 ApplicationSchema.index({ company: 1, job: 1 });
 ApplicationSchema.index({ email: 1, job: 1 }, { unique: true });

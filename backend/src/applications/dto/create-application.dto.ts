@@ -55,4 +55,8 @@ export class CreateApplicationDto {
     @IsOptional()
     @IsString()
     referalEmail?: string;
+
+    @IsOptional()
+    @IsString()
+    appliedAt?: string;
 }

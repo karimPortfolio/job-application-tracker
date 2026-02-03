@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Workbook } from 'exceljs';
 import { PassThrough } from 'stream';
+import { APPLICATION_STAGES, APPLICATION_STATUSES } from '../constants/applications-constants';
 
 @Injectable()
 export class ApplicationsXlsxExporter {
@@ -30,8 +31,8 @@ export class ApplicationsXlsxExporter {
     ];
 
     candidates.forEach((candidate) => {
-      const status = candidate.status ? capitalize(candidate.status) : 'N/A';
-      const stage = candidate.stage ? capitalize(candidate.stage) : 'N/A';
+      const status = candidate.status ? getLabel(candidate.status, APPLICATION_STATUSES) : 'N/A';
+      const stage = candidate.stage ? getLabel(candidate.stage, APPLICATION_STAGES) :  'N/A';
 
       sheet.addRow({
         fullName: candidate.fullName ?? 'N/A',
@@ -65,7 +66,7 @@ export class ApplicationsXlsxExporter {
   }
 }
 
-function capitalize(value: string) {
-  const str = String(value);
-  return str ? str[0].toUpperCase() + str.slice(1).toLowerCase() : str;
+function getLabel(value: string, records: {label: string, value: string}[]) {
+  const record = records.find((r) => r.value === value);
+  return record ? record.label : 'N/A';
 }
