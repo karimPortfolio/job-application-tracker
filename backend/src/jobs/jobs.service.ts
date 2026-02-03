@@ -192,9 +192,10 @@ export class JobsService {
 
     await this.jobModel.updateOne({ _id: jobId }, { $set: dto });
 
-    const updatedJob = await this.jobModel.findById(jobId);
+    // Clear the cache to force fresh fetch on next read
+    await this.cache.del(this.getCacheKey(jobId));
 
-    await this.cache.set(this.getCacheKey(jobId), updatedJob, 60 * 1000);
+    const updatedJob = await this.jobModel.findById(jobId);
 
     return updatedJob;
   }

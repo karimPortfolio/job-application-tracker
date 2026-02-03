@@ -106,6 +106,13 @@ describe('Companies E2E Tests', () => {
     const userUpdated = await userModel.findOne({ email: user.email }).exec();
     expect(userUpdated?.company).toBeDefined();
     expect(userUpdated?.company?.toString()).toBe(res.body._id);
+
+    // Re-login to refresh JWT with company attached
+    const loginRes = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({ email: user.email, password: user.password })
+      .expect(201);
+    cookie = loginRes.get('set-cookie')[0];
   });
 
   it('GET /api/v1/company → get company', async () => {

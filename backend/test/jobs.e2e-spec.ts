@@ -93,24 +93,25 @@ describe('Jobs E2E Tests', () => {
 
     const userBData = { first_name: 'User', last_name: 'B', email: 'b@test.com', password: 'password' };
     await request(app.getHttpServer()).post('/api/auth/register').send(userBData).expect(201);
-    const loginB = await request(app.getHttpServer()).post('/api/auth/login').send({ email: userBData.email, password: userBData.password }).expect(201);
-    cookieB = loginB.get('set-cookie')![0];
     await userAModel.updateOne({ email: userBData.email }, { emailVerifiedAt: new Date() });
 
     const compB = await companyModel.create({ name: 'Company B', industry: 'Design' });
     companyBId = compB._id.toString();
     await userAModel.updateOne({ email: userBData.email }, { company: companyBId });
-    const loginB2 = await request(app.getHttpServer()).post('/api/auth/login').send({ email: userBData.email, password: userBData.password }).expect(201);
-    cookieB = loginB2.get('set-cookie')![0];
+    const loginB = await request(app.getHttpServer()).post('/api/auth/login').send({ email: userBData.email, password: userBData.password }).expect(201);
+    cookieB = loginB.get('set-cookie')![0];
 
     const noCompData = { first_name: 'No', last_name: 'Comp', email: 'none@test.com', password: 'password' };
     await request(app.getHttpServer()).post('/api/auth/register').send(noCompData).expect(201);
+    await userAModel.updateOne({ email: noCompData.email }, { emailVerifiedAt: new Date() });
     const loginNoComp = await request(app.getHttpServer()).post('/api/auth/login').send({ email: noCompData.email, password: noCompData.password }).expect(201);
     cookieNoCompany = loginNoComp.get('set-cookie')![0];
-    await userAModel.updateOne({ email: noCompData.email }, { emailVerifiedAt: new Date() });
 
     const deptA = await departmentModel.create({ title: 'Engineering', company: companyAId });
     departmentAId = deptA._id.toString();
+
+    const deptB = await departmentModel.create({ title: 'Design', company: companyBId });
+    const departmentBId = deptB._id.toString();
 
     const jobA = await jobModel.create({
       title: 'Fullstack Dev',
@@ -128,6 +129,7 @@ describe('Jobs E2E Tests', () => {
       description: 'Desc',
       country: 'USA',
       company: companyBId,
+      department: departmentBId,
       employmentType: 'full-time',
       experienceLevel: 'senior'
     });
@@ -252,15 +254,15 @@ describe('Jobs E2E Tests', () => {
     });
 
     it('should update job status', async () => {
-      const res = await request(app.getHttpServer())
+      const patchRes = await request(app.getHttpServer())
         .patch(`/api/v1/jobs/${jobAId}/status`)
         .set('Cookie', cookieA)
         .send({ status: 'published' })
         .expect(200);
 
-      expect(res.body.message).toBe('Job status updated successfully');
+      expect(patchRes.body.message).toBe('Job status updated successfully');
       
-      // Verify update
+      // Verify update by fetching the job
       const getRes = await request(app.getHttpServer())
         .get(`/api/v1/jobs/${jobAId}`)
         .set('Cookie', cookieA)
