@@ -8,6 +8,7 @@ export interface UploadOptions {
   metadata?: Record<string, string>;
   acl?: 'private' | 'public-read';
   bucket?: string;
+  errMessage?: string;
 }
 
 @Injectable()
@@ -50,8 +51,8 @@ export class S3Uploader {
     return this.isConfigured;
   }
 
-  async upload({ file, keyPrefix, metadata, acl, bucket }: UploadOptions) {
-    if (!file) throw new BadRequestException('File is required');
+  async upload({ file, keyPrefix, metadata, acl, bucket, errMessage }: UploadOptions) {
+    if (!file) throw new BadRequestException(errMessage || 'File is required');
 
     if (!this.isConfigured) {
       throw new BadRequestException('S3 upload not configured');

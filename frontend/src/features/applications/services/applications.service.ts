@@ -22,14 +22,22 @@ export const getApplication = (id: string) => {
 };
 
 export const createApplication = (payload: CreateApplicationPayload | FormData) => {
-  return api.post(APPLICATIONS_ROUTES.createApplication, payload);
+  console.log(payload);
+  return api.post(APPLICATIONS_ROUTES.createApplication, payload, {
+    headers:{ "Content-Type": "multipart/form-data" }
+  });
 };
 
 export const updateApplication = (
   id: string,
   payload: UpdateApplicationPayload | FormData,
 ) => {
-  return api.patch(APPLICATIONS_ROUTES.updateApplication(id), payload);
+  return api.patch(APPLICATIONS_ROUTES.updateApplication(id), payload, {
+    headers:
+      payload instanceof FormData
+        ? { "Content-Type": "multipart/form-data" }
+        : {},
+  });
 };
 
 export const deleteApplication = (id: string) => {
@@ -49,4 +57,17 @@ export const changeApplicationStatus = (id: string, status: string) => {
 
 export const changeApplicationStage = (id: string, stage: string) => {
   return api.patch(APPLICATIONS_ROUTES.changeStage(id), { stage });
+};
+
+export const parseResume = (payload: FormData, signal?: AbortSignal) => {
+  return api.post<Record<string, any>>(APPLICATIONS_ROUTES.parseResume, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+    signal,
+  });
+};
+
+export const getApplicationsJobs = () => {
+  return api.get<{ id: string; title: string }[]>(
+    APPLICATIONS_ROUTES.getApplicationsJobs,
+  );
 };

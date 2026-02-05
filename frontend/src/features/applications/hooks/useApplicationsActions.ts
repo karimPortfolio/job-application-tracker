@@ -1,8 +1,20 @@
 import { use, useState } from "react";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useApiError } from "@/hooks/useApiError";
-import { changeApplicationStage, changeApplicationStatus, createApplication, deleteApplication, getApplication, updateApplication } from "../services/applications.service";
-import { Application, CreateApplicationPayload, UpdateApplicationPayload } from "../types/applications.types";
+import {
+  changeApplicationStage,
+  changeApplicationStatus,
+  createApplication,
+  deleteApplication,
+  getApplication,
+  getApplicationsJobs,
+  updateApplication,
+} from "../services/applications.service";
+import {
+  Application,
+  CreateApplicationPayload,
+  UpdateApplicationPayload,
+} from "../types/applications.types";
 
 export function useApplicationsActions(refetch?: () => Promise<void>) {
   const [loading, setLoading] = useState(false);
@@ -85,9 +97,9 @@ export function useApplicationsActions(refetch?: () => Promise<void>) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const changeStage= async (id: string, status: string) => {
+  const changeStage = async (id: string, status: string) => {
     setLoading(true);
     try {
       await changeApplicationStage(id, status);
@@ -98,7 +110,20 @@ export function useApplicationsActions(refetch?: () => Promise<void>) {
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const applicationsJobs = async () => {
+    setLoading(true);
+    try {
+      const res = await getApplicationsJobs();
+      return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
@@ -106,9 +131,10 @@ export function useApplicationsActions(refetch?: () => Promise<void>) {
     create,
     update,
     destroy,
-    changeStatus, 
+    changeStatus,
     changeStage,
     confirmDelete,
+    applicationsJobs,
     apiError: error,
     clearApiError: clearError,
   };

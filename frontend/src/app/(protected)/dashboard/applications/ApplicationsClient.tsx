@@ -2,21 +2,71 @@
 
 import { PageHeader } from "@/components/PageHeader";
 import { ApplicationsTable } from "@/features/applications/components/ApplicationsTable";
+import { CreateApplicationFormDialog } from "@/features/applications/components/CreateApplicationFormDialog";
 import { useApplicationsList } from "@/features/applications/hooks/useApplicationsList";
+import { Application } from "@/features/applications/types/applications.types";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 export function ApplicationsClient() {
   const applicationsList = useApplicationsList();
-  const handleCreateApplication = () => {};
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
+  const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+  const [selectedApplicationId, setSelectedApplication] =
+    useState<Application | null>(null);
+
+  const handleUpdate = (application: Application) => {
+    setSelectedApplication(application);
+    setOpenUpdateDialog(true);
+  };
+
+  const handleView = (application: Application) => {
+    setSelectedApplication(application);
+    setOpenViewDialog(true);
+  };
+
+  const handleCreateSuccess = async () => {
+    setOpenCreateDialog(false);
+    await applicationsList.refetch();
+  };
+
+  const handleUpdateSuccess = async () => {
+    setSelectedApplication(null);
+    setOpenUpdateDialog(false);
+    await applicationsList.refetch();
+  };
 
   return (
     <div className="w-full">
+      {/* PAGE INCLUDES */}
+      <CreateApplicationFormDialog
+        open={openCreateDialog}
+        setOpen={setOpenCreateDialog}
+        onSuccess={handleCreateSuccess}
+      />
+
+      {/* <UpdateDepartmentFormDialog
+        open={openUpdateDialog}
+        setOpen={setOpenUpdateDialog}
+        onSuccess={handleUpdateSuccess}
+        id={selectedDepartmentId!}
+      />
+
+      <ViewDepartmentDialog
+        open={openViewDialog}
+        setOpen={setOpenViewDialog}
+        id={selectedDepartmentId!}
+      /> */}
+     
+     
+     {/*  PAGE CONTENT  */}
       <PageHeader
         title="Applications"
         description="Manage your company applications effectively."
         actionLabel="Create Application"
         actionIcon={<Plus className="mr-2 h-4 w-4" />}
-        action={handleCreateApplication}
+        action={() => setOpenCreateDialog(true)}
       />
 
       <ApplicationsTable
@@ -26,9 +76,9 @@ export function ApplicationsClient() {
         query={applicationsList.query}
         setQuery={applicationsList.setQuery}
         refetch={applicationsList.refetch}
-        // onEdit={handleUpdateJob}
-        // onChangeStatus={handleChangeStatus}
-        // onView={handleViewJob}
+        onEdit={handleUpdate}
+        onChangeStatus={handleUpdate}
+        onView={handleView}
       />
     </div>
   );

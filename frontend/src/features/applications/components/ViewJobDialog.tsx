@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { AlertCircle, Building } from "lucide-react";
-import { useJobActions } from "../hooks/useJobsActions";
 import { useSafeHtmlRender } from "@/hooks/useSafeHtmlRender";
+import { useJobActions } from "@/features/jobs/hooks/useJobsActions";
 
 interface ViewJobDialogProps {
   id: string;

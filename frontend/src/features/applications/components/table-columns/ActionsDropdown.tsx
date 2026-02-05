@@ -67,7 +67,7 @@ export function ActionsDropdown({
           variant="destructive"
           className="cursor-pointer"
           disabled={isDeleting}
-          onClick={() => confirmDelete(row)}
+          onClick={() => confirmDelete?.(row)}
         >
           <Trash className="mr-2 h-4 w-4" />
           Delete

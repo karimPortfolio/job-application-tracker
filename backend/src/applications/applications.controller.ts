@@ -96,6 +96,32 @@ export class ApplicationsController {
     return this.applicationsService.createApplication(companyId, user, dto, file);
   }
 
+  @Post('parse-resume')
+  @UseInterceptors(FileInterceptor('resume', { storage: memoryStorage() }))
+  async parseCandidateResume(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }), // 2MB
+          new FileTypeValidator({
+            fileType:
+              /(pdf|text\/plain|vnd.openxmlformats-officedocument.wordprocessingml.document)$/,
+            fallbackToMimetype: true,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.applicationsService.parseCandidateResume(file);
+  }
+
+  @Get('/jobs')
+  async getApplicationsJobs(@Req() req: any) {
+    const companyId = req.user.company;
+    return this.applicationsService.getApplicationsJobs(companyId);
+  }
+
   @Get(':id')
   async getApplicationById(@Req() req: any, @Param('id') applicationId: string) {
     const companyId = req.user.company;
@@ -118,10 +144,10 @@ export class ApplicationsController {
             fallbackToMimetype: true,
           }),
         ],
+        fileIsRequired: false,
       }),
     )
-
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ) {
     const companyId = req.user.company;
     return this.applicationsService.updateApplication(applicationId, companyId, dto, file);

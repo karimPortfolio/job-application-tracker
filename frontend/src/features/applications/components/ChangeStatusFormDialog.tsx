@@ -1,5 +1,4 @@
 import { FormDialog } from "@/components/common/dialogs/FormDialog";
-import { Job } from "../types/jobs.types";
 import {
   Form,
   FormControl,
@@ -9,8 +8,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { useJobActions } from "../hooks/useJobsActions";
-import { JOB_STATUSES } from "../constants/job-constants";
 import {
   Select,
   SelectContent,
@@ -22,6 +19,9 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { changeJobStatusSchema } from "../schemas/change-job-status.schema copy";
 import { z } from "zod";
+import { Job } from "@/features/jobs/types/jobs.types";
+import { useJobActions } from "@/features/jobs/hooks/useJobsActions";
+import { JOB_STATUSES } from "@/features/jobs/constants/job-constants";
 
 type ChangeStatusFormData = z.infer<typeof changeJobStatusSchema>;
 

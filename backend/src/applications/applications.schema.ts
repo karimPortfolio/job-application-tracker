@@ -4,7 +4,7 @@ import { Company } from 'src/companies/company.schema';
 import { Job } from 'src/jobs/jobs.schema';
 import { User } from 'src/users/user.schema';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { formatDistanceToNow } from 'node_modules/date-fns/formatDistanceToNow';
+import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import leanVirtuals from 'mongoose-lean-virtuals';
 
 export type ApplicationDocument = HydratedDocument<Application>;

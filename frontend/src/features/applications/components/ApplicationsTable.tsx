@@ -30,6 +30,7 @@ import { CandidateContact } from "./table-columns/CandidateContact";
 import { CandidateResume } from "./table-columns/CandidateResume";
 import { Country, useCountries } from "@/shared/hooks/useCountries";
 import { SelectItem } from "@/components/ui/select";
+import { Job } from "@/features/jobs/types/jobs.types";
 
 interface ApplicationsTableProps {
   applications: Application[];
@@ -54,13 +55,14 @@ export function ApplicationsTable({
   onChangeStatus,
   onView,
 }: ApplicationsTableProps) {
-  const { confirmDelete, loading: isDeleting } =
+  const { confirmDelete, loading: isDeleting, applicationsJobs } =
     useApplicationsActions(refetch);
   const { user } = useAuth();
   const { handleSortChange } = useSorting(setQuery);
   const { handleFiltersChange, handleResetFilters, handleSearch } =
     useFilters(setQuery);
   const { countries, loading: countriesLoading } = useCountries();
+  const [jobs, setJobs] = useState<{id: string, title: string}[]>([]);
 
   const handlePageChange = (page: number) => {
     const totalPages = meta?.totalPages ?? 1;
@@ -103,15 +105,14 @@ export function ApplicationsTable({
     }));
   }, [countries]);
 
-  // useEffect(() => {
-  //   async function loadDepartments() {
-  //     const depts = await refetchJobsDepartments();
-  //     setDepartments(depts);
-  //   }
+  useEffect(() => {
+    async function loadJobs() {
+      const jobs = await applicationsJobs();
+      setJobs(jobs);
+    }
 
-  //   loadDepartments();
-  // }, []);
-  // console.log('countriesMap', countriesMap);
+    loadJobs();
+  }, []);
 
   const filters: FilterGroup[] = useMemo(
     () => [
@@ -128,6 +129,12 @@ export function ApplicationsTable({
         options: APPLICATION_STATUSES,
       },
       {
+        key: "job",
+        type: "relation",
+        label: "Job",
+        options: jobs.map(job => ({ label: job.title, value: job.id })),
+      },
+      {
         key: "country",
         type: "enum",
         label: "Country",
@@ -139,7 +146,7 @@ export function ApplicationsTable({
         label: "Applied Date",
       },
     ],
-    [countriesMap],
+    [countriesMap, jobs],
   );
 
   const columns: DataTableColumn<Application>[] = useMemo(
@@ -149,7 +156,7 @@ export function ApplicationsTable({
         label: "Candidate Name",
         sortable: true,
         render: (row) => (
-          <span className="font-semibold text-gray-900 dark:text-gray-100">
+          <span className="font-medium text-gray-900 dark:text-gray-100">
             {row.fullName}
           </span>
         ),

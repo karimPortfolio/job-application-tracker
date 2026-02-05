@@ -20,6 +20,9 @@ import { buildApplicationFilter } from './filters/applications.filters';
 import { buildApplicationSort } from './filters/applications.sort';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
+import { parseFileContent } from '../common/utils/fileParser';
+import { buildCandidateResumeParsingPrompt } from 'src/ai/prompts/candidate-resume-parsing.prompt';
+import { AIService } from '../ai/ai.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -32,6 +35,8 @@ export class ApplicationsService {
     private readonly jobModel: Model<JobDocument>,
     @InjectModel('User')
     private readonly userModel: Model<UserDocument>,
+    @Inject()
+    private readonly aiService: AIService,
     private readonly csvExporter: ApplicationsCsvExporter,
     private readonly xlsxExporter: ApplicationsXlsxExporter,
     private readonly s3Uploader: S3Uploader,
@@ -291,6 +296,72 @@ export class ApplicationsService {
     return updatedApplication;
   }
 
+  async getApplicationsJobs(companyId: string) {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cachedJobs = await this.cache.get(
+      this.getApplicationsJobsCacheKey(company),
+    );
+
+    if (cachedJobs) {
+      return cachedJobs;
+    }
+
+    const jobs = await this.jobModel
+      .find({
+        company: company,
+        status: {
+          $in: ['published', 'closed'],
+        },
+      })
+      .select('title');
+
+    await this.cache.set(
+      this.getApplicationsJobsCacheKey(company),
+      jobs,
+      60 * 1000,
+    );
+
+    return jobs;
+  }
+
+  async parseCandidateResume(file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
+    const content = await parseFileContent(file);
+
+    if (!content) {
+      throw new BadRequestException('Unable to parse file content');
+    }
+
+    const email = content.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
+    const phone = content.match(
+      /(\+?\d{1,3})?[\s.-]?\(?\d{2,3}\)?[\s.-]?\d{3,4}[\s.-]?\d{4}/,
+    )?.[0];
+
+    const prompt = buildCandidateResumeParsingPrompt(content, email, phone);
+    const candidateInfo = await this.aiService.run({
+      prompt,
+      temperature: 0.2,
+      maxTokens: 600,
+      feature: 'generic',
+    });
+    const cleaned = this.getCleanedAiResponse(candidateInfo);
+    const parsedResponse = this.parsedAiResponse(cleaned);
+
+    return {
+      fullName: parsedResponse.fullName ?? null,
+      email: parsedResponse.contactInformation?.email ?? parsedResponse.email ?? null,
+      phone: parsedResponse.contactInformation?.phoneNumber ?? parsedResponse.phone ?? null,
+      linkedin: parsedResponse.links?.linkedin ?? null,
+      github: parsedResponse.links?.github ?? null,
+      portfolio: parsedResponse.links?.portfolio ?? null,
+      country: parsedResponse.location?.country ?? null,
+      city: parsedResponse.location?.city ?? null,
+    };
+  }
+
   private async getCachedApplication(applicationId: string, companyId: string) {
     const cachedApplication = await this.cache.get(
       this.getCacheKey(applicationId),
@@ -306,6 +377,31 @@ export class ApplicationsService {
 
   private getCacheKey(applicationId: string) {
     return `application:${applicationId}`;
+  }
+
+  private getApplicationsJobsCacheKey(companyId: string) {
+    return `${companyId}:applications:jobs`;
+  }
+
+  private getCleanedAiResponse(response: any) {
+    const firstBrace = response.indexOf('{');
+    const lastBrace = response.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1) return null;
+
+    return response.slice(firstBrace, lastBrace + 1);
+  }
+
+  private parsedAiResponse(response: any) {
+    let parsed: any;
+    console.log('AI Response:', response);
+    try {
+      parsed = JSON.parse(response);
+    } catch (err) {
+      throw new Error('Invalid AI JSON response');
+    }
+
+    return parsed;
   }
 
   private async getCompanyOrThrow(companyId: string) {
@@ -325,6 +421,7 @@ export class ApplicationsService {
       keyPrefix: `applications/resumes/${companyId}`,
       metadata: { email: email || '' },
       acl: 'private',
+      errMessage: 'Resume is required and must be a valid file',
     });
   }
 

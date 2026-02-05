@@ -76,7 +76,7 @@ export interface CreateApplicationPayload {
   linkedInUrl?: string;
   githubUrl?: string;
   portfolioUrl?: string;
-  resumeUrl: string;
+  resume?: string | File;
   country?: string;
   city?: string;
   job: string;
@@ -94,16 +94,15 @@ export interface UpdateApplicationPayload {
   linkedInUrl?: string;
   githubUrl?: string;
   portfolioUrl?: string;
-  resumeUrl?: string;
+  resume?: string;
   country?: string;
   city?: string;
+  job?: string;
   status?: 'applied' | 'in_review' | 'interview' | 'offer' | 'hired' | 'rejected';
   stage?: 'screening' | 'technical_interview' | 'hr_interview' | 'final_interview' | 'offer';
   source?: string;
   referalName?: string;
   referalEmail?: string;
-  notes?: string;
-  rating?: number;
 }
 
 export interface PaginatedResponse<T> {

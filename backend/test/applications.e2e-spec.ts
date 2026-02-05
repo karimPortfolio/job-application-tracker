@@ -306,4 +306,237 @@ describe('Applications E2E Tests', () => {
       .set('Cookie', otherCookie)
       .expect(403);
   });
+
+  it('PATCH /api/applications/:id updates application', async () => {
+    // Create new application for update test
+    const createRes = await request(app.getHttpServer())
+      .post('/api/applications')
+      .set('Cookie', cookie)
+      .field('fullName', 'Update Test')
+      .field('email', 'updatetest@apps.com')
+      .field('phoneNumber', '987654321')
+      .field('country', 'UK')
+      .field('city', 'London')
+      .field('job', jobId)
+      .attach('resume', Buffer.from('255044462d312e350a25aaaa0a', 'hex'), {
+        filename: 'resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(201);
+
+    const appId = createRes.body._id;
+
+    const updateRes = await request(app.getHttpServer())
+      .patch(`/api/applications/${appId}`)
+      .set('Cookie', cookie)
+      .field('fullName', 'Updated Name')
+      .field('email', 'updated@apps.com')
+      .field('phoneNumber', '111111111')
+      .field('country', 'Canada')
+      .field('city', 'Toronto')
+      .expect(200);
+
+    expect(updateRes.body.fullName).toBe('Updated Name');
+    expect(updateRes.body.country).toBe('Canada');
+    expect(updateRes.body.city).toBe('Toronto');
+  });
+
+  it('PATCH /api/applications/:id forbidden for other company', async () => {
+    // Create new application first
+    const createRes = await request(app.getHttpServer())
+      .post('/api/applications')
+      .set('Cookie', cookie)
+      .field('fullName', 'Forbidden Update')
+      .field('email', 'forbiddenupdate@apps.com')
+      .field('phoneNumber', '555555555')
+      .field('country', 'USA')
+      .field('job', jobId)
+      .attach('resume', Buffer.from('255044462d312e350a25aaaa0a', 'hex'), {
+        filename: 'resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(201);
+
+    const appId = createRes.body._id;
+
+    // Try to update with different company cookie
+    await request(app.getHttpServer())
+      .patch(`/api/applications/${appId}`)
+      .set('Cookie', otherCookie)
+      .field('fullName', 'Hacked')
+      .field('email', 'hacked@apps.com')
+      .field('phoneNumber', '000000000')
+      .field('country', 'USA')
+      .expect(403);
+  });
+
+  it('POST /api/applications/parse-resume parses resume file', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/applications/parse-resume')
+      .set('Cookie', cookie)
+      .attach('resume', Buffer.from('John Doe john.doe@example.com +1234567890'), {
+        filename: 'resume.txt',
+        contentType: 'text/plain',
+      });
+
+    // Accept both 201 (success) or 200 (success) responses
+    expect([200, 201]).toContain(res.status);
+    expect(res.body).toBeDefined();
+    expect(typeof res.body).toBe('object');
+  }, 10000); // Increase timeout for AI processing
+
+  it('POST /api/applications/parse-resume rejects missing file', async () => {
+    await request(app.getHttpServer())
+      .post('/api/applications/parse-resume')
+      .set('Cookie', cookie)
+      .expect(400);
+  });
+
+  it('GET /api/applications/export exports as CSV', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/applications/export?format=csv')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(res.text).toBeDefined();
+    expect(res.type).toMatch(/text\/csv/);
+    expect(res.headers['content-disposition']).toContain('applications.csv');
+  });
+
+  it('GET /api/applications/export exports as XLSX', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/applications/export?format=xlsx')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(res.body).toBeDefined();
+    expect(res.type).toMatch(/vnd.openxmlformats-officedocument.spreadsheetml.sheet/);
+    expect(res.headers['content-disposition']).toContain('applications.xlsx');
+  });
+
+  it('GET /api/applications filters by search term', async () => {
+    // Create applications with different data
+    await request(app.getHttpServer())
+      .post('/api/applications')
+      .set('Cookie', cookie)
+      .field('fullName', 'Alice Smith')
+      .field('email', 'alice@apps.com')
+      .field('phoneNumber', '111111111')
+      .field('country', 'USA')
+      .field('job', jobId)
+      .attach('resume', Buffer.from('255044462d312e350a25aaaa0a', 'hex'), {
+        filename: 'resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(201);
+
+    const searchRes = await request(app.getHttpServer())
+      .get('/api/applications?search=alice')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(searchRes.body.docs.length).toBeGreaterThan(0);
+    expect(searchRes.body.docs.some((app: any) => app.fullName.toLowerCase().includes('alice') || app.email.toLowerCase().includes('alice'))).toBe(true);
+  });
+
+  it('GET /api/applications filters by country', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/applications?country=USA')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(Array.isArray(res.body.docs)).toBe(true);
+    // All returned applications should have country=USA or be empty
+    if (res.body.docs.length > 0) {
+      expect(res.body.docs.every((app: any) => app.country === 'USA' || !app.country)).toBe(true);
+    }
+  });
+
+  it('GET /api/applications filters by status', async () => {
+    // Create application with specific status
+    const createRes = await request(app.getHttpServer())
+      .post('/api/applications')
+      .set('Cookie', cookie)
+      .field('fullName', 'Status Filter Test')
+      .field('email', 'statustest@apps.com')
+      .field('phoneNumber', '222222222')
+      .field('country', 'USA')
+      .field('status', 'in_review')
+      .field('job', jobId)
+      .attach('resume', Buffer.from('255044462d312e350a25aaaa0a', 'hex'), {
+        filename: 'resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(201);
+
+    const filterRes = await request(app.getHttpServer())
+      .get('/api/applications?status=in_review')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(Array.isArray(filterRes.body.docs)).toBe(true);
+    if (filterRes.body.docs.length > 0) {
+      expect(filterRes.body.docs.every((app: any) => app.status === 'in_review')).toBe(true);
+    }
+  });
+
+  it('GET /api/applications filters by stage', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/applications?stage=screening')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(Array.isArray(res.body.docs)).toBe(true);
+    if (res.body.docs.length > 0) {
+      expect(res.body.docs.every((app: any) => app.stage === 'screening' || !app.stage)).toBe(true);
+    }
+  });
+
+  it('GET /api/applications supports pagination', async () => {
+    const page1 = await request(app.getHttpServer())
+      .get('/api/applications?page=1&limit=2')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(page1.body.page).toBe(1);
+    expect(page1.body.limit).toBe(2);
+    expect(page1.body.docs.length).toBeLessThanOrEqual(2);
+  });
+
+  it('GET /api/applications supports sorting', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/applications?sortBy=createdAt&order=asc')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(Array.isArray(res.body.docs)).toBe(true);
+    // Basic check that response is valid
+    expect(res.body.totalDocs).toBeDefined();
+  });
+
+  it('GET /api/applications/:id with populate shows job details', async () => {
+    const createRes = await request(app.getHttpServer())
+      .post('/api/applications')
+      .set('Cookie', cookie)
+      .field('fullName', 'Job Popup Test')
+      .field('email', 'jobpopuptest@apps.com')
+      .field('phoneNumber', '333333333')
+      .field('country', 'USA')
+      .field('job', jobId)
+      .attach('resume', Buffer.from('255044462d312e350a25aaaa0a', 'hex'), {
+        filename: 'resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(201);
+
+    const appId = createRes.body._id;
+
+    const getRes = await request(app.getHttpServer())
+      .get(`/api/applications/${appId}`)
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(getRes.body.job).toBeDefined();
+    expect(getRes.body.job.title).toBe('Backend Dev');
+  });
 });

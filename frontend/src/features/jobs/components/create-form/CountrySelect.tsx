@@ -14,11 +14,11 @@ import type { CreateJobPayload, UpdateJobPayload } from "../../types/jobs.types"
 
 type JobFormValues = CreateJobPayload | UpdateJobPayload;
 
-interface CountrySelectProps<T extends JobFormValues = CreateJobPayload> {
+interface CountrySelectProps<T extends JobFormValues = CreateJobPayload | UpdateJobPayload> {
   control: Control<T>;
 }
 
-export function CountrySelect<T extends JobFormValues = CreateJobPayload>({
+export function CountrySelect<T extends JobFormValues = CreateJobPayload | UpdateJobPayload>({
   control,
 }: CountrySelectProps<T>) {
   const { countries } = useCountries();

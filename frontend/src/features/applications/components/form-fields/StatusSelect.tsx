@@ -1,17 +1,16 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { JOB_STATUS_OPTIONS } from "@/features/jobs/constants/job-constants";
-import { JobStatusOption } from "@/features/types/jobs.types";
-import { Control, Path } from "react-hook-form";
-import { CreateJobPayload, UpdateJobPayload } from "../../types/jobs.types";
+import type { Control, Path } from "react-hook-form";
+import { APPLICATION_STATUSES } from "../../constants/application-constants";
+import type { ApplicationStatus, CreateApplicationPayload, UpdateApplicationPayload } from "../../types/applications.types";
 
-type JobFormValues = CreateJobPayload | UpdateJobPayload;
+type ApplicationFormValues = CreateApplicationPayload | UpdateApplicationPayload;
 
-interface StatusSelectProps<T extends JobFormValues = CreateJobPayload> {
+interface StatusSelectProps<T extends ApplicationFormValues = CreateApplicationPayload | UpdateApplicationPayload> {
   control: Control<T>;
 }
 
-export function StatusSelect<T extends JobFormValues = CreateJobPayload>({
+export function StatusSelect<T extends ApplicationFormValues = CreateApplicationPayload | UpdateApplicationPayload>({
   control,
 }: StatusSelectProps<T>) {
   const statusField = "status" as Path<T>;
@@ -29,8 +28,8 @@ export function StatusSelect<T extends JobFormValues = CreateJobPayload>({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {JOB_STATUS_OPTIONS.map(
-                    (status: JobStatusOption) => (
+                  {APPLICATION_STATUSES.map(
+                    (status: ApplicationStatus) => (
                       <SelectItem key={status.value} value={status.value}>
                         {status.label}
                       </SelectItem>
