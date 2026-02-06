@@ -4,6 +4,7 @@ import {
   Pencil,
   Trash,
   ArrowRightLeft,
+  Route,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -19,6 +20,7 @@ interface ActionsDropdownProps {
   onView?: (application: Application) => void;
   onEdit?: (application: Application) => void;
   onChangeStatus?: (application: Application) => void;
+  onChangeStage?: (application: Application) => void;
   onDelete?: (application: Application) => void;
   isDeleting?: boolean;
   confirmDelete?: (application: Application) => void;
@@ -29,6 +31,7 @@ export function ActionsDropdown({
   onView,
   onEdit,
   onChangeStatus,
+  onChangeStage,
   isDeleting,
   confirmDelete,
   row,
@@ -61,6 +64,13 @@ export function ActionsDropdown({
         >
           <ArrowRightLeft className="mr-2 h-4 w-4" />
           Change Status
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => onChangeStage?.(row)}
+        >
+          <Route className="mr-2 h-4 w-4" />
+          Change Stage
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

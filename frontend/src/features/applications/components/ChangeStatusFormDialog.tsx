@@ -17,43 +17,43 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { changeJobStatusSchema } from "../schemas/change-job-status.schema copy";
 import { z } from "zod";
-import { Job } from "@/features/jobs/types/jobs.types";
-import { useJobActions } from "@/features/jobs/hooks/useJobsActions";
-import { JOB_STATUSES } from "@/features/jobs/constants/job-constants";
+import { useApplicationsActions } from "../hooks/useApplicationsActions";
+import { Application } from "../types/applications.types";
+import { APPLICATION_STATUSES } from "../constants/application-constants";
+import { changeApplicationStatusSchema } from "../schemas/change-application-status.schema";
 
-type ChangeStatusFormData = z.infer<typeof changeJobStatusSchema>;
+type ChangeStatusFormData = z.infer<typeof changeApplicationStatusSchema>;
 
 interface ChangeStatusFormDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  job: Job | null;
+  application: Application;
   onSuccess: () => void;
 }
 
-const changeStatusResolver = zodResolver(changeJobStatusSchema);
+const changeStatusResolver = zodResolver(changeApplicationStatusSchema);
 
 export function ChangeStatusFormDialog({
   open,
   setOpen,
-  job,
+  application,
   onSuccess,
 }: ChangeStatusFormDialogProps) {
-  const { changeJobStatus, apiError, clearApiError, loading } = useJobActions();
+  const { changeStatus, apiError, clearApiError, loading } = useApplicationsActions();
 
   const form = useForm<ChangeStatusFormData>({
     resolver: changeStatusResolver,
     defaultValues: {
-      status: (job?.status as ChangeStatusFormData['status']),
+      status: (application?.status as ChangeStatusFormData['status']),
     },
   });
 
   const handleSubmit = async (values: ChangeStatusFormData) => {
     clearApiError();
     try {
-      if (job?.id) {
-        await changeJobStatus(job.id, values.status);
+      if (application) {
+        await changeStatus(application.id, values.status);
         onSuccess();
       }
     } catch {
@@ -65,6 +65,15 @@ export function ChangeStatusFormDialog({
     form.reset();
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (open && application) {
+      const status = APPLICATION_STATUSES.find((s) => s.value === application.status);
+      if (status) {
+        form.setValue("status", status.value as ChangeStatusFormData['status']);
+      }
+    }
+  }, [open, application, form]);
 
   useEffect(() => {
     if (apiError?.validationErrors) {
@@ -81,16 +90,16 @@ export function ChangeStatusFormDialog({
 
   return (
     <FormDialog
-      title="Change Job Status"
+      title="Change Application Status"
       isOpen={open}
       onClose={handleClose}
       onSubmit={handleSubmit}
       loading={loading}
-      formId="changeJobStatus"
+      formId="changeApplicationStatus"
     >
       <Form {...form}>
         <form
-          id="changeJobStatus"
+          id="changeApplicationStatus"
           onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-6 mt-3 mb-2"
         >
@@ -107,7 +116,7 @@ export function ChangeStatusFormDialog({
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent className="w-full">
-                        {JOB_STATUSES.map((option) => (
+                        {APPLICATION_STATUSES.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>

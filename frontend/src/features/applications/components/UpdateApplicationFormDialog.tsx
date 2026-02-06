@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateApplicationSchema } from "../schemas/update-application.schema";
 import { useApplicationsActions } from "../hooks/useApplicationsActions";
 import { useResumeParsing } from "../hooks/useResumeParsing";
-import type { UpdateApplicationPayload } from "../types/applications.types";
+import type { Application, UpdateApplicationPayload } from "../types/applications.types";
 import { FileInput } from "./form-fields/FileInput";
 import { CountrySelect } from "./form-fields/CountrySelect";
 import { JobSelect } from "./form-fields/JobSelect";
@@ -25,14 +25,14 @@ interface UpdateApplicationFormDialogProps {
   onSuccess: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
-  id: string;
+  application: Application;
 }
 
 export function UpdateApplicationFormDialog({
   onSuccess,
   open = false,
   setOpen,
-  id,
+  application,
 }: UpdateApplicationFormDialogProps) {
   const { update, findApplication, loading, apiError, clearApiError } =
     useApplicationsActions();
@@ -75,7 +75,7 @@ export function UpdateApplicationFormDialog({
         }
       });
 
-      await update(id, dirtyValues as UpdateApplicationPayload);
+      await update(application.id, dirtyValues as UpdateApplicationPayload);
       form.reset();
       setChangeResume(false);
       onSuccess();
@@ -94,23 +94,23 @@ export function UpdateApplicationFormDialog({
   useEffect(() => {
     async function fetchApplication() {
       if (open) {
-        const application = await findApplication(id);
+        const applicationData = await findApplication(application.id);
         const jobId =
-          typeof application.job === "string"
-            ? application.job
-            : application.job?._id || "";
+          typeof applicationData.job === "string"
+            ? applicationData.job
+            : applicationData.job?._id || "";
         const initialValues: UpdateApplicationPayload = {
-          fullName: application.fullName,
-          email: application.email,
-          phoneNumber: application.phoneNumber,
-          country: application.country || "",
+          fullName: applicationData.fullName,
+          email: applicationData.email,
+          phoneNumber: applicationData.phoneNumber,
+          country: applicationData.country || "",
           job: String(jobId),
-          linkedInUrl: application.linkedInUrl || "",
-          portfolioUrl: application.portfolioUrl || "",
+          linkedInUrl: applicationData.linkedInUrl || "",
+          portfolioUrl: applicationData.portfolioUrl || "",
           resume: undefined,
-          city: application.city || "",
-          status: application.status,
-          stage: application.stage,
+          city: applicationData.city || "",
+          status: applicationData.status,
+          stage: applicationData.stage,
         };
         initialValuesRef.current = initialValues;
         form.reset(initialValues);
@@ -122,7 +122,7 @@ export function UpdateApplicationFormDialog({
       }
     }
     fetchApplication();
-  }, [open, id, form]);
+  }, [open, application, form]);
 
   useEffect(() => {
     if (apiError?.validationErrors) {

@@ -17,5 +17,5 @@ export const createApplicationSchema = z.object({
   appliedAt: z.string().datetime().optional(),
 });
 
-export type CreateApplicationSchema = z.infer<typeof createApplicationSchema>;export type CreateApplicationSchema = typeof createApplicationSchema;
+export type CreateApplicationSchema = typeof createApplicationSchema;
 

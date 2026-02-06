@@ -29,8 +29,6 @@ import { StageDetails } from "./table-columns/StageDetails";
 import { CandidateContact } from "./table-columns/CandidateContact";
 import { CandidateResume } from "./table-columns/CandidateResume";
 import { Country, useCountries } from "@/shared/hooks/useCountries";
-import { SelectItem } from "@/components/ui/select";
-import { Job } from "@/features/jobs/types/jobs.types";
 
 interface ApplicationsTableProps {
   applications: Application[];
@@ -42,6 +40,7 @@ interface ApplicationsTableProps {
   onEdit?: (application: Application) => void;
   onChangeStatus?: (application: Application) => void;
   onView?: (application: Application) => void;
+  onChangeStage?: (application: Application) => void;
 }
 
 export function ApplicationsTable({
@@ -54,6 +53,7 @@ export function ApplicationsTable({
   onEdit,
   onChangeStatus,
   onView,
+  onChangeStage,
 }: ApplicationsTableProps) {
   const { confirmDelete, loading: isDeleting, applicationsJobs } =
     useApplicationsActions(refetch);
@@ -199,7 +199,7 @@ export function ApplicationsTable({
       },
       {
         key: "stage",
-        label: "Stage",
+        label: "Recruitment Stage",
         render: (row) => (
           <StageDetails row={row} applicationStagesMap={applicationStagesMap} />
         ),
@@ -224,6 +224,7 @@ export function ApplicationsTable({
             onEdit={onEdit}
             onView={onView}
             onChangeStatus={onChangeStatus}
+            onChangeStage={onChangeStage}
             isDeleting={isDeleting}
             confirmDelete={confirmDelete}
           />
