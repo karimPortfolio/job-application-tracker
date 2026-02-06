@@ -41,7 +41,7 @@ export function CreateApplicationFormDialog({
     defaultValues: {
       fullName: "",
       email: "",
-      phoneNumber: "+212609679375",
+      phoneNumber: "",
       country: "",
       job: "",
       linkedInUrl: "",
@@ -97,7 +97,7 @@ export function CreateApplicationFormDialog({
       onSubmit={handleSubmit}
       loading={loading}
       formId="createApplicationForm"
-      className="sm:max-w-2xl"
+      className="max-h-3/4 sm:max-h-fit sm:max-w-2xl overflow-auto"
     >
       <Form {...form}>
         <form
@@ -130,26 +130,26 @@ export function CreateApplicationFormDialog({
                   disabled={isFormBusy}
                 />
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 items-start gap-4">
                 <FullNameInput control={form.control as any} />
                 <EmailInput control={form.control as any} />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 items-start gap-4">
                 <PhoneNumberInput control={form.control as any} />
                 <JobSelect control={form.control as any} />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 items-start gap-4">
                 <CountrySelect control={form.control as any} />
                 <CityInput control={form.control as any} />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 items-start gap-4">
                 <StatusSelect control={form.control as any} />
                 <StageSelect control={form.control as any} />
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 items-start gap-4">
                 <LinkedinUrlInput control={form.control as any} />
                 <PortfolioUrlInput control={form.control as any} />
               </div>

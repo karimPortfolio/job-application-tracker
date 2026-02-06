@@ -33,10 +33,7 @@ export const updateApplication = (
   payload: UpdateApplicationPayload | FormData,
 ) => {
   return api.patch(APPLICATIONS_ROUTES.updateApplication(id), payload, {
-    headers:
-      payload instanceof FormData
-        ? { "Content-Type": "multipart/form-data" }
-        : {},
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 

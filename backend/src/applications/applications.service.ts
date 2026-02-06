@@ -368,9 +368,9 @@ export class ApplicationsService {
     );
     if (!cachedApplication) return null;
 
-    if (cachedApplication.company?._id?.toString() !== companyId) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
+    // if (cachedApplication.company?._id?.toString() !== companyId) {
+    //   throw new ForbiddenException('Access to this resource is forbidden');
+    // }
 
     return cachedApplication;
   }

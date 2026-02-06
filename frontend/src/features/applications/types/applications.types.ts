@@ -94,7 +94,7 @@ export interface UpdateApplicationPayload {
   linkedInUrl?: string;
   githubUrl?: string;
   portfolioUrl?: string;
-  resume?: string;
+  resume?: string | File;
   country?: string;
   city?: string;
   job?: string;

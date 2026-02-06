@@ -16,18 +16,20 @@ export const FileInput = <T extends ApplicationFormValues = ApplicationFormValue
   onFileSelect,
   onFileClear,
   disabled = false,
+  className,
 }: {
   control: Control<T>;
   onFileSelect?: (file: File) => void;
   onFileClear?: () => void;
   disabled?: boolean;
+  className?: string;
 }) => {
   return (
     <FormField
       control={control}
       name={"resume" as any}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={className}>
           <FormLabel>Resume</FormLabel>
           <FormControl>
             <FileDropZone

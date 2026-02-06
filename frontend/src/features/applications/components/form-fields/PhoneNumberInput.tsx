@@ -35,16 +35,6 @@ function parsePhoneNumber(value?: string) {
   return { code, number };
 }
 
-// function buildPhoneValue(code: string, number: string) {
-//   const trimmedCode = code.trim();
-//   const trimmedNumber = number.trim();
-
-//   if (!trimmedCode) return trimmedNumber;
-//   if (!trimmedNumber) return trimmedCode;
-
-//   const formattedCode = trimmedCode.startsWith("+") ? trimmedCode : `+${trimmedCode}`;
-//   return `${formattedCode} ${trimmedNumber}`;
-// }
 
 function applyPhoneMask(value: string): string {
   const digits = value.replace(/\D/g, "");
@@ -52,8 +42,8 @@ function applyPhoneMask(value: string): string {
   if (digits.length <= 3) return digits;
   if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
   if (digits.length <= 10)
-    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}${digits.slice(6)}`;
-  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}${digits.slice(6, 10)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 15)}`;
 }
 
 export const PhoneNumberInput = memo(function PhoneNumberInput<T extends ApplicationFormValues = ApplicationFormValues>({
@@ -73,7 +63,7 @@ export const PhoneNumberInput = memo(function PhoneNumberInput<T extends Applica
       typeof phoneNumberValue === "string" ? phoneNumberValue : "",
     );
     setSelectedCode(code || "");
-    setPhoneDigits(number || "");
+    setPhoneDigits(number || code);
   }, [phoneNumberValue]);
 
   const phoneCodeOptions = useMemo(() => {
@@ -108,96 +98,99 @@ export const PhoneNumberInput = memo(function PhoneNumberInput<T extends Applica
     return options;
   }, [countries, searchedCountryCode]);
 
-  const handleCodeChange = (nextCode: string) => {
-    setSelectedCode(nextCode);
-    const mergedValue =
-      nextCode && phoneDigits
-        ? `${nextCode} ${phoneDigits}`
-        : nextCode || phoneDigits;
-    control._formValues.phoneNumber = mergedValue;
-  };
-
-  const handlePhoneChange = (rawValue: string) => {
-    setPhoneDigits(rawValue);
-    const mergedValue =
-      selectedCode && rawValue
-        ? `${selectedCode} ${rawValue}`
-        : selectedCode || rawValue;
-    control._formValues.phoneNumber = mergedValue;
-  };
-
   return (
     <FormField
       control={control}
       name={"phoneNumber" as any}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel htmlFor="phoneNumber">Phone Number</FormLabel>
-          <FormControl>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
-              <Select
-                value={selectedCode || ""}
-                onValueChange={handleCodeChange}
-                disabled={loading}
-              >
-                <SelectTrigger className="w-fit">
-                  <SelectValue placeholder="+1" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <div>
-                    <Input
-                      placeholder="Search country code"
-                      value={searchedCountryCode}
-                      onChange={(e) => setSearchedCountryCode(e.target.value)}
-                      onKeyDown={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                  <Separator className="my-2" />
-                  <SelectGroup>
-                    {phoneCodeOptions.length > 0 ? (
-                      phoneCodeOptions.map((country, index) => (
-                        <SelectItem key={index} value={country.phoneCode}>
-                          <span className="flex items-center gap-2">
-                            <img
-                              src={country.flag}
-                              alt={country.code}
-                              width={20}
-                              height={14}
-                              className="rounded-sm"
-                            />
-                            <span className="font-medium">
-                              {country.phoneCode}
+      render={({ field }) => {
+        const handleCodeChange = (nextCode: string) => {
+          setSelectedCode(nextCode);
+        };
+
+        const handlePhoneChange = (rawValue: string) => {
+          setPhoneDigits(rawValue);
+        };
+
+        const updateFieldValue = () => {
+          const mergedValue =
+            selectedCode && phoneDigits
+              ? `${selectedCode} ${phoneDigits}`
+              : selectedCode || phoneDigits;
+          field.onChange(mergedValue);
+        };
+
+        return (
+          <FormItem>
+            <FormLabel htmlFor="phoneNumber">Phone Number</FormLabel>
+            <FormControl>
+              <div className="flex gap-2 sm:flex-row sm:items-start">
+                <Select
+                  value={selectedCode || ""}
+                  onValueChange={handleCodeChange}
+                  disabled={loading}
+                >
+                  <SelectTrigger className="w-fit">
+                    <SelectValue placeholder="+1" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <div>
+                      <Input
+                        placeholder="Search country code"
+                        value={searchedCountryCode}
+                        onChange={(e) => setSearchedCountryCode(e.target.value)}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    <Separator className="my-2" />
+                    <SelectGroup>
+                      {phoneCodeOptions.length > 0 ? (
+                        phoneCodeOptions.map((country, index) => (
+                          <SelectItem key={index} value={country.phoneCode}>
+                            <span className="flex items-center gap-2">
+                              <img
+                                src={country.flag}
+                                alt={country.code}
+                                width={20}
+                                height={14}
+                                className="rounded-sm"
+                              />
+                              <span className="font-medium">
+                                {country.phoneCode}
+                              </span>
                             </span>
-                          </span>
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                        No countries found
-                      </div>
-                    )}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <div className="flex-1">
-                <Input
-                  placeholder="000-0000"
-                  value={applyPhoneMask(phoneDigits)}
-                  onChange={(event) => {
-                    const rawValue = event.target.value.replace(/\D/g, "");
-                    handlePhoneChange(rawValue);
-                  }}
-                  onBlur={field.onBlur}
-                  ref={field.ref}
-                  className="flex-1"
-                  id="phoneNumber"
-                />
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          No countries found
+                        </div>
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <div className="flex-1">
+                  <Input
+                    placeholder="000-0000"
+                    value={applyPhoneMask(phoneDigits)}
+                    onChange={(event) => {
+                      const rawValue = event.target.value.replace(/\D/g, "");
+                      handlePhoneChange(rawValue);
+                    }}
+                    onBlur={() => {
+                      updateFieldValue();
+                      field.onBlur();
+                    }}
+                    ref={field.ref}
+                    className="flex-1"
+                    id="phoneNumber"
+                  />
+                </div>
               </div>
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 });
