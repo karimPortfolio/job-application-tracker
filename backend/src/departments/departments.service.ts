@@ -227,7 +227,6 @@ export class DepartmentsService {
       },
       { $group: { _id: '$department', count: { $sum: 1 } } },
     ]);
-    console.log(counts);
 
     return Object.fromEntries(counts.map((j) => [j._id.toString(), j.count]));
   }
