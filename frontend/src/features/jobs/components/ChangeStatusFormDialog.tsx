@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { changeJobStatusSchema } from "../schemas/change-job-status.schema copy";
+import { changeJobStatusSchema } from "../schemas/change-job-status.schema";
 import { z } from "zod";
 
 type ChangeStatusFormData = z.infer<typeof changeJobStatusSchema>;

@@ -13,19 +13,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
-  SidebarSeparator,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
   Briefcase,
-  UserRound,
   Settings,
   Bell,
-  Plus,
   Building,
   Network,
+  ClipboardCheck,
 } from "lucide-react";
 import { Logo } from "../Logo";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -43,16 +39,16 @@ export const mainNav: NavItem[] = [
     href: "/dashboard",
     icon: <LayoutDashboard size={18} />,
   },
+  {
+    label: "Applications",
+    href: "/dashboard/applications",
+    icon: <ClipboardCheck size={18} />,
+  },
   { label: "Jobs", href: "/dashboard/jobs", icon: <Briefcase size={18} /> },
   {
     label: "Departments",
     href: "/dashboard/departments",
     icon: <Network size={18} />,
-  },
-  {
-    label: "Candidates",
-    href: "/dashboard/candidates",
-    icon: <UserRound size={18} />,
   },
 ];
 

@@ -4,6 +4,7 @@ export interface Country {
   code: string;
   name: string;
   flag: string;
+  phoneCode: string;
 }
 
 let cachedCountries: Country[] | null = null;
@@ -24,7 +25,7 @@ export function useCountries() {
 
       if (!inflight) {
         inflight = fetch(
-          `${process.env.NEXT_PUBLIC_COUNTRIES_API}?fields=cca2,name,flags`
+          `${process.env.NEXT_PUBLIC_COUNTRIES_API}?fields=cca2,name,flags,idd`
         )
           .then((res) => res.json())
           .then((data) =>
@@ -33,6 +34,7 @@ export function useCountries() {
                 code: c.cca2,
                 name: c.name.common,
                 flag: c.flags.svg,
+                phoneCode: c.idd.root && c.idd.suffixes ? c.idd.root + c.idd.suffixes[0] : "",
               }))
               .sort((a: Country, b: Country) => a.name.localeCompare(b.name)),
           )

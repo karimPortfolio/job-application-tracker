@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Funnel, FunnelX, RotateCcw, SlidersHorizontal, X } from "lucide-react";
+import { Funnel, FunnelX, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import {
   useFiltersBar,
   type FilterGroup,
@@ -121,8 +121,8 @@ export function FiltersBar({
   const handleRefresh = onRefresh ? refresh : onRefresh;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 ">
-      <div className="flex items-center gap-2 flex-1 min-w-60">
+    <div className="flex flex-wrap items-center justify-between gap-2 ">
+      <div className="flex items-center gap-2 flex-1 min-w-60 sm:max-w-md">
         <Input
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
