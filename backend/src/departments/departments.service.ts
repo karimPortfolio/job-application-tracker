@@ -220,12 +220,14 @@ export class DepartmentsService {
     const counts = await this.jobModel.aggregate([
       {
         $match: {
-          departmentId: { $in: departmentIds },
-          companyId: new Types.ObjectId(companyId),
+          department: { $in: departmentIds },
+          status: { $in: ['published', 'closed'] },
+          company: companyId,
         },
       },
-      { $group: { _id: '$departmentId', count: { $sum: 1 } } },
+      { $group: { _id: '$department', count: { $sum: 1 } } },
     ]);
+    console.log(counts);
 
     return Object.fromEntries(counts.map((j) => [j._id.toString(), j.count]));
   }
