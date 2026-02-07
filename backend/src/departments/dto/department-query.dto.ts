@@ -26,9 +26,9 @@ export class DepartmentQueryDto {
 
   @IsOptional()
   @IsDateString()
-  createdFrom?: string;
+  createdStart?: string;
 
   @IsOptional()
   @IsDateString()
-  createdTo?: string;
+  createdEnd?: string;
 }

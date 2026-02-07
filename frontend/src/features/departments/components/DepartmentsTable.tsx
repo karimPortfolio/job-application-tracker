@@ -1,91 +1,88 @@
-'use client'
+"use client";
 
-import { DataTable, type DataTableColumn } from '@/components/common/DataTable'
+import { DataTable, type DataTableColumn } from "@/components/common/DataTable";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-import { Eye, MoreHorizontal, Pencil, Trash } from 'lucide-react'
+import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
 
-import { useDepartmentsList } from '../hooks/useDepartmentsList'
-import { Department, DepartmentQuery } from '../types/departments.types'
-import { useTextTruncate } from '@/hooks/useTextTruncate'
-import { FiltersBar } from '@/components/filters/FiltersBar'
-import type { FilterGroup } from '@/hooks/useFiltersBar'
-import { useAuth } from '@/features/auth/hooks/useAuth'
-import { useMemo } from 'react'
-import { useDepartmentsActions } from '../hooks/useDepartmentsActions'
+import { useDepartmentsList } from "../hooks/useDepartmentsList";
+import { Department, DepartmentQuery } from "../types/departments.types";
+import { useTextTruncate } from "@/hooks/useTextTruncate";
+import { FiltersBar } from "@/components/filters/FiltersBar";
+import type { FilterGroup } from "@/hooks/useFiltersBar";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useMemo } from "react";
+import { useDepartmentsActions } from "../hooks/useDepartmentsActions";
+import { useFilters } from "../hooks/useFilters";
 
 interface DepartmentsTableProps {
-  onEdit?: (id: string) => void
-  onView?: (id: string) => void
-  list?: ReturnType<typeof useDepartmentsList>
+  onEdit?: (id: string) => void;
+  onView?: (id: string) => void;
+  list?: ReturnType<typeof useDepartmentsList>;
 }
 
-export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps) {
-  const {
-    departments,
-    loading,
-    meta,
-    query,
-    setQuery,
-    refetch,
-  } = list ?? useDepartmentsList()
-  const { confirmDelete, loading: isDeleting } = useDepartmentsActions()
-  const { truncate } = useTextTruncate()
+export function DepartmentsTable({
+  onEdit,
+  onView,
+  list,
+}: DepartmentsTableProps) {
+  const { departments, loading, meta, query, setQuery, refetch } =
+    list ?? useDepartmentsList();
+
+  const { handleFiltersChange, handleResetFilters, handleSearch } =
+    useFilters(setQuery);
+
+  const { confirmDelete, loading: isDeleting } = useDepartmentsActions();
+
+  const { truncate } = useTextTruncate();
   const { user } = useAuth();
 
   const handlePageChange = (page: number) => {
-    const totalPages = meta?.totalPages ?? 1
-    const safe = Math.min(Math.max(page, 1), totalPages)
-    setQuery((prev) => ({ ...prev, page: safe }))
-  }
+    const totalPages = meta?.totalPages ?? 1;
+    const safe = Math.min(Math.max(page, 1), totalPages);
+    setQuery((prev) => ({ ...prev, page: safe }));
+  };
 
   const handleLimitChange = (value: number) => {
-    setQuery((prev) => ({ ...prev, limit: value, page: 1 }))
-  }
+    setQuery((prev) => ({ ...prev, limit: value, page: 1 }));
+  };
 
-  const handleSearch = (term: string) => {
-    setQuery((prev) => ({ ...prev, search: term, page: 1 }))
-  }
-
-  const handleSortChange = (sort: { key: string; direction: 'asc' | 'desc' } | null) => {
-    const sortKey: DepartmentQuery['sortBy'] = sort?.key === 'title' ? 'title' : 'createdAt'
-    const order: DepartmentQuery['order'] = sort?.direction ?? 'desc'
+  const handleSortChange = (
+    sort: { key: string; direction: "asc" | "desc" } | null,
+  ) => {
+    const sortKey: DepartmentQuery["sortBy"] =
+      sort?.key === "title" ? "title" : "createdAt";
+    const order: DepartmentQuery["order"] = sort?.direction ?? "desc";
 
     setQuery((prev) => ({
       ...prev,
       sortBy: sortKey,
       order,
       page: 1,
-    }))
-  }
+    }));
+  };
 
   const filters: FilterGroup[] = [
-    { key: 'status', type: 'enum', label: 'Status', options: [
-      { label: 'Active', value: 'active' },
-      { label: 'Inactive', value: 'inactive' },
-    ]},
-  ]
-
-  const handleFiltersChange = (next: Record<string, unknown>) => {
-    const statusVal = typeof next.status === 'string' ? next.status : undefined
-    setQuery((prev) => ({ ...prev, status: statusVal, page: 1 }))
-  }
-
-  const handleResetFilters = () => {
-    setQuery((prev) => ({ ...prev, status: undefined, page: 1 }))
-  }
+    {
+      key: "createdAt",
+      type: "date",
+      label: "Created Date",
+    },
+  ];
 
   const fileName = useMemo(() => {
     if (user?.company && user?.company.name) {
-      const sanitizedCompanyName = user.company.name.toLowerCase().replace(/\s+/g, '_');
+      const sanitizedCompanyName = user.company.name
+        .toLowerCase()
+        .replace(/\s+/g, "_");
       return `${sanitizedCompanyName}_departments_export`;
     }
 
@@ -93,48 +90,58 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
   }, [user?.company.name]);
 
   const endpoint = useMemo(() => {
-    return `${process.env.NEXT_PUBLIC_API_VERSION || ''}/departments/export`;
+    return `${process.env.NEXT_PUBLIC_API_VERSION || ""}/departments/export`;
   }, []);
 
   const columns: DataTableColumn<Department>[] = [
     {
-      key: 'title',
-      label: 'Title',
+      key: "title",
+      label: "Title",
       sortable: true,
-      render: (row) => <span className="font-semibold text-gray-900 dark:text-gray-100">{row.title}</span>,
-    },
-    {
-      key: 'description',
-      label: 'Description',
       render: (row) => (
-        <span className="text-sm text-gray-700 dark:text-gray-400" title={row.description || ''}>
-          {row.description ? truncate(row.description, 70) : 'N/A'}
+        <span className="font-semibold text-gray-900 dark:text-gray-100">
+          {row.title}
         </span>
       ),
     },
-    { 
-      key: 'jobsCount',
-      label: 'Jobs',
+    {
+      key: "description",
+      label: "Description",
+      render: (row) => (
+        <span
+          className="text-sm text-gray-700 dark:text-gray-400"
+          title={row.description || ""}
+        >
+          {row.description ? truncate(row.description, 70) : "N/A"}
+        </span>
+      ),
+    },
+    {
+      key: "jobsCount",
+      label: "Jobs",
       render: (row) => (
         <Badge variant="secondary" className="font-mono text-white text-xs">
           {row.jobsCount ?? 0} posted
         </Badge>
       ),
     },
-    { 
-      key: 'createdAtDiff',
-      label: 'Creation details',
+    {
+      key: "createdAtDiff",
+      label: "Creation details",
       sortable: true,
       render: (row) => (
-        <span className="text-sm text-gray-700 dark:text-gray-400" title={row.description || ''}>
+        <span
+          className="text-sm text-gray-700 dark:text-gray-400"
+          title={row.description || ""}
+        >
           {row.createdAtDiff || row.createdAt}
         </span>
-      )
+      ),
     },
     {
-      key: 'actions',
-      label: 'Actions',
-      align: 'left',
+      key: "actions",
+      label: "Actions",
+      align: "left",
       render: (row) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -143,22 +150,28 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className='cursor-pointer' onClick={() => onView?.(row._id)}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => onView?.(row._id)}
+            >
               <Eye className="mr-2 h-4 w-4" />
               View Details
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer' onClick={() => onEdit?.(row._id)}>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => onEdit?.(row._id)}
+            >
               <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              variant='destructive'
-              className='cursor-pointer'
+              variant="destructive"
+              className="cursor-pointer"
               disabled={isDeleting}
               onClick={async () => {
-                await confirmDelete(row)
-                await refetch()
+                await confirmDelete(row);
+                await refetch();
               }}
             >
               <Trash className="mr-2 h-4 w-4" />
@@ -168,7 +181,7 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
   return (
     <div className="space-y-4">
@@ -179,7 +192,7 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
         onFiltersChange={handleFiltersChange}
         onReset={handleResetFilters}
         onRefresh={async () => {
-          await refetch()
+          await refetch();
         }}
         endpoint={endpoint}
         filename={fileName}
@@ -191,7 +204,10 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
         striped
         emptyMessage="No departments found."
         remoteSort
-        defaultSort={{ key: query.sortBy ?? 'createdAt', direction: (query.order as 'asc' | 'desc') ?? 'desc' }}
+        defaultSort={{
+          key: query.sortBy ?? "createdAt",
+          direction: (query.order as "asc" | "desc") ?? "desc",
+        }}
         onSortChange={handleSortChange}
         pagination={{
           page: meta?.page ?? 1,
@@ -206,5 +222,5 @@ export function DepartmentsTable({ onEdit, onView, list }: DepartmentsTableProps
         }}
       />
     </div>
-  )
+  );
 }

@@ -19,9 +19,10 @@ export interface DepartmentQuery {
   page?: number;
   limit?: number;
   search?: string;
-  status?: string;
   sortBy?: 'createdAt' | 'title';
   order?: 'asc' | 'desc';
+  createdStart?: string;
+  createdEnd?: string;
 }
 
 export interface CreateDepartmentPayload {

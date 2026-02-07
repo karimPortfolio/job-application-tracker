@@ -113,6 +113,11 @@ export class ApplicationsService {
       user: userId,
     });
 
+    this.jobModel.updateOne(
+      { _id: job },
+      { $inc: { applicationsCount: 1 } },
+    ).exec();
+
     return application;
   }
 
@@ -368,9 +373,9 @@ export class ApplicationsService {
     );
     if (!cachedApplication) return null;
 
-    // if (cachedApplication.company?._id?.toString() !== companyId) {
-    //   throw new ForbiddenException('Access to this resource is forbidden');
-    // }
+    if (cachedApplication.company?._id?.toString() !== companyId) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
 
     return cachedApplication;
   }
@@ -394,7 +399,6 @@ export class ApplicationsService {
 
   private parsedAiResponse(response: any) {
     let parsed: any;
-    console.log('AI Response:', response);
     try {
       parsed = JSON.parse(response);
     } catch (err) {

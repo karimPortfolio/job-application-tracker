@@ -8,6 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Model } from 'mongoose';
+import { useContainer } from 'class-validator';
 import { AppModule } from '../src/app.module';
 import { Company } from '../src/companies/company.schema';
 import { User } from '../src/users/user.schema';
@@ -38,6 +39,7 @@ describe('Companies E2E Tests', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.enableVersioning({

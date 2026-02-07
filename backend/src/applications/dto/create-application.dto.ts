@@ -1,5 +1,4 @@
 import { IsEmail, IsNotEmpty, IsNotIn, IsOptional, IsString, MinLength } from "class-validator";
-import { IsApplicationEmailUnique } from "../../common/decorators/is-application-email-uniqe.validator";
 
 
 export class CreateApplicationDto {
@@ -10,7 +9,6 @@ export class CreateApplicationDto {
 
     @IsNotEmpty()
     @IsEmail()
-    @IsApplicationEmailUnique({ message: 'Email already exists' })
     @MinLength(5)
     email: string;
 

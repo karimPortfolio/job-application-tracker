@@ -210,6 +210,19 @@ export function JobsTable({
         ),
       },
       {
+        key: "applicationsCount",
+        label: "Applications",
+        render: (row) => (
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            <Badge
+              className="bg-primary text-white"
+            >
+              {row.applicationsCount ?? 0} application{(row.applicationsCount ?? 0) !== 1 ? "s" : ""}
+            </Badge>
+          </span>
+        ),
+      },
+      {
         key: "isRemote",
         label: "Remote",
         render: (row) => (

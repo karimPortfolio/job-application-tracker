@@ -11,11 +11,6 @@ export function buildDepartmentFilter(
     company: company,
   };
 
-  if (query.title) {
-    filter.title = query.title;
-    return filter;
-  }
-
   if (query.search) {
     filter.$or = [
       { title: { $regex: query.search, $options: 'i' } },
@@ -23,15 +18,15 @@ export function buildDepartmentFilter(
     ];
   }
 
-  if (query.createdFrom || query.createdTo) {
+  if (query.createdStart || query.createdEnd) {
     filter.createdAt = {};
 
-    if (query.createdFrom) {
-      filter.createdAt.$gte = new Date(query.createdFrom);
+    if (query.createdStart) {
+      filter.createdAt.$gte = new Date(query.createdStart);
     }
 
-    if (query.createdTo) {
-      filter.createdAt.$lte = new Date(query.createdTo);
+    if (query.createdEnd) {
+      filter.createdAt.$lte = new Date(query.createdEnd);
     }
   }
 
