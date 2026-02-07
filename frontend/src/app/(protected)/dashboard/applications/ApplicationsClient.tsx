@@ -6,6 +6,7 @@ import { ChangeStageFormDialog } from "@/features/applications/components/Change
 import { ChangeStatusFormDialog } from "@/features/applications/components/ChangeStatusFormDialog";
 import { CreateApplicationFormDialog } from "@/features/applications/components/CreateApplicationFormDialog";
 import { UpdateApplicationFormDialog } from "@/features/applications/components/UpdateApplicationFormDialog";
+import { ViewApplicationDialog } from "@/features/applications/components/ViewApplicationDialog";
 import { useApplicationsList } from "@/features/applications/hooks/useApplicationsList";
 import { Application } from "@/features/applications/types/applications.types";
 import { Plus } from "lucide-react";
@@ -95,11 +96,11 @@ export function ApplicationsClient() {
         onSuccess={handleStageChangeSuccess}
       />
 
-      {/* <ViewDepartmentDialog
+      <ViewApplicationDialog
         open={openViewDialog}
         setOpen={setOpenViewDialog}
-        id={selectedDepartmentId!}
-      /> */}
+        id={selectedApplication?.id}
+      />
 
       {/*  PAGE CONTENT  */}
       <PageHeader

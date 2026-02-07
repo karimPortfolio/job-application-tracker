@@ -229,7 +229,7 @@ export function DataTable<T>({
             ))}
           </SelectContent>
         </Select>
-        <Pagination className="w-auto">
+        <Pagination className="w-auto m-0 flex-1 flex justify-end">
           <PaginationContent>
             <PaginationPrevious
               href="#"

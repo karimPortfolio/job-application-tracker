@@ -37,7 +37,7 @@ export function ViewDepartmentDialog({
 
   return (
     <ViewDialog
-      title="View Department"
+      title="Department Details"
       isOpen={open}
       onClose={handleClose}
       loading={loading}

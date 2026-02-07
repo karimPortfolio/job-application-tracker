@@ -35,7 +35,7 @@ export function ViewJobDialog({ id, open, setOpen }: ViewJobDialogProps) {
 
   return (
     <ViewDialog
-      title={"View Job Details"}
+      title={"Job Details"}
       isOpen={open}
       onClose={handleClose}
       loading={loading}
