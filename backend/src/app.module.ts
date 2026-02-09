@@ -10,6 +10,7 @@ import { RedisCacheModule } from './common/cache/redis.module'
 import { JobsModule } from './jobs/jobs.module'
 import { AIModule } from './ai/ai.module'
 import { ApplicationsModule } from './applications/applications.module'
+import { DashboardModule } from './dashboard/dashboard.module'
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { ApplicationsModule } from './applications/applications.module'
     DepartmentsModule,
     JobsModule,
     AIModule,
-    ApplicationsModule
+    ApplicationsModule,
+    DashboardModule
   ],
 })
 export class AppModule {}

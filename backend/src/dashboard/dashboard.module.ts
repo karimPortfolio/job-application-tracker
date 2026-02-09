@@ -1,0 +1,28 @@
+import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
+import { UsersModule } from '../users/users.module'
+import { User, UserSchema } from '../users/user.schema'
+import { Company, CompanySchema } from '../companies/company.schema'
+import { Job, JobSchema } from '../jobs/jobs.schema'
+import { Department, DepartmentSchema } from '../departments/departments.schema'
+import { DashboardService } from './dasboard.service'
+import { DashboardController } from './dashboard.controller'
+import { Application, ApplicationSchema } from '../applications/applications.schema'
+import { DashboardUtils } from './utils/dashboard.utils'
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: Department.name, schema: DepartmentSchema },
+      { name: Company.name, schema: CompanySchema },
+      { name: User.name, schema: UserSchema },
+      { name: Job.name, schema: JobSchema },
+      { name: Application.name, schema: ApplicationSchema },
+    ]),
+    UsersModule,
+  ],
+  exports: [MongooseModule],
+  providers: [DashboardService, DashboardUtils],
+  controllers: [DashboardController]
+})
+export class DashboardModule {}
