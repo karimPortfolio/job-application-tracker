@@ -127,7 +127,10 @@ export class DashboardService {
     };
   }
 
-  async getMonthlyApplicationsStats(companyId: string, year: string): Promise<MonthlyStats[]> {
+  async getMonthlyApplicationsStats(
+    companyId: string,
+    year: string,
+  ): Promise<MonthlyStats[]> {
     const company = await this.getCompanyOrThrow(companyId);
     const cacheKey = `dashboard:monthlyApplications:${companyId}:${year}`;
     const cachedValue = await this.cache.get(cacheKey);
@@ -145,6 +148,60 @@ export class DashboardService {
     await this.cache.set(cacheKey, monthlyStats, { ttl: 300 });
 
     return monthlyStats;
+  }
+
+  async getApplicationsStatsByJobs(
+    companyId: string,
+    year: string,
+  ): Promise<{ job: string; total: number }[]> {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cacheKey = `dashboard:applicationsByJobs:${companyId}:${year}`;
+    const cachedValue = await this.cache.get(cacheKey);
+
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+    const stats = await this.applicationModel.aggregate([
+      {
+        $match: {
+          company: company,
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      { $group: { _id: '$job', total: { $sum: 1 } } },
+      {
+        $addFields: {
+          jobId: { $toObjectId: '$_id' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'jobs',
+          localField: 'jobId',
+          foreignField: '_id',
+          as: 'jobDetails',
+        },
+      },
+      {
+        $addFields: {
+          jobDetails: { $arrayElemAt: ['$jobDetails', 0] },
+        },
+      },
+      {
+        $project: {
+          job: '$jobDetails.title',
+          total: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    await this.cache.set(cacheKey, stats, { ttl: 300 });
+    return stats;
   }
 
   private async getCompanyOrThrow(companyId: string): Promise<string> {

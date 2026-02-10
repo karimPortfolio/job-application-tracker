@@ -80,7 +80,7 @@ export function TotalStatsCards() {
                   "text-sm flex items-center gap-1",
                 )}
               >
-                <span>{item.stats?.monthsDiff.percentage}%</span>
+                <span>{item.stats?.monthsDiff.direction === "up" ? "+" : ""}{item.stats?.monthsDiff.percentage}%</span>
                 {item.stats?.monthsDiff.direction === "up" ? (
                   <ArrowUpRight className="h-4 w-4" />
                 ) : (

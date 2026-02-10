@@ -3,6 +3,7 @@ import { MonthlyStats, TotalStats } from "../types/dashboard.types";
 import { useApiError } from "@/hooks/useApiError";
 import {
   getApplicationsMonthlyStats,
+  getApplicationsStatsByJobs,
   getApplicationsTotalStats,
   getDepartmentsTotalStats,
   getJobsTotalStats,
@@ -19,6 +20,7 @@ export function useDashboardStats() {
   );
   const [applicationsMonthlyStats, setApplicationsMonthlyStats] =
     useState<MonthlyStats | null>(null);
+  const [applicationsStatsByJobs, setApplicationsStatsByJobs] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   async function fetchDepartmentsTotalStats() {
@@ -52,12 +54,28 @@ export function useDashboardStats() {
   }
 
   async function fetchApplicationsMonthlyStats(year: string) {
+    setLoading(true);
     clearError();
     try {
       const { data } = await getApplicationsMonthlyStats(year);
       setApplicationsMonthlyStats(data);
     } catch (err) {
       handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchApplicationsStatsByJobs(year: string) {
+    setLoading(true);
+    clearError();
+    try {
+      const { data } = await getApplicationsStatsByJobs(year);
+      setApplicationsStatsByJobs(data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -68,6 +86,7 @@ export function useDashboardStats() {
       fetchJobsTotalStats(),
       fetchApplicationsTotalStats(),
       fetchApplicationsMonthlyStats(new Date().getFullYear().toString()),
+      fetchApplicationsStatsByJobs(new Date().getFullYear().toString()),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -76,9 +95,11 @@ export function useDashboardStats() {
     jobsStats,
     applicationsStats,
     applicationsMonthlyStats,
+    applicationsStatsByJobs,
     loading,
 
     fetchApplicationsMonthlyStats,
+    fetchApplicationsStatsByJobs,
 
     error,
     clearError,

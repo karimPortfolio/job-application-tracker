@@ -193,7 +193,7 @@ describe('Dashboard E2E Tests', () => {
       {
         fullName: 'Jones Jones',
         email: 'jones@example.com',
-        job: jobs[3]._id,
+        job: jobs[5]._id,
         company: company2._id,
       },
     ];
@@ -242,7 +242,6 @@ describe('Dashboard E2E Tests', () => {
         },
       });
     });
-    
   });
 
   describe('jobs dashboard endpoints tests', () => {
@@ -278,7 +277,6 @@ describe('Dashboard E2E Tests', () => {
         },
       });
     });
-    
   });
 
   describe('applications dashboard endpoints tests', () => {
@@ -363,6 +361,26 @@ describe('Dashboard E2E Tests', () => {
 
       expect(response.body).toBeDefined();
       expect(response.body).toEqual(expectedResponse);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-jobs - should return stats by jobs for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-jobs`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(2);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-jobs - should return stats by jobs for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-jobs`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(3);
     });
   });
 });

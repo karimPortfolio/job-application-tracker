@@ -40,4 +40,14 @@ export class DashboardController {
     const year = query.year || new Date().getFullYear().toString();
     return this.dashboardService.getMonthlyApplicationsStats(companyId, year);
   }
+
+  @Get('applications/stats-by-jobs')
+  public async getApplicationsStatsByJobs(
+    @Req() req: any,
+    @Query() query: DashboardQueryDto,
+  ): Promise<any> {
+    const companyid = req.companyId;
+    const year = query.year || new Date().getFullYear().toString();
+    return this.dashboardService.getApplicationsStatsByJobs(companyid, year);
+  };
 }
