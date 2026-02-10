@@ -6,4 +6,5 @@ export const DASHBOARD_STATS_ROUTES = {
   getApplicationsTotalStats: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats`,
   getApplicationsMonthlyStats: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/monthly-stats`,
   getApplicationsStatsByJobs: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-jobs`,
+  getApplicationsStatsByCountries: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-countries`,
 } as const;

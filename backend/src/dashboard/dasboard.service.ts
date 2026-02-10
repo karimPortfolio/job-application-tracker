@@ -127,7 +127,7 @@ export class DashboardService {
     };
   }
 
-  async getMonthlyApplicationsStats(
+  public async getMonthlyApplicationsStats(
     companyId: string,
     year: string,
   ): Promise<MonthlyStats[]> {
@@ -150,7 +150,7 @@ export class DashboardService {
     return monthlyStats;
   }
 
-  async getApplicationsStatsByJobs(
+  public async getApplicationsStatsByJobs(
     companyId: string,
     year: string,
   ): Promise<{ job: string; total: number }[]> {
@@ -202,6 +202,28 @@ export class DashboardService {
 
     await this.cache.set(cacheKey, stats, { ttl: 300 });
     return stats;
+  }
+
+  public async getApplicationsStatsByCountries(
+    companyId: string,
+    year: string,
+  ): Promise<{ countries: { id: string; value: number }[]; total: number }> {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cacheKey = `dashboard:applicationsByCountries:${companyId}:${year}`;
+    const cachedValue = await this.cache.get(cacheKey);
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+    const results = await this.dashboardUtils.getTotalsByCountries(
+      company,
+      this.applicationModel,
+      year,
+    ); 
+
+    await this.cache.set(cacheKey, results, { ttl: 300 });
+
+    return results;
   }
 
   private async getCompanyOrThrow(companyId: string): Promise<string> {

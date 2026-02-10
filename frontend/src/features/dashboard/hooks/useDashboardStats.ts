@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { MonthlyStats, TotalStats } from "../types/dashboard.types";
+import { ApplicationsStatsByCountries, ApplicationsStatsByJobs, MonthlyStats, TotalStats } from "../types/dashboard.types";
 import { useApiError } from "@/hooks/useApiError";
 import {
   getApplicationsMonthlyStats,
+  getApplicationsStatsByCountries,
   getApplicationsStatsByJobs,
   getApplicationsTotalStats,
   getDepartmentsTotalStats,
@@ -11,16 +12,13 @@ import {
 
 export function useDashboardStats() {
   const { handleError, error, clearError } = useApiError();
-  const [departmentsStats, setDepartmentsStats] = useState<TotalStats | null>(
-    null,
-  );
+  
+  const [departmentsStats, setDepartmentsStats] = useState<TotalStats | null>(null);
   const [jobsStats, setJobsStats] = useState<TotalStats | null>(null);
-  const [applicationsStats, setApplicationsStats] = useState<TotalStats | null>(
-    null,
-  );
-  const [applicationsMonthlyStats, setApplicationsMonthlyStats] =
-    useState<MonthlyStats | null>(null);
-  const [applicationsStatsByJobs, setApplicationsStatsByJobs] = useState<any>(null);
+  const [applicationsStats, setApplicationsStats] = useState<TotalStats | null>(null);
+  const [applicationsMonthlyStats, setApplicationsMonthlyStats] = useState<MonthlyStats | null>(null);
+  const [applicationsStatsByJobs, setApplicationsStatsByJobs] = useState<ApplicationsStatsByJobs | null>(null);
+  const [applicationsStatsByCountries, setApplicationsStatsByCountries] = useState<ApplicationsStatsByCountries | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function fetchDepartmentsTotalStats() {
@@ -79,6 +77,19 @@ export function useDashboardStats() {
     }
   }
 
+  async function fetchApplicationsStatsByCountries(year: string) {
+    setLoading(true);
+    clearError();
+    try {
+      const { data } = await getApplicationsStatsByCountries(year);
+      setApplicationsStatsByCountries(data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -87,6 +98,7 @@ export function useDashboardStats() {
       fetchApplicationsTotalStats(),
       fetchApplicationsMonthlyStats(new Date().getFullYear().toString()),
       fetchApplicationsStatsByJobs(new Date().getFullYear().toString()),
+      fetchApplicationsStatsByCountries(new Date().getFullYear().toString()),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -96,10 +108,12 @@ export function useDashboardStats() {
     applicationsStats,
     applicationsMonthlyStats,
     applicationsStatsByJobs,
+    applicationsStatsByCountries,
     loading,
 
     fetchApplicationsMonthlyStats,
     fetchApplicationsStatsByJobs,
+    fetchApplicationsStatsByCountries,
 
     error,
     clearError,

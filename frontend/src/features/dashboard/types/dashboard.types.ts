@@ -13,3 +13,16 @@ export interface MonthlyStats {
     month: string;
     total: number;
 }
+
+export interface ApplicationsStatsByJobs {
+    job: string;
+    total: number;
+}
+
+export interface ApplicationsStatsByCountries {
+    countries: {
+        id: string;
+        value: number;
+    }[];
+    total: number;
+}

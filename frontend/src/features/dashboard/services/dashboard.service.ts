@@ -23,3 +23,7 @@ export const getApplicationsMonthlyStats = (year: string) => {
 export const getApplicationsStatsByJobs = (year: string) => {
     return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByJobs}?year=${year}`);
 }
+
+export const getApplicationsStatsByCountries = (year: string) => {
+    return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByCountries}?year=${year}`);
+}

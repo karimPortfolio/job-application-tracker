@@ -12,6 +12,7 @@ import { UserDocument } from '../src/users/user.schema';
 import cookieParser from 'cookie-parser';
 import request from 'supertest';
 import { de } from 'date-fns/locale';
+import { count } from 'console';
 
 describe('Dashboard E2E Tests', () => {
   let app: INestApplication;
@@ -159,42 +160,49 @@ describe('Dashboard E2E Tests', () => {
         email: 'james@example.com',
         job: jobs[0]._id,
         company: company._id,
+        country: 'USA',
       },
       {
         fullName: 'Ahmed Ahmed',
         email: 'ahmed@example.com',
         job: jobs[0]._id,
         company: company._id,
+        country: 'Morocco',
       },
       {
         fullName: 'Karim Karim',
         email: 'karim@example.com',
         job: jobs[1]._id,
         company: company._id,
+        country: 'Morocco',
       },
       {
         fullName: 'Mohamed Mohamed',
         email: 'mohamed@example.com',
         job: jobs[2]._id,
         company: company._id,
+        country: 'Spain',
       },
       {
         fullName: 'Raul Raul',
         email: 'raul@example.com',
         job: jobs[2]._id,
         company: company2._id,
+        country: 'Spain',
       },
       {
         fullName: 'Tom Tom',
         email: 'tom@example.com',
         job: jobs[2]._id,
         company: company2._id,
+        country: 'USA',
       },
       {
         fullName: 'Jones Jones',
         email: 'jones@example.com',
         job: jobs[5]._id,
         company: company2._id,
+        country: 'USA',
       },
     ];
 
@@ -381,6 +389,39 @@ describe('Dashboard E2E Tests', () => {
 
       expect(response.body).toBeDefined();
       expect(response.body.length).toBe(3);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-countries - should return stats by countries for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-countries`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body).toStrictEqual({
+        countries: [
+          { id: 'US', value: 2 },
+          { id: 'ES', value: 1 },
+        ],
+        total: 3,
+      });
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-countries - should return stats by countries for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-countries`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body).toStrictEqual({
+        countries: [
+          { id: 'MA', value: 2 },
+          { id: 'ES', value: 1 },
+          { id: 'US', value: 1 },
+        ],
+        total: 4,
+      });
     });
   });
 });

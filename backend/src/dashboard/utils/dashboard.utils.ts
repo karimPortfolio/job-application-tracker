@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { countryNameToISO } from 'src/common/utils/country-to-iso';
 
 export interface DiffResult {
   value: number;
@@ -14,6 +15,90 @@ export interface MonthlyStats {
 
 @Injectable()
 export class DashboardUtils {
+  async getTotalsByCountries(company: string, model: Model<any>, year: string): Promise<{
+    countries: { id: string; value: number }[];
+    total: number;
+  }> {
+    const stats = await model.aggregate([
+      {
+        $match: {
+          company: company,
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: { _id: '$country', subtotal: { $sum: 1 } },
+      },
+      {
+        $sort: { subtotal: -1, _id: 1 },
+      },
+      {
+        $facet: {
+          byCountry: [
+            {
+              $project: { country: '$_id', subtotal: 1, _id: 0 },
+            },
+          ],
+          total: [
+            {
+              $group: {
+                _id: null,
+                total: { $sum: '$subtotal' },
+              },
+            },
+            {
+              $project: { _id: 0 },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          total: { $arrayElemAt: ['$total.total', 0] },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            countries: '$byCountry',
+            total: '$total',
+          },
+        },
+      },
+    ]);
+
+    const results = stats.length > 0 ? stats[0] : { countries: [], total: 0 };
+
+    const mappedCountries = results.countries
+      .map((c) => {
+        const iso = countryNameToISO(c.country);
+
+        if (!iso) return null;
+
+        return {
+          id: iso,
+          value: c.subtotal,
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        // First sort by value (descending)
+        if (a.value !== b.value) {
+          return b.value - a.value;
+        }
+        // Then by id alphabetically (ascending)
+        return a.id.localeCompare(b.id);
+      });
+
+    return {
+      countries: mappedCountries,
+      total: results.total,
+    };
+  }
+
   async getTotalsByYearPeriod(
     year: string,
     company: string,
