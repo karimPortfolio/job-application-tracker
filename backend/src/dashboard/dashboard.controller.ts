@@ -60,4 +60,24 @@ export class DashboardController {
     const year = query.year || new Date().getFullYear().toString();
     return this.dashboardService.getApplicationsStatsByCountries(companyid, year);
   }
+
+  @Get('applications/stats-by-status')
+  public async getApplicationsStatsByStatus(
+    @Req() req: any,
+    @Query() query: DashboardQueryDto,
+  ): Promise<any> {
+    const companyid = req.companyId;
+    const year = query.year || new Date().getFullYear().toString();
+    return this.dashboardService.getApplicationsStatsByStatus(companyid, year);
+  }
+
+  @Get('applications/stats-by-stages')
+  public async getApplicationsStatsByStages(
+    @Req() req: any,
+    @Query() query: DashboardQueryDto,
+  ): Promise<any> {
+    const companyid = req.companyId;
+    const year = query.year || new Date().getFullYear().toString();
+    return this.dashboardService.getApplicationsStatsByStages(companyid, year);
+  }
 }

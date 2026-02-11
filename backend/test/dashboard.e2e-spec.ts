@@ -423,5 +423,53 @@ describe('Dashboard E2E Tests', () => {
         total: 4,
       });
     });
+
+    it('GET /api/v1/dashboard/applications/stats-by-status - should return stats by status for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-status`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body).toStrictEqual([
+        { status: 'Applied', total: 3 },
+      ]);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-status - should return stats by status for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-status`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body).toStrictEqual([
+        { status: 'Applied', total: 4 },
+      ]);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-stages - should return stats by stages for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-stages`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].stage).toBe('Screening');
+      expect(response.body[0].total).toBe(3);
+    });
+
+    it('GET /api/v1/dashboard/applications/stats-by-stages - should return stats by stages for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-stages`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(1);
+      expect(response.body[0].stage).toBe('Screening');
+      expect(response.body[0].total).toBe(4);
+    });
   });
 });

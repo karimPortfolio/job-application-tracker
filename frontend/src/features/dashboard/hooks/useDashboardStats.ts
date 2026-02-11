@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { ApplicationsStatsByCountries, ApplicationsStatsByJobs, MonthlyStats, TotalStats } from "../types/dashboard.types";
+import { ApplicationsStatsByCountries, ApplicationsStatsByJobs, ApplicationsStatsByStages, ApplicationsStatsByStatus, MonthlyStats, TotalStats } from "../types/dashboard.types";
 import { useApiError } from "@/hooks/useApiError";
 import {
   getApplicationsMonthlyStats,
   getApplicationsStatsByCountries,
   getApplicationsStatsByJobs,
+  getApplicationsStatsByStages,
+  getApplicationsStatsByStatus,
   getApplicationsTotalStats,
   getDepartmentsTotalStats,
   getJobsTotalStats,
@@ -17,8 +19,10 @@ export function useDashboardStats() {
   const [jobsStats, setJobsStats] = useState<TotalStats | null>(null);
   const [applicationsStats, setApplicationsStats] = useState<TotalStats | null>(null);
   const [applicationsMonthlyStats, setApplicationsMonthlyStats] = useState<MonthlyStats | null>(null);
-  const [applicationsStatsByJobs, setApplicationsStatsByJobs] = useState<ApplicationsStatsByJobs | null>(null);
+  const [applicationsStatsByJobs, setApplicationsStatsByJobs] = useState<ApplicationsStatsByJobs[] | null>(null);
   const [applicationsStatsByCountries, setApplicationsStatsByCountries] = useState<ApplicationsStatsByCountries | null>(null);
+  const [applicationsStatsByStatus, setApplicationsStatsByStatus] = useState<ApplicationsStatsByStatus[] | null>(null);
+  const [applicationsStatsByStages, setApplicationsStatsByStages] = useState<ApplicationsStatsByStages[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function fetchDepartmentsTotalStats() {
@@ -90,6 +94,32 @@ export function useDashboardStats() {
     }
   };
 
+  async function fetchApplicationsStatsByStatus(year: string) {
+    setLoading(true);
+    clearError();
+    try {
+      const { data } = await getApplicationsStatsByStatus(year);
+      setApplicationsStatsByStatus(data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  async function fetchApplicationsStatsByStages(year: string) { 
+    setLoading(true);
+    clearError();
+    try {
+      const { data } = await getApplicationsStatsByStages(year);
+      setApplicationsStatsByStages(data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -109,11 +139,15 @@ export function useDashboardStats() {
     applicationsMonthlyStats,
     applicationsStatsByJobs,
     applicationsStatsByCountries,
+    applicationsStatsByStatus,
+    applicationsStatsByStages,
     loading,
 
     fetchApplicationsMonthlyStats,
     fetchApplicationsStatsByJobs,
     fetchApplicationsStatsByCountries,
+    fetchApplicationsStatsByStatus,
+    fetchApplicationsStatsByStages,
 
     error,
     clearError,

@@ -27,3 +27,11 @@ export const getApplicationsStatsByJobs = (year: string) => {
 export const getApplicationsStatsByCountries = (year: string) => {
     return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByCountries}?year=${year}`);
 }
+
+export const getApplicationsStatsByStatus = (year: string) => {
+    return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByStatus}?year=${year}`);
+}
+
+export const getApplicationsStatsByStages = (year: string) => {
+    return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByStages}?year=${year}`);
+}

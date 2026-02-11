@@ -7,4 +7,6 @@ export const DASHBOARD_STATS_ROUTES = {
   getApplicationsMonthlyStats: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/monthly-stats`,
   getApplicationsStatsByJobs: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-jobs`,
   getApplicationsStatsByCountries: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-countries`,
+  getApplicationsStatsByStatus: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-status`,
+  getApplicationsStatsByStages: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-stages`,
 } as const;

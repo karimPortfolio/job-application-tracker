@@ -13,6 +13,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { StatsResponse } from './types/dashboard.types';
 import { DashboardUtils, MonthlyStats } from './utils/dashboard.utils';
+import { APPLICATION_STAGES, APPLICATION_STATUSES } from 'src/applications/constants/applications-constants';
 
 @Injectable()
 export class DashboardService {
@@ -219,7 +220,101 @@ export class DashboardService {
       company,
       this.applicationModel,
       year,
-    ); 
+    );
+
+    await this.cache.set(cacheKey, results, { ttl: 300 });
+
+    return results;
+  }
+
+  public async getApplicationsStatsByStatus(
+    companyId: string,
+    year: string,
+  ): Promise<{ status: string; total: number }[]> {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cacheKey = `dashboard:applicationsByStatus:${companyId}:${year}`;
+    const cachedValue = await this.cache.get(cacheKey);
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+    const stats = await this.applicationModel.aggregate([
+      {
+        $match: {
+          company: company,
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      { $group: { _id: '$status', total: { $sum: 1 } } },
+      {
+        $project: {
+          status: '$_id',
+          total: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    const statusMap = Object.fromEntries(
+      APPLICATION_STATUSES.map((s) => [s.value, s.label]),
+    );
+
+    const results = stats.map((i) => {
+      return {
+        status: statusMap[i.status] || i.status,
+        total: i.total,
+      };
+    });
+
+    await this.cache.set(cacheKey, results, { ttl: 300 });
+
+    return results;
+  }
+
+  public async getApplicationsStatsByStages(
+    companyId: string,
+    year: string,
+  ): Promise<{ stage: string; total: number }[]> {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cacheKey = `dashboard:applicationsByStages:${companyId}:${year}`;
+    const cachedValue = await this.cache.get(cacheKey);
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+    const stats = await this.applicationModel.aggregate([
+      {
+        $match: {
+          company: company,
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      { $group: { _id: '$stage', total: { $sum: 1 } } },
+      {
+        $project: {
+          stage: '$_id',
+          total: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    const stagesMap = Object.fromEntries(
+      APPLICATION_STAGES.map((s) => [s.value, s.label]),
+    );
+
+    const results = stats.map((i) => {
+      return {
+        stage: stagesMap[i.stage] || i.stage,
+        total: i.total,
+      };
+    });
 
     await this.cache.set(cacheKey, results, { ttl: 300 });
 

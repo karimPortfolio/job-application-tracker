@@ -26,3 +26,13 @@ export interface ApplicationsStatsByCountries {
     }[];
     total: number;
 }
+
+export interface ApplicationsStatsByStatus {
+    status: string;
+    total: number;
+}
+
+export interface ApplicationsStatsByStages {
+    stage: string;
+    total: number;
+}

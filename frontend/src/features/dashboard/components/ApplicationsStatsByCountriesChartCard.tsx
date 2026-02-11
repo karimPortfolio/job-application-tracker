@@ -10,18 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 
 import { ResponsiveChoropleth } from "@nivo/geo";
 import { useDashboardStats } from "../hooks/useDashboardStats";
-import worldTopo from "../data/world-countries.json";
 import { cn } from "@/lib/utils";
-import { feature } from "topojson-client";
 import { worldFeatures } from "../geo/world-features";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { iso2ToCountryName, iso2ToFlagSrc } from "../geo/country-iso";
@@ -39,16 +31,6 @@ export function ApplicationsStatsByCountriesChartCard({
   const [currentYear, setCurrentYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
-
-  const chartConfig = {
-    applications: {
-      label: "Applications",
-      color: "#2563eb",
-    },
-    label: {
-      color: "var(--color-white)",
-    },
-  } satisfies ChartConfig;
 
   const yearsOptions = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -124,7 +106,7 @@ export function ApplicationsStatsByCountriesChartCard({
             label="properties.name"
             valueFormat=".0f"
             projectionType="equalEarth"
-            projectionScale={100} // ✅ RESET scale
+            projectionScale={100}
             // projectionTranslation={[0.5, 0.5]}
             borderWidth={0.5}
             borderColor="#64748b"

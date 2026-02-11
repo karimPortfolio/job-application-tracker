@@ -2,7 +2,7 @@ services:
   backend:
     build: 
       context: ./backend
-      dockerfile: Dockerfile # Ensure this exists in /backend
+      dockerfile: Dockerfile
     container_name: ats-backend
     ports:
       - "4000:3000"
