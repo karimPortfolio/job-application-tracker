@@ -18,7 +18,7 @@ import { worldFeatures } from "../geo/world-features";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { iso2ToCountryName, iso2ToFlagSrc } from "../geo/country-iso";
 
-export function ApplicationsStatsByCountriesChartCard({
+export function ApplicationsStatsByCountries({
   className,
 }: {
   className?: string;

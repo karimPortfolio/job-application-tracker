@@ -1,4 +1,4 @@
-import { getApplication } from "@/features/applications/services/applications.service";
+import { getApplication, getApplications } from "@/features/applications/services/applications.service";
 
 export const DASHBOARD_STATS_ROUTES = {
   getDepartmentsTotalStats: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/departments/stats`,
@@ -9,4 +9,5 @@ export const DASHBOARD_STATS_ROUTES = {
   getApplicationsStatsByCountries: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-countries`,
   getApplicationsStatsByStatus: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-status`,
   getApplicationsStatsByStages: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-stages`,
+  getApplicationsStatsByDepartments: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-departments`,
 } as const;

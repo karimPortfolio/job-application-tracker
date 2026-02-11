@@ -1,7 +1,8 @@
 "use client";
 
-import { ApplicationsStatsByCountriesChartCard } from "@/features/dashboard/components/ApplicationsStatsByCountriesChartCard";
-import { ApplicationsStatsByJobsChartCard } from "@/features/dashboard/components/ApplicationsStatsByJobsChartCard";
+import { ApplicationsStatsByCountries } from "@/features/dashboard/components/ApplicationsStatsByCountries";
+import { ApplicationsStatsByDepartments } from "@/features/dashboard/components/ApplicationsStatsByDepartments";
+import { ApplicationsStatsByJobs } from "@/features/dashboard/components/ApplicationsStatsByJobs";
 import { ApplicationsStatsTabs } from "@/features/dashboard/components/ApplicationsStatsTabs";
 import { MonthlyStatsChartCard } from "@/features/dashboard/components/MonthlyStatsChartCard";
 import { TotalStatsCards } from "@/features/dashboard/components/TotalStatsCards";
@@ -10,10 +11,11 @@ export function DashboardClient() {
   return (
     <div className="grid lg:grid-cols-3 gap-3">
       <TotalStatsCards />
-      <ApplicationsStatsByCountriesChartCard className="row-span-2" />
+      <ApplicationsStatsByCountries className="row-span-2" />
       <MonthlyStatsChartCard />
-      <ApplicationsStatsByJobsChartCard />
+      <ApplicationsStatsByJobs />
       <ApplicationsStatsTabs />
+      <ApplicationsStatsByDepartments />
     </div>
   );
 }

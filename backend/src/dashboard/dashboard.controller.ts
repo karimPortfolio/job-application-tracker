@@ -80,4 +80,14 @@ export class DashboardController {
     const year = query.year || new Date().getFullYear().toString();
     return this.dashboardService.getApplicationsStatsByStages(companyid, year);
   }
+
+  @Get('applications/stats-by-departments')
+  public async getApplicationsStatsByDepartments(
+    @Req() req: any,
+    @Query() query: DashboardQueryDto,
+  ): Promise<any> {
+    const companyid = req.companyId;
+    const year = query.year || new Date().getFullYear().toString();
+    return this.dashboardService.getApplicationsStatsByDepartments(companyid, year);
+  }
 }

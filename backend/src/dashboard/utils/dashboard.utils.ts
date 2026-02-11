@@ -85,11 +85,9 @@ export class DashboardUtils {
       })
       .filter(Boolean)
       .sort((a, b) => {
-        // First sort by value (descending)
         if (a.value !== b.value) {
           return b.value - a.value;
         }
-        // Then by id alphabetically (ascending)
         return a.id.localeCompare(b.id);
       });
 

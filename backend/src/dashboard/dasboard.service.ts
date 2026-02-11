@@ -3,7 +3,7 @@ import {
   Department,
   DepartmentDocument,
 } from 'src/departments/departments.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Company, CompanyDocument } from 'src/companies/company.schema';
 import { Job, JobDocument } from 'src/jobs/jobs.schema';
 import {
@@ -13,7 +13,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { StatsResponse } from './types/dashboard.types';
 import { DashboardUtils, MonthlyStats } from './utils/dashboard.utils';
-import { APPLICATION_STAGES, APPLICATION_STATUSES } from 'src/applications/constants/applications-constants';
+import {
+  APPLICATION_STAGES,
+  APPLICATION_STATUSES,
+} from 'src/applications/constants/applications-constants';
 
 @Injectable()
 export class DashboardService {
@@ -319,6 +322,89 @@ export class DashboardService {
     await this.cache.set(cacheKey, results, { ttl: 300 });
 
     return results;
+  }
+
+  public async getApplicationsStatsByDepartments(
+    companyId: string,
+    year: string,
+  ): Promise<{ department: string; total: number }[]> {
+    const company = await this.getCompanyOrThrow(companyId);
+    const cacheKey = `dashboard:applicationsByDepartments:${companyId}:${year}`;
+    const cachedValue = await this.cache.get(cacheKey);
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+
+     const stats = await this.applicationModel.aggregate([
+      {
+        $match: {
+          company: company, // company stored as string in application
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $addFields: {
+          jobId: {
+            $cond: {
+              if: { $eq: [{ $type: '$job' }, 'objectId'] },
+              then: '$job',
+              else: { $toObjectId: '$job' },
+            },
+          },
+        },
+      },
+      { $match: { jobId: { $ne: null } } },
+      {
+        $lookup: {
+          from: 'jobs',
+          localField: 'jobId',
+          foreignField: '_id',
+          as: 'job',
+        },
+      },
+      { $unwind: '$job' },
+      {
+        $group: {
+          _id: '$job.department', // may be string or ObjectId
+          total: { $sum: 1 },
+        },
+      },
+      {
+        $addFields: {
+          departmentId: {
+            $cond: {
+              if: { $eq: [{ $type: '$_id' }, 'objectId'] },
+              then: '$_id',
+              else: { $toObjectId: '$_id' },
+            },
+          },
+        },
+      },
+      { $match: { departmentId: { $ne: null } } },
+      {
+        $lookup: {
+          from: 'departments',
+          localField: 'departmentId',
+          foreignField: '_id',
+          as: 'departmentDetails',
+        },
+      },
+      { $unwind: '$departmentDetails' },
+      {
+        $project: {
+          department: '$departmentDetails.title',
+          total: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    await this.cache.set(cacheKey, stats, { ttl: 300 });
+
+    return stats;
   }
 
   private async getCompanyOrThrow(companyId: string): Promise<string> {

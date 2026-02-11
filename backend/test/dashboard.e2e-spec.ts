@@ -471,5 +471,25 @@ describe('Dashboard E2E Tests', () => {
       expect(response.body[0].stage).toBe('Screening');
       expect(response.body[0].total).toBe(4);
     });
+
+    it('GET /api/v1/dashboard/applications/stats-by-departments - should return stats by departments for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-departments`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(2);
+    });
+    
+    it('GET /api/v1/dashboard/applications/stats-by-departments - should return stats by departments for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/stats-by-departments`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(2);
+    });
   });
 });

@@ -36,3 +36,8 @@ export interface ApplicationsStatsByStages {
     stage: string;
     total: number;
 }
+
+export interface ApplicationsStatsByDepartments {
+    department: string;
+    total: number;
+}

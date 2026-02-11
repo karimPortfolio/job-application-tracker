@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ApplicationsStatsByCountries, ApplicationsStatsByJobs, ApplicationsStatsByStages, ApplicationsStatsByStatus, MonthlyStats, TotalStats } from "../types/dashboard.types";
+import { ApplicationsStatsByCountries, ApplicationsStatsByDepartments, ApplicationsStatsByJobs, ApplicationsStatsByStages, ApplicationsStatsByStatus, MonthlyStats, TotalStats } from "../types/dashboard.types";
 import { useApiError } from "@/hooks/useApiError";
 import {
   getApplicationsMonthlyStats,
   getApplicationsStatsByCountries,
+  getApplicationsStatsByDepartments,
   getApplicationsStatsByJobs,
   getApplicationsStatsByStages,
   getApplicationsStatsByStatus,
@@ -23,6 +24,7 @@ export function useDashboardStats() {
   const [applicationsStatsByCountries, setApplicationsStatsByCountries] = useState<ApplicationsStatsByCountries | null>(null);
   const [applicationsStatsByStatus, setApplicationsStatsByStatus] = useState<ApplicationsStatsByStatus[] | null>(null);
   const [applicationsStatsByStages, setApplicationsStatsByStages] = useState<ApplicationsStatsByStages[] | null>(null);
+  const [applicationsStatsByDepartments, setApplicationsStatsByDepartments] = useState<ApplicationsStatsByDepartments[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function fetchDepartmentsTotalStats() {
@@ -120,6 +122,19 @@ export function useDashboardStats() {
     }
   };
 
+  async function fetchApplicationsStatsByDepartments(year: string) {
+    setLoading(true);
+    clearError();
+    try {
+      const { data } = await getApplicationsStatsByDepartments(year);
+      setApplicationsStatsByDepartments(data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -129,6 +144,7 @@ export function useDashboardStats() {
       fetchApplicationsMonthlyStats(new Date().getFullYear().toString()),
       fetchApplicationsStatsByJobs(new Date().getFullYear().toString()),
       fetchApplicationsStatsByCountries(new Date().getFullYear().toString()),
+      fetchApplicationsStatsByDepartments(new Date().getFullYear().toString()),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -141,6 +157,7 @@ export function useDashboardStats() {
     applicationsStatsByCountries,
     applicationsStatsByStatus,
     applicationsStatsByStages,
+    applicationsStatsByDepartments,
     loading,
 
     fetchApplicationsMonthlyStats,
@@ -148,6 +165,7 @@ export function useDashboardStats() {
     fetchApplicationsStatsByCountries,
     fetchApplicationsStatsByStatus,
     fetchApplicationsStatsByStages,
+    fetchApplicationsStatsByDepartments,
 
     error,
     clearError,

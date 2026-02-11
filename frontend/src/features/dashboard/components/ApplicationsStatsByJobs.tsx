@@ -25,7 +25,7 @@ import {
 } from "recharts";
 import { useDashboardStats } from "../hooks/useDashboardStats";
 
-export function ApplicationsStatsByJobsChartCard() {
+export function ApplicationsStatsByJobs() {
   const { applicationsStatsByJobs, fetchApplicationsStatsByJobs, loading } =
     useDashboardStats();
   const [currentYear, setCurrentYear] = useState<string>(
