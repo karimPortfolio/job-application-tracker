@@ -16,16 +16,16 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ##### Sign in Page
 
-![Sign in Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fsign-in-page.png?alt=media&token=c95b9c7d-8cd6-4cf1-be66-0b28199ff4ae)
+<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fsign-in-page.png?alt=media&token=c95b9c7d-8cd6-4cf1-be66-0b28199ff4ae" alt="Sign in  page" />
 
 
 ##### Forgot password Page
 
-![Forgot password Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fforgot-password-page.png?alt=media&token=15d55781-4259-4dc1-bdb2-563c7f3a527d)
+<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fforgot-password-page.png?alt=media&token=15d55781-4259-4dc1-bdb2-563c7f3a527d" alt="forgot password page" />
 
 ##### Email Verification Page
 
-![Email Verification Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Femail-verification-page.png?alt=media&token=f4deb321-0e6b-42d9-ab51-bccac63e7153)
+<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Femail-verification-page.png?alt=media&token=f4deb321-0e6b-42d9-ab51-bccac63e7153" alt="email verification page" />
 
 ##### Onboarding Page
 
@@ -36,7 +36,9 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 ![Departments Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fdashboard.png?alt=media&token=525d6c6c-7ed9-4bbf-8c2d-ac6157b2def2)
 
 ##### Dashboard Video
-![Dashboard](https://d2frdw0337g930.cloudfront.net/public/hirely-video.mp4)
+<video src="https://d2frdw0337g930.cloudfront.net/public/hirely-video.mp4" controls="controls" style="max-width: 100%;">
+  Your browser does not support the video tag.
+</video>
 
 
 ### Tech Stack
