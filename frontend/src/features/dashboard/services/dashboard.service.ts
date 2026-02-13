@@ -39,3 +39,7 @@ export const getApplicationsStatsByStages = (year: string) => {
 export const getApplicationsStatsByDepartments = (year: string) => {
     return api.get(`${DASHBOARD_STATS_ROUTES.getApplicationsStatsByDepartments}?year=${year}`);
 }
+
+export const getTopJobsByApplications = (year: string) => {
+    return api.get(`${DASHBOARD_STATS_ROUTES.getTopJobsByApplications}?year=${year}`);
+}

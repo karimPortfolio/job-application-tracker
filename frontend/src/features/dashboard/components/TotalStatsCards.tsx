@@ -62,7 +62,7 @@ export function TotalStatsCards() {
   }
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 col-span-2 gap-3">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 lg:col-span-2 gap-3">
       {data.map((item, index) => (
         <Card key={index} className="shadow-none p-3 gap-3">
           <CardHeader className="flex items-center gap-3 px-0">

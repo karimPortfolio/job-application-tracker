@@ -491,5 +491,25 @@ describe('Dashboard E2E Tests', () => {
       expect(response.body).toBeDefined();
       expect(response.body.length).toBe(2);
     });
+
+    it('GET /api/v1/dashboard/applications/top-jobs - should return top jobs for applications for first company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/top-jobs`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(3);
+    });
+
+    it('GET /api/v1/dashboard/applications/top-jobs - should return top jobs for applications for second company', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${url}/top-jobs`)
+        .set('Cookie', secondCookie)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.length).toBe(2);
+    });
   });
 });

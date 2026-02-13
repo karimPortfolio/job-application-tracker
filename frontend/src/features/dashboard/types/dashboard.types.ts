@@ -41,3 +41,8 @@ export interface ApplicationsStatsByDepartments {
     department: string;
     total: number;
 }
+
+export interface TopJobByApplications {
+    job: string;
+    total: number;
+}

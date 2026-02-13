@@ -10,4 +10,5 @@ export const DASHBOARD_STATS_ROUTES = {
   getApplicationsStatsByStatus: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-status`,
   getApplicationsStatsByStages: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-stages`,
   getApplicationsStatsByDepartments: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/stats-by-departments`,
+  getTopJobsByApplications: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/dashboard/applications/top-jobs`,
 } as const;

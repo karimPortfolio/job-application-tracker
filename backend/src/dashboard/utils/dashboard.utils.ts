@@ -15,6 +15,49 @@ export interface MonthlyStats {
 
 @Injectable()
 export class DashboardUtils {
+
+  async getApplicationsTotalByJobs(company: string, model: Model<any>, year: string, limit?: number|null): Promise<{ job: string; total: number }[]> {
+    return await model.aggregate([
+      {
+        $match: {
+          company: company,
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      { $group: { _id: '$job', total: { $sum: 1 } } },
+      {
+        $addFields: {
+          jobId: { $toObjectId: '$_id' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'jobs',
+          localField: 'jobId',
+          foreignField: '_id',
+          as: 'jobDetails',
+        },
+      },
+      {
+        $addFields: {
+          jobDetails: { $arrayElemAt: ['$jobDetails', 0] },
+        },
+      },
+      {
+        $project: {
+          job: '$jobDetails.title',
+          total: 1,
+          _id: 0,
+        },
+      },
+      { $sort: { total: -1, job: 1 } },
+      ...(limit ? [{ $limit: limit }] : []),
+    ]);
+  };
+
   async getTotalsByCountries(company: string, model: Model<any>, year: string): Promise<{
     countries: { id: string; value: number }[];
     total: number;

@@ -122,7 +122,7 @@ export function ApplicationsStatsByDepartments() {
       </CardHeader>
       <CardContent className="px-0">
         {dataWithColor.length > 0 && (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="max-h-60">
             <PieChart>
               <ChartTooltip
                 cursor={false}
