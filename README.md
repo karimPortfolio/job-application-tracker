@@ -36,7 +36,7 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 ![Departments Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fdashboard.png?alt=media&token=525d6c6c-7ed9-4bbf-8c2d-ac6157b2def2)
 
 ##### Dashboard Video
-<a href="https://d2frdw0337g930.cloudfront.net/public/hirely-video.mp4" >
+<a href="https://d2frdw0337g930.cloudfront.net/public/hirely-video.mp4" target="_blank" >
 <img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fdashboard.png?alt=media&token=525d6c6c-7ed9-4bbf-8c2d-ac6157b2def2" alt="Department Page" />
 </a>
 
