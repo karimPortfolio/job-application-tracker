@@ -8,7 +8,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Model, type PaginateModel } from 'mongoose';
-import { CompanyDocument } from '../companies/company.schema';
+import type { CompanyDocument } from '../companies/company.schema';
 import { UserDocument } from '../users/user.schema';
 import { JobDocument } from '../jobs/jobs.schema';
 import { ApplicationsCsvExporter } from './exporters/applications-csv.exporter';
@@ -113,10 +113,9 @@ export class ApplicationsService {
       user: userId,
     });
 
-    this.jobModel.updateOne(
-      { _id: job },
-      { $inc: { applicationsCount: 1 } },
-    ).exec();
+    this.jobModel
+      .updateOne({ _id: job }, { $inc: { applicationsCount: 1 } })
+      .exec();
 
     return application;
   }
@@ -357,8 +356,14 @@ export class ApplicationsService {
 
     return {
       fullName: parsedResponse.fullName ?? null,
-      email: parsedResponse.contactInformation?.email ?? parsedResponse.email ?? null,
-      phone: parsedResponse.contactInformation?.phoneNumber ?? parsedResponse.phone ?? null,
+      email:
+        parsedResponse.contactInformation?.email ??
+        parsedResponse.email ??
+        null,
+      phone:
+        parsedResponse.contactInformation?.phoneNumber ??
+        parsedResponse.phone ??
+        null,
       linkedin: parsedResponse.links?.linkedin ?? null,
       github: parsedResponse.links?.github ?? null,
       portfolio: parsedResponse.links?.portfolio ?? null,
@@ -373,7 +378,7 @@ export class ApplicationsService {
     );
     if (!cachedApplication) return null;
 
-    if (cachedApplication.company?._id?.toString() !== companyId) {
+    if (cachedApplication.company !== companyId) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 

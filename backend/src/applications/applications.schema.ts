@@ -43,9 +43,9 @@ export class Application {
   city?: string;
 
   @Prop({ type: String, ref: 'Job' })
-  job: string | Job;
+  job: string;
   @Prop({ type: String, ref: 'Company' })
-  company: string | Company;
+  company: string;
 
   @Prop({
     enum: ['applied', 'in_review', 'interview', 'offer', 'hired', 'rejected'],

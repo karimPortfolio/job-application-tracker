@@ -22,7 +22,6 @@ export const getApplication = (id: string) => {
 };
 
 export const createApplication = (payload: CreateApplicationPayload | FormData) => {
-  console.log(payload);
   return api.post(APPLICATIONS_ROUTES.createApplication, payload, {
     headers:{ "Content-Type": "multipart/form-data" }
   });
