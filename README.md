@@ -10,9 +10,9 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ### Screenshots
 
-##### Sign up Page
+##### Sign In Page
 
-![Sign up Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fsign-up-page.png?alt=media&token=6fbec6f2-0db6-4e1f-9f0b-ed79ec675d35)
+![Sign up Page](https://d2frdw0337g930.cloudfront.net/public/signin-page.png)
 
 ##### Dashboard Page
 
