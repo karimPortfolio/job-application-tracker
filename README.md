@@ -14,18 +14,18 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ![Sign up Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fsign-up-page.png?alt=media&token=6fbec6f2-0db6-4e1f-9f0b-ed79ec675d35)
 
-##### Sign in Page
+##### Dashboard Page
 
-<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fsign-in-page.png?alt=media&token=c95b9c7d-8cd6-4cf1-be66-0b28199ff4ae" alt="Sign in  page" />
+<img src="https://d2frdw0337g930.cloudfront.net/public/dashboard-page.png" />
 
 
-##### Forgot password Page
+##### Jobs Page
 
-<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fforgot-password-page.png?alt=media&token=15d55781-4259-4dc1-bdb2-563c7f3a527d" alt="forgot password page" />
+<img src="https://d2frdw0337g930.cloudfront.net/public/jobs-page.png" />
 
-##### Email Verification Page
+##### Create New Job Page
 
-<img src="https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Femail-verification-page.png?alt=media&token=f4deb321-0e6b-42d9-ab51-bccac63e7153" alt="email verification page" />
+<img src="https://d2frdw0337g930.cloudfront.net/public/jobs-creation-page.png" />
 
 ##### Onboarding Page
 
