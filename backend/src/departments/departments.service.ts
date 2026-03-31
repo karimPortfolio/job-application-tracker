@@ -92,9 +92,9 @@ export class DepartmentsService {
       throw new BadRequestException('Department not found');
     }
 
-    if (department.company?.toString() !== companyId) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
+    // if (department.company?.toString() !== companyId) {
+    //   throw new ForbiddenException('Access to this resource is forbidden');
+    // }
 
     await this.cache.set(this.getCacheKey(departmentId), department, 60 * 1000); //60s
 
@@ -170,9 +170,9 @@ export class DepartmentsService {
       return null;
     }
 
-    if (chachedDepartment.company?.toString() !== companyId) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
+    // if (chachedDepartment.company?.toString() !== companyId) {
+    //   throw new ForbiddenException('Access to this resource is forbidden');
+    // }
 
     return chachedDepartment;
   }

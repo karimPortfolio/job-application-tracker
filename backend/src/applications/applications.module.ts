@@ -9,6 +9,7 @@ import { ApplicationsService } from './applications.service';
 import { ApplicationsController } from './applications.controller';
 import { ApplicationsCsvExporter } from './exporters/applications-csv.exporter';
 import { ApplicationsXlsxExporter } from './exporters/applications-xlsx.exporter';
+import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { S3Uploader } from '../common/utils/s3-uploader';
 import { IsApplicationEmailUniqueConstraint } from '../common/decorators/is-application-email-uniqe.validator';
 import { AIService } from '../ai/ai.service';
@@ -30,7 +31,8 @@ import { AIService } from '../ai/ai.service';
     ApplicationsCsvExporter,
     ApplicationsXlsxExporter,
     S3Uploader,
-    IsApplicationEmailUniqueConstraint
+    IsApplicationEmailUniqueConstraint,
+    CompanyGuard,
   ],
   controllers: [ApplicationsController],
 })

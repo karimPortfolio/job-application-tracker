@@ -132,7 +132,7 @@ export class ApplicationsService {
       .populate([{ path: 'job', select: 'title' }]);
     if (!application) throw new BadRequestException('Application not found');
 
-    if (application.company?.toString() !== companyId) {
+    if (application.company?.toString() !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
@@ -249,7 +249,7 @@ export class ApplicationsService {
 
     if (!application) throw new BadRequestException('Application not found');
 
-    if (application.company?.toString() !== companyId) {
+    if (application.company?.toString() !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
@@ -279,7 +279,7 @@ export class ApplicationsService {
 
     if (!application) throw new BadRequestException('Application not found');
 
-    if (application.company?.toString() !== companyId) {
+    if (application.company !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
@@ -378,7 +378,7 @@ export class ApplicationsService {
     );
     if (!cachedApplication) return null;
 
-    if (cachedApplication.company !== companyId) {
+    if (cachedApplication.company !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 

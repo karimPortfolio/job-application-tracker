@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -17,8 +17,10 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
-  create(@Body() dto: CreateCompanyDto, @CurrentUser() user: JwtPayload) {
-    return this.companiesService.create(dto, user);
+  async create(@Body() dto: CreateCompanyDto, @CurrentUser() user: JwtPayload, @Req() req) {
+    const { company, user: UpdatedUser } = await this.companiesService.create(dto, user);
+    req.user = UpdatedUser;
+    return company;
   }
 
   @Get()

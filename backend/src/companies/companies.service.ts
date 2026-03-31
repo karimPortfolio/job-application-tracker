@@ -38,7 +38,10 @@ export class CompaniesService {
 
     await this.userModel.findByIdAndUpdate(user.sub, { company: company._id });
 
-    return company;
+    return {
+      company,
+      user
+    };
   }
 
   async findMyCompany(user: any) {
@@ -54,7 +57,6 @@ export class CompaniesService {
     const key = this.cacheKey(companyId.toString());
 
     const cached = await this.cache.get<Company>(key);
-    console.log('cached company:', cached);
     if (cached) return cached;
 
     const company = await this.companyModel.findById(companyId).lean();

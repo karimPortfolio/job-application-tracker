@@ -9,6 +9,7 @@ import { DepartmentsController } from './departments.controller'
 import { Job, JobSchema } from '../jobs/jobs.schema'
 import { DepartmentsCsvExporter } from './exporters/departments-csv.exporter'
 import { DepartmentsXlsxExporter } from './exporters/departments-xlsx.exporter'
+import { CompanyGuard } from '../common/guards/CompanyGuard'
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { DepartmentsXlsxExporter } from './exporters/departments-xlsx.exporter'
     UsersModule,
   ],
   exports: [MongooseModule],
-  providers: [DepartmentsService, DepartmentsXlsxExporter, DepartmentsCsvExporter],
+  providers: [DepartmentsService, DepartmentsXlsxExporter, DepartmentsCsvExporter, CompanyGuard],
   controllers: [DepartmentsController]
 })
 export class DepartmentsModule {}

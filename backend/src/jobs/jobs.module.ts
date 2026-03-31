@@ -12,6 +12,8 @@ import { JobsService } from './jobs.service';
 import { JobsController } from './jobs.controller';
 import { JobsCsvExporter } from './exporters/jobs-csv.exporter';
 import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
+import { CompanyGuard } from '../common/guards/CompanyGuard';
+import { PublicJobsController } from './public-jobs.controller';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
     UsersModule,
   ],
   exports: [MongooseModule],
-  providers: [JobsService, JobsCsvExporter, JobsXlsxExporter],
-  controllers: [JobsController],
+  providers: [JobsService, JobsCsvExporter, JobsXlsxExporter, CompanyGuard],
+  controllers: [JobsController, PublicJobsController],
 })
 export class JobsModule {}

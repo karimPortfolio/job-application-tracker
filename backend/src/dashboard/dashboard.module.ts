@@ -9,6 +9,7 @@ import { DashboardService } from './dasboard.service'
 import { DashboardController } from './dashboard.controller'
 import { Application, ApplicationSchema } from '../applications/applications.schema'
 import { DashboardUtils } from './utils/dashboard.utils'
+import { CompanyGuard } from '../common/guards/CompanyGuard'
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { DashboardUtils } from './utils/dashboard.utils'
     UsersModule,
   ],
   exports: [MongooseModule],
-  providers: [DashboardService, DashboardUtils],
+  providers: [DashboardService, DashboardUtils, CompanyGuard],
   controllers: [DashboardController]
 })
 export class DashboardModule {}

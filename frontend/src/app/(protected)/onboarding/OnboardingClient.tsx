@@ -23,8 +23,9 @@ export interface AvatarDropdownItem {
 
 export function OnboardingClient() {
   const router = useRouter();
-  const { user, logout, loading } = useAuth();
-  const handleSuccess = () => {
+  const { user, fetchUser, logout, loading } = useAuth();
+  const handleSuccess = async () => {
+    await fetchUser();
     router.replace("/dashboard");
   };
 

@@ -55,12 +55,12 @@ export function ViewJobDialog({ id, open, setOpen }: ViewJobDialogProps) {
           <CardContent className="space-y-6 px-0">
             <JobTitle title={job.title} company={job.company} />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              <div className="md:col-span-2 order-1 sm:order-0">
+            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 lg:gap-8">
+              <div className="order-1 sm:order-0 md:order-0">
                 <JobDescription description={job.description} />
               </div>
 
-              <div className="grid grid-cols-2 sm:flex flex-col space-y-4 md:space-y-5 order-0 sm:order-1 ">
+              <div className="order-0 sm:order-1 md:order-1 flex flex-col gap-4 md:gap-5 md:sticky md:top-4 md:self-start">
                 <DepartmentInfo department={job.department?.title} />
 
                 <LocationInfo city={job.city} country={job.country} />

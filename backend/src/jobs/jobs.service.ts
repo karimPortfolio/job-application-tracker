@@ -42,6 +42,21 @@ export class JobsService {
 
   private readonly logger = new Logger(JobsService.name);
 
+
+  async findAll() {
+    return this.jobModel.paginate({}, {
+      page: 1,
+      limit: 10,
+      select:'-user -description',
+      populate: [
+        { path: 'department', select: 'title' },
+        { path: 'company', select: 'name' },
+      ],
+      lean: true,
+      leanWithVirtuals: true,
+    } as any);
+  }
+
   async getCompanyJobs(companyId: string, query: JobQueryDto) {
     const company = await this.getCompanyOrThrow(companyId);
     const filter = buildJobFilter(company, query);
@@ -91,7 +106,7 @@ export class JobsService {
     const job = await this.jobModel.findById(jobId);
     if (!job) throw new BadRequestException('Job not found');
 
-    if (job.company?.toString() !== companyId) {
+    if (job.company?.toString() !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
@@ -186,7 +201,7 @@ export class JobsService {
 
     if (!job) throw new BadRequestException('Job not found');
 
-    if (job.company?.toString() !== companyId) {
+    if (job.company?.toString() !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
@@ -244,7 +259,7 @@ export class JobsService {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (!cachedJob) return null;
 
-    if (cachedJob.company?._id?.toString() !== companyId) {
+    if (cachedJob.company?._id?.toString() !== companyId.toString()) {
       throw new ForbiddenException('Access to this resource is forbidden');
     }
 
