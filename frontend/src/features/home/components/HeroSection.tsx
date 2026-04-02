@@ -30,7 +30,7 @@ export function HeroSection({
         </h1>
         <div className="w-full flex justify-center">
           {description && (
-            <p className="text-md text-gray-700 dark:text-gray-400 mb-8 w-2/4">
+            <p className="text-md text-gray-700 dark:text-gray-400 mb-8 md:w-2/4">
               {description}
             </p>
           )}

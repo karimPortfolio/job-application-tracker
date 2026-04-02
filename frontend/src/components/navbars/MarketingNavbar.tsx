@@ -1,26 +1,44 @@
 "use client";
 
-import { User } from "@/features/auth/types";
 import { Logo } from "../Logo";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "../ui/navigation-menu";
 import { AvatarDropdown } from "../common/AvatarDropdown";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { CreditCardIcon, LayoutDashboardIcon, Menu, SettingsIcon, UserIcon, X } from "lucide-react";
-import { useState } from "react";
+import {
+  CreditCardIcon,
+  LayoutDashboardIcon,
+  Menu,
+  SettingsIcon,
+  UserIcon,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 
 export function MarketingNavbar() {
   const { user, logout, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   const navigationItems = [
     { label: "About", href: "/about" },
@@ -58,8 +76,14 @@ export function MarketingNavbar() {
   ];
 
   return (
-    <nav className="w-full fixed top-0 left-0 z-30">
-      <div className="mx-auto flex items-center justify-between py-4 px-5">
+    <nav
+      className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
+        isScrolled || mobileOpen
+          ? "border-b border-white/10 bg-slate-950/70 backdrop-blur-xl"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex items-center justify-between px-5 py-4">
         <div className="flex items-center gap-3">
           <Logo width={120} height={50} />
         </div>
@@ -69,13 +93,14 @@ export function MarketingNavbar() {
           <NavigationMenu>
             <NavigationMenuList className="gap-7">
               {navigationItems.map((item) => (
-                <NavigationMenuLink
-                  className="font-medium bg-transparent hover:bg-gray-800/10"
-                  key={item.href}
-                  asChild
-                >
-                  <Link href={item.href}>{item.label}</Link>
-                </NavigationMenuLink>
+                <NavigationMenuItem key={item.href}>
+                  <NavigationMenuLink
+                    className="font-medium bg-transparent hover:bg-gray-800/10"
+                    asChild
+                  >
+                    <Link href={item.href}>{item.label}</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
               ))}
             </NavigationMenuList>
           </NavigationMenu>
@@ -83,13 +108,15 @@ export function MarketingNavbar() {
 
         {/* Desktop auth */}
         <div className="hidden lg:flex items-center">
-          {user && <AvatarDropdown
-                  user={user}
-                  logout={logout}
-                  loading={loading}
-                  items={userMenuItems}
-                  showUserInfo={false}
-                />}
+          {user && (
+            <AvatarDropdown
+              user={user}
+              logout={logout}
+              loading={loading}
+              items={userMenuItems}
+              showUserInfo={false}
+            />
+          )}
           {!user && (
             <div className="flex items-center gap-3">
               <Link
@@ -127,14 +154,12 @@ export function MarketingNavbar() {
         <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur px-5 pb-4 shadow-sm">
           <div className="flex flex-col gap-3 pt-3">
             {navigationItems.map((item) => (
-              <Link
+              <ListItem
                 key={item.href}
+                title={item.label}
                 href={item.href}
-                className="w-full text-left text-sm font-medium py-2 rounded-md hover:bg-muted px-2"
                 onClick={() => setMobileOpen(false)}
-              >
-                {item.label}
-              </Link>
+              />
             ))}
 
             <div className="flex flex-col gap-2 pt-2">
@@ -173,18 +198,25 @@ function ListItem({
   title,
   children,
   href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+  onClick,
+}: {
+  title: string;
+  href: string;
+  children?: React.ReactNode;
+  onClick?: () => void;
+}) {
   return (
-    <li {...props}>
-      <NavigationMenuLink asChild>
-        <Link href={href}>
-          <div className="flex flex-col gap-1 text-sm">
-            <div className="leading-none font-medium">{title}</div>
-            <div className="text-muted-foreground line-clamp-2">{children}</div>
-          </div>
-        </Link>
-      </NavigationMenuLink>
-    </li>
+    <Link
+      href={href}
+      onClick={onClick}
+      className="w-full rounded-md px-2 py-2 text-sm hover:bg-muted"
+    >
+      <div className="flex flex-col gap-1 text-sm">
+        <div className="leading-none font-medium">{title}</div>
+        {children && (
+          <div className="text-muted-foreground line-clamp-2">{children}</div>
+        )}
+      </div>
+    </Link>
   );
 }
