@@ -1,6 +1,7 @@
-import { Controller, Get, Inject } from "@nestjs/common";
+import { Controller, Get, Inject, Query } from "@nestjs/common";
 import { JobsService } from "./jobs.service";
 import { Public } from "src/common/decorators/public.decorator";
+import { JobQueryDto } from "./dto/job-query.dto";
 
 
 @Controller('public-jobs')
@@ -11,7 +12,7 @@ export class PublicJobsController {
 
     @Public()
     @Get()
-    findAll() {
-        return this.jobsService.findAll();
+    findAll(@Query() query: JobQueryDto) {
+        return this.jobsService.findAll(query);
     }
 }

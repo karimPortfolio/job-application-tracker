@@ -1,9 +1,10 @@
 import { JobQueryDto } from '../dto/job-query.dto';
 
-export function buildJobFilter(company: string, query: JobQueryDto) {
-  const filter: any = {
-    company,
-  };
+export function buildJobFilter(query: JobQueryDto, company?: string) {
+  const filter: any = {};
+  if (company) {
+    filter.company = company;
+  }
 
   //====== exact filters
   if (query.department) {

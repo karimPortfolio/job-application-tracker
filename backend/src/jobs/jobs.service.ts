@@ -42,12 +42,14 @@ export class JobsService {
 
   private readonly logger = new Logger(JobsService.name);
 
-
-  async findAll() {
-    return this.jobModel.paginate({}, {
-      page: 1,
-      limit: 10,
-      select:'-user -description',
+  async findAll(query: JobQueryDto) {
+    const filter = buildJobFilter(query);
+    const sort = buildJobSort(query);
+    return this.jobModel.paginate(filter, {
+      page: query.page || 1,
+      limit: query.limit || 10,
+      sort,
+      select: '-user -description',
       populate: [
         { path: 'department', select: 'title' },
         { path: 'company', select: 'name' },
@@ -59,7 +61,7 @@ export class JobsService {
 
   async getCompanyJobs(companyId: string, query: JobQueryDto) {
     const company = await this.getCompanyOrThrow(companyId);
-    const filter = buildJobFilter(company, query);
+    const filter = buildJobFilter(query, company);
     const sort = buildJobSort(query);
 
     return this.jobModel.paginate(filter, {
@@ -171,7 +173,7 @@ export class JobsService {
     query: JobQueryDto,
   ) {
     const company = await this.getCompanyOrThrow(companyId);
-    const filter = buildJobFilter(company, query);
+    const filter = buildJobFilter(query, company);
     const sort = buildJobSort(query);
 
     const jobs = await this.jobModel
