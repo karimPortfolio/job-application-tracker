@@ -2,6 +2,7 @@
 import LightRays from "@/components/LightRays";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { CoreCapabilitiesSection } from "@/features/home/components/CoreCapabilitiesSection";
+import { CreateJobMarketingSection } from "@/features/home/components/CreateJobMarketingSection";
 import { CtaSection } from "@/features/home/components/CtaSection";
 import { FaqSection } from "@/features/home/components/FaqSection";
 import { FeatureShowcaseAccordion } from "@/features/home/components/FeatureShowcaseAccordion";
@@ -10,15 +11,19 @@ import { HomeFooter } from "@/features/home/components/HomeFooter";
 import { PartnersSection } from "@/features/home/components/PartnersSection";
 import { ProductPreviewSection } from "@/features/home/components/ProductPreviewSection";
 import { TestimonialsSection } from "@/features/home/components/TestimonialsSection";
+import { useTheme } from "next-themes";
 
 export function HomeClient() {
   const { user } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   return (
-    <main className="w-full relative overflow-x-clip bg-slate-950 text-white">
+    <main className="relative w-full overflow-x-clip bg-zinc-50 text-slate-900 dark:bg-slate-950 dark:text-white">
       <div className="h-screen">
-        <LightRays
-          raysOrigin="top-center"
+        {isDark ? (
+          <LightRays
+          raysOrigin="bottom-center"
           raysColor="#3a88fe"
           raysSpeed={1}
           lightSpread={50}
@@ -30,8 +35,9 @@ export function HomeClient() {
           mouseInfluence={0.1}
           noiseAmount={0}
           distortion={0}
-          className="w-full h-full"
-        />
+          className="h-full w-full"
+        />) : null}
+
         <HeroSection
           user={user}
           headline="Hire Smarter. Faster. With AI."
@@ -48,6 +54,8 @@ export function HomeClient() {
       <CoreCapabilitiesSection />
 
       <ProductPreviewSection />
+
+      <CreateJobMarketingSection />
 
       <FeatureShowcaseAccordion />
 

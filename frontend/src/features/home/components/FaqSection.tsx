@@ -39,20 +39,20 @@ export function FaqSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-950 via-slate-900/30 to-slate-950"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-zinc-50 via-blue-50/40 to-zinc-50 dark:from-slate-950 dark:via-slate-900/30 dark:to-slate-950"
         aria-hidden
       />
 
       <div className="relative mx-auto max-w-5xl px-6 lg:px-12">
         <RevealOnView>
           <div className="mb-10 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700/80 dark:text-blue-300/80">
               FAQ
             </p>
             <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
               Answers to common questions
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-slate-300">
+            <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
               Everything you need to know before rolling JobLoop out to your recruiting team.
             </p>
           </div>
@@ -66,10 +66,10 @@ export function FaqSection() {
               <RevealOnView key={faq.question}>
                 <div
                   className={cn(
-                    "rounded-2xl border bg-white/5 backdrop-blur-sm transition duration-300",
+                    "rounded-2xl border bg-white/90 backdrop-blur-sm transition duration-300 dark:bg-white/5",
                     isOpen
-                      ? "border-blue-400/50 bg-white/10 shadow-[0_16px_60px_-30px_rgba(59,130,246,0.65)]"
-                      : "border-white/10 hover:border-blue-300/35 hover:bg-white/8"
+                      ? "border-blue-400/50 bg-white shadow-[0_16px_60px_-30px_rgba(59,130,246,0.45)] dark:bg-white/10 dark:shadow-[0_16px_60px_-30px_rgba(59,130,246,0.65)]"
+                      : "border-slate-200/80 hover:border-blue-300/35 hover:bg-blue-50/70 dark:border-white/10 dark:hover:bg-white/8"
                   )}
                 >
                   <button
@@ -79,11 +79,11 @@ export function FaqSection() {
                     aria-expanded={isOpen}
                     aria-controls={`faq-panel-${index}`}
                   >
-                    <span className="font-medium text-white sm:text-lg">{faq.question}</span>
+                    <span className="font-medium text-slate-900 dark:text-white sm:text-lg">{faq.question}</span>
                     <ChevronDown
                       className={cn(
-                        "size-5 shrink-0 text-slate-300 transition-transform duration-300",
-                        isOpen && "rotate-180 text-blue-200"
+                        "size-5 shrink-0 text-slate-500 transition-transform duration-300 dark:text-slate-300",
+                        isOpen && "rotate-180 text-blue-700 dark:text-blue-200"
                       )}
                     />
                   </button>
@@ -96,7 +96,7 @@ export function FaqSection() {
                     )}
                   >
                     <div className="overflow-hidden px-5">
-                      <p className="border-t border-white/10 pb-5 pt-4 text-sm leading-relaxed text-slate-300">
+                      <p className="border-t border-slate-200/80 pb-5 pt-4 text-sm leading-relaxed text-slate-600 dark:border-white/10 dark:text-slate-300">
                         {faq.answer}
                       </p>
                     </div>

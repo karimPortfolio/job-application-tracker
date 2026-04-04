@@ -71,19 +71,19 @@ export function TestimonialsSection() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-950 via-slate-900/30 to-slate-950"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-zinc-50 via-blue-50/40 to-zinc-50 dark:from-slate-950 dark:via-slate-900/30 dark:to-slate-950"
         aria-hidden
       />
       <div className="relative mx-auto max-w-6xl px-6 lg:px-0">
         <RevealOnView>
           <div className="mb-10 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700/80 dark:text-blue-300/80">
               What teams say
             </p>
             <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
               Loved by recruiters and hiring leaders
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-slate-300">
+            <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
               Real teams scaling faster hiring workflows with better signal,
               less admin, and stronger alignment.
             </p>
@@ -93,29 +93,29 @@ export function TestimonialsSection() {
         <div className="relative grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6">
           {testimonials.map((item) => (
             <RevealOnView key={item.name} className={`${item.colSpan}`}>
-              <Card className="group h-full gap-0 border-white/10 bg-white/6 shadow-[0_24px_70px_-35px_rgba(59,130,246,0.55)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-white/10">
+              <Card className="group h-full gap-0 border-slate-200/80 bg-white/90 shadow-[0_24px_70px_-35px_rgba(59,130,246,0.25)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-white dark:border-white/10 dark:bg-white/6 dark:shadow-[0_24px_70px_-35px_rgba(59,130,246,0.55)] dark:hover:bg-white/10">
                 <CardHeader>
-                  <p className="mt-3 text-xs uppercase tracking-[0.16em] text-blue-300/85">
+                  <p className="mt-3 text-xs uppercase tracking-[0.16em] text-blue-700/85 dark:text-blue-300/85">
                     {item.company}
                   </p>
-                  <p className="my-3 grow text-lg leading-relaxed text-slate-200">
+                  <p className="my-3 grow text-lg leading-relaxed text-slate-700 dark:text-slate-200">
                     “{item.quote}”
                   </p>
                 </CardHeader>
                 <CardContent className="flex h-full flex-col">
-                  <div className="mt-auto border-t border-white/10 pt-4">
+                  <div className="mt-auto border-t border-slate-200/80 pt-4 dark:border-white/10">
                     <div className="flex items-center gap-3">
                       <img
                         src={item.avatar}
                         alt={`${item.name} profile`}
                         loading="lazy"
-                        className="h-11 w-11 rounded-full border border-white/20 object-cover"
+                        className="h-11 w-11 rounded-full border border-slate-300/70 object-cover dark:border-white/20"
                       />
                       <div className="min-w-0">
-                        <p className="truncate font-semibold text-white">
+                        <p className="truncate font-semibold text-slate-900 dark:text-white">
                           {item.name}
                         </p>
-                        <p className="truncate text-xs text-slate-400">
+                        <p className="truncate text-xs text-slate-500 dark:text-slate-400">
                           {item.role}
                         </p>
                       </div>

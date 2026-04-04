@@ -46,7 +46,7 @@ export function PublicJobsGrid({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid  grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }).map((_, index) => (
           <Card key={index} className="space-y-4 rounded-2xl p-5">
             <Skeleton className="h-5 w-2/3" />
@@ -79,7 +79,7 @@ export function PublicJobsGrid({
       </div>
 
       {meta ? (
-        <div className="flex flex-col gap-3 rounded-2xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="bg-white dark:bg-slate-900/70 flex flex-col gap-3 rounded-2xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
             Showing page {meta.page} of {meta.totalPages} • Total {meta.totalDocs}
           </p>

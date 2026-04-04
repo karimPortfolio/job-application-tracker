@@ -25,7 +25,7 @@ export function HeroSection({
   return (
     <section className="py-12 absolute h-screen w-full z-20 top-0 left-0">
       <div className="container mx-auto px-4 text-center flex flex-col justify-center items-center h-full">
-        <h1 className="text-5xl text-primary dark:text-white font-bold mb-4">
+        <h1 className="text-5xl md:text-6xl text-primary dark:text-white font-bold mb-4">
           {headline}
         </h1>
         <div className="w-full flex justify-center">

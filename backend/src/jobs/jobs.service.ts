@@ -122,6 +122,27 @@ export class JobsService {
     return job;
   }
 
+  async getPublicJobById(jobId: string) {
+    const cachedJob = await this.cache.get(this.getCacheKey(jobId));
+    if (cachedJob) return cachedJob;
+
+    const job = await this.jobModel.findOne({
+      _id: jobId,
+      status: 'published',
+    });
+
+    if (!job) throw new BadRequestException('Job not found');
+
+    await job.populate([
+      { path: 'department', select: 'title' },
+      { path: 'company', select: 'name' },
+    ]);
+
+    await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
+
+    return job;
+  }
+
   async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {
     const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
     if (!job)

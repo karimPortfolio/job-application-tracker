@@ -1,5 +1,4 @@
 import { MarketingNavbar } from "@/components/navbars/MarketingNavbar";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function MarketingLayout({
   children,
@@ -8,9 +7,9 @@ export default function MarketingLayout({
 }>) {
 
   return (
-    <>
-    <MarketingNavbar />
-    {children}
-    </>
+    <div className="min-h-screen bg-zinc-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
+      <MarketingNavbar />
+      {children}
+    </div>
   );
 }

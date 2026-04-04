@@ -79,19 +79,19 @@ export function FeatureShowcaseAccordion() {
   return (
     <section className="relative py-24">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-950 via-slate-900/35 to-slate-950"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-zinc-50 via-blue-50/40 to-zinc-50 dark:from-slate-950 dark:via-slate-900/35 dark:to-slate-950"
         aria-hidden
       />
 
       <div className="relative mx-auto max-w-6xl px-6 lg:px-0">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300/80">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700/80 dark:text-blue-300/80">
             How it works
           </p>
           <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
             Feature showcase accordion
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-300">
+          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
             A guided workflow that auto-rotates through each hiring stage while
             letting your team take control at any moment.
           </p>
@@ -107,10 +107,10 @@ export function FeatureShowcaseAccordion() {
                 <Card
                   key={item.id}
                   className={cn(
-                    "relative border-0 bg-transparent overflow-hidden transition-all duration-300",
+                    "relative border-0 shadow-none bg-transparent overflow-hidden transition-all duration-300",
                     isActive
                       ? "border-blue-400/50"
-                      : "hover:border-blue-300/35 hover:bg-slate-900/65",
+                      : "hover:border-blue-300/35 hover:bg-blue-50/60 dark:hover:bg-slate-900/65",
                   )}
                 >
                   <button
@@ -126,8 +126,8 @@ export function FeatureShowcaseAccordion() {
                           className={cn(
                             "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm",
                             isActive
-                              ? "border-cyan-300/45 bg-cyan-500/10 text-cyan-100"
-                              : "border-white/20 bg-white/5 text-slate-300",
+                              ? "border-cyan-300/45 bg-cyan-500/10 text-cyan-700 dark:text-cyan-100"
+                              : "border-slate-300/60 bg-slate-100 text-slate-600 dark:border-white/20 dark:bg-white/5 dark:text-slate-300",
                           )}
                         >
                           <Icon className="size-5" />
@@ -136,21 +136,21 @@ export function FeatureShowcaseAccordion() {
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center justify-between gap-3">
                             <CardTitle className="text-xl leading-tight text-white">
-                              {item.title}
+                              <span className="text-slate-900 dark:text-white">{item.title}</span>
                             </CardTitle>
                             <span
                               className={cn(
                                 "rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]",
                                 isActive
-                                  ? "border-blue-300/45 bg-blue-500/15 text-blue-100"
-                                  : "border-white/20 bg-white/5 text-slate-300",
+                                  ? "border-blue-300/45 bg-blue-500/15 text-blue-700 dark:text-blue-100"
+                                  : "border-slate-300/60 bg-slate-100 text-slate-600 dark:border-white/20 dark:bg-white/5 dark:text-slate-300",
                               )}
                             >
                               {item.metric}
                             </span>
                           </div>
 
-                          <p className="mt-2 text-sm text-slate-500">
+                          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                             {item.summary}
                           </p>
 
@@ -165,7 +165,7 @@ export function FeatureShowcaseAccordion() {
                                 transition={{ duration: 0.35, ease: "easeOut" }}
                                 className="overflow-hidden"
                               >
-                                <p className="mt-4 text-sm leading-relaxed text-slate-200">
+                                <p className="mt-4 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
                                   {item.detail}
                                 </p>
                               </motion.div>
@@ -196,7 +196,7 @@ export function FeatureShowcaseAccordion() {
           </div>
 
           <div className="flex items-center h-full">
-            <Card className="overflow-hidden rounded-2xl p-3 border-0 bg-primary/30 shadow-[0_24px_80px_-30px_rgba(59,130,246,0.55)]">
+            <Card className="overflow-hidden rounded-2xl border p-3 bg-blue-100/60 shadow-[0_24px_80px_-30px_rgba(59,130,246,0.35)] dark:border-white/10 dark:bg-primary/30 dark:shadow-[0_24px_80px_-30px_rgba(59,130,246,0.55)]">
               <CardContent className="p-0">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
@@ -205,7 +205,7 @@ export function FeatureShowcaseAccordion() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.985 }}
                     transition={{ duration: 0.32, ease: "easeOut" }}
-                    className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/65"
+                    className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 dark:border-white/10 dark:bg-slate-950/65"
                   >
                     <Image
                       src={showcaseItems[activeIndex].image}

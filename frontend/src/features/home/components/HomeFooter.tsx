@@ -3,9 +3,9 @@ import Link from "next/link";
 
 export function HomeFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-slate-950/90">
+    <footer className="relative overflow-hidden border-t border-slate-200/80 bg-zinc-50/95 dark:border-white/10 dark:bg-slate-950/90">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/4 via-transparent to-transparent"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-900/3 via-transparent to-transparent dark:from-white/4"
         aria-hidden
       />
 
@@ -13,7 +13,7 @@ export function HomeFooter() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div>
             <Logo width={150} />
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-400">
               AI-powered hiring workflows for teams that want to move faster, stay aligned, and
               hire with confidence.
             </p>
@@ -33,7 +33,7 @@ export function HomeFooter() {
             title="Company"
             links={[
               { href: "/about", label: "About" },
-              { href: "/contact", label: "Careers" },
+              { href: "/jobs", label: "Jobs" },
               { href: "/contact", label: "Contact" },
               { href: "/learn-more", label: "Customers" },
             ]}
@@ -50,24 +50,24 @@ export function HomeFooter() {
           />
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-slate-200/80 pt-6 text-sm text-slate-600 dark:border-white/10 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Hirely. All rights reserved.</p>
           <div className="flex flex-wrap gap-4">
             <Link
               href="/privacy"
-              className="rounded transition hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="rounded transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:hover:text-slate-200"
             >
               Privacy
             </Link>
             <Link
               href="/terms"
-              className="rounded transition hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="rounded transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:hover:text-slate-200"
             >
               Terms
             </Link>
             <Link
               href="/contact"
-              className="rounded transition hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+              className="rounded transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:hover:text-slate-200"
             >
               Support
             </Link>
@@ -87,13 +87,13 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-blue-300/85">{title}</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-blue-700/85 dark:text-blue-300/85">{title}</p>
       <div className="mt-4 flex flex-col gap-2.5">
         {links.map((link) => (
           <Link
             key={`${title}-${link.label}`}
             href={link.href}
-            className="w-fit rounded text-sm text-slate-400 transition hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+            className="w-fit rounded text-sm text-slate-600 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:text-slate-400 dark:hover:text-slate-200"
           >
             {link.label}
           </Link>

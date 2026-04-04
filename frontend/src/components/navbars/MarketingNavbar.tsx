@@ -11,6 +11,7 @@ import { AvatarDropdown } from "../common/AvatarDropdown";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 import {
   CreditCardIcon,
   LayoutDashboardIcon,
@@ -79,35 +80,38 @@ export function MarketingNavbar() {
     <nav
       className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
         isScrolled || mobileOpen
-          ? "border-b border-white/10 bg-slate-950/70 backdrop-blur-xl"
+          ? "border-b border-border/60 bg-zinc-50/85 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70"
           : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex items-center justify-between px-5 py-4">
-        <div className="flex items-center gap-3">
-          <Logo width={120} height={50} />
-        </div>
+        <div className="flex items-center gap-10">
+          <div className="flex items-center gap-3">
+            <Logo width={120} height={50} />
+          </div>
 
-        {/* Desktop nav */}
-        <div className="hidden lg:block">
-          <NavigationMenu>
-            <NavigationMenuList className="gap-7">
-              {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.href}>
-                  <NavigationMenuLink
-                    className="font-medium bg-transparent hover:bg-gray-800/10"
-                    asChild
-                  >
-                    <Link href={item.href}>{item.label}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+          {/* Desktop nav */}
+          <div className="hidden lg:block">
+            <NavigationMenu>
+              <NavigationMenuList className="gap-7">
+                {navigationItems.map((item) => (
+                  <NavigationMenuItem key={item.href}>
+                    <NavigationMenuLink
+                      className="bg-transparent text-md font-medium text-slate-700 hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
+                      asChild
+                    >
+                      <Link href={item.href}>{item.label}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
         </div>
 
         {/* Desktop auth */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden lg:flex items-center gap-2">
+          <ThemeSwitcher />
           {user && (
             <AvatarDropdown
               user={user}
@@ -121,15 +125,21 @@ export function MarketingNavbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/auth/login"
-                className="text-sm font-medium text-primary hover:underline"
+                className="text-sm font-medium hover:underline"
               >
-                <Button variant="ghost">Sign In</Button>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="text-slate-700 text-md font-medium hover:text-slate-900 dark:text-slate-200 dark:hover:text-white"
+                >
+                  Sign In
+                </Button>
               </Link>
               <Link
                 href="/auth/register"
-                className="text-sm font-medium text-primary hover:underline"
+                className="text-md font-medium hover:underline"
               >
-                <Button>Get Started</Button>
+                <Button size="lg">Get Started</Button>
               </Link>
             </div>
           )}
@@ -137,7 +147,7 @@ export function MarketingNavbar() {
 
         {/* Mobile toggle */}
         <button
-          className="lg:hidden inline-flex items-center justify-center rounded-md border border-border p-2 text-foreground hover:bg-muted"
+          className="inline-flex items-center justify-center rounded-md border border-slate-300 p-2 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 lg:hidden"
           onClick={() => setMobileOpen((prev) => !prev)}
           aria-label="Toggle menu"
         >
@@ -151,8 +161,11 @@ export function MarketingNavbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur px-5 pb-4 shadow-sm">
+        <div className="border-t border-slate-200 bg-zinc-50/95 px-5 pb-4 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 lg:hidden">
           <div className="flex flex-col gap-3 pt-3">
+            <div className="flex justify-end">
+              <ThemeSwitcher />
+            </div>
             {navigationItems.map((item) => (
               <ListItem
                 key={item.href}
@@ -209,7 +222,7 @@ function ListItem({
     <Link
       href={href}
       onClick={onClick}
-      className="w-full rounded-md px-2 py-2 text-sm hover:bg-muted"
+      className="w-full rounded-md px-2 py-2 text-md font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
     >
       <div className="flex flex-col gap-1 text-sm">
         <div className="leading-none font-medium">{title}</div>

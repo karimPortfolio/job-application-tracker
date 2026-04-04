@@ -49,19 +49,19 @@ export function CoreCapabilitiesSection() {
   return (
     <section className="relative py-24">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-950 via-slate-900/40 to-slate-950"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-zinc-50 via-blue-50/40 to-zinc-50 dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950"
         aria-hidden
       />
       <div className="relative mx-auto max-w-6xl px-6 lg:px-12">
         <RevealOnView>
           <div className="mb-10 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700/80 dark:text-blue-300/80">
               Core capabilities
             </p>
             <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
               Built for modern recruiting teams
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-slate-300">
+            <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-300">
               Everything your team needs to source, evaluate, and hire top talent from one
               intelligent platform.
             </p>
@@ -71,7 +71,7 @@ export function CoreCapabilitiesSection() {
         <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-6">
           {coreFeatures.map((feature) => (
             <RevealOnView key={feature.title} className={feature.span}>
-              <article className="group relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-white/10">
+              <article className="group relative h-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 p-6 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
                 <div
                   className={cn(
                     "pointer-events-none absolute inset-0 bg-linear-to-br opacity-90",
@@ -86,13 +86,13 @@ export function CoreCapabilitiesSection() {
 
                 <div className="relative flex h-full flex-col">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full border border-blue-300/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-100">
+                    <span className="rounded-full border border-blue-300/40 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-100">
                       {feature.badge}
                     </span>
-                    <span className="text-xs font-medium text-cyan-100">{feature.metric}</span>
+                    <span className="text-xs font-medium text-cyan-700 dark:text-cyan-100">{feature.metric}</span>
                   </div>
 
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/70">
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 dark:border-white/10 dark:bg-slate-900/70">
                     <Image
                       src={feature.image}
                       alt={feature.title}
@@ -103,8 +103,8 @@ export function CoreCapabilitiesSection() {
                     />
                   </div>
 
-                  <h3 className="mt-5 text-xl font-semibold text-white">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-300">{feature.description}</p>
+                  <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{feature.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{feature.description}</p>
                 </div>
               </article>
             </RevealOnView>

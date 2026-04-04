@@ -57,7 +57,7 @@ export function PublicJobDetailsModal({
     };
 
     fetchJob();
-  }, [id, open, findJob]);
+  }, [id, open]);
 
   const handleClose = () => {
     setOpen(false);

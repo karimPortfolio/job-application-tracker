@@ -122,7 +122,7 @@ export function PartnersSection() {
       <div className="max-w-7xl mx-auto px-5">
         <div className="w-full flex justify-center " ref={containerRef}>
           <div
-            className={`hidden md:block border-8 border-white/20 ring-1 ring-white/30 relative z-30 rounded-2xl bottom-60 w-full ${widthClass} left-0 transition-all duration-700 ease-out overflow-visible before:content-[''] before:absolute before:-z-10 before:inset-[18%] before:blur-3xl before:opacity-80 before:rounded-[32px] before:bg-[radial-gradient(circle_at_20%_30%,rgba(37,80,173,0.55),transparent_55%),radial-gradient(circle_at_80%_70%,rgba(77,116,201,0.5),transparent_50%),radial-gradient(circle_at_50%_50%,rgba(233,238,251,0.3),transparent_60%)] after:content-[''] after:absolute after:-z-10 after:inset-[-12%] after:blur-2xl after:opacity-70 after:rounded-[32px] after:bg-[linear-gradient(135deg,rgba(37,80,173,0.35),rgba(77,116,201,0.25),rgba(233,238,251,0.35))]`}
+            className={`hidden md:block border-8 border-slate-200/80 ring-1 ring-slate-300/80 dark:border-white/20 dark:ring-white/30 relative z-30 rounded-2xl bottom-60 w-full ${widthClass} left-0 transition-all duration-700 ease-out overflow-visible before:content-[''] before:absolute before:-z-10 before:inset-[18%] before:blur-3xl before:opacity-80 before:rounded-[32px] before:bg-[radial-gradient(circle_at_20%_30%,rgba(37,80,173,0.55),transparent_55%),radial-gradient(circle_at_80%_70%,rgba(77,116,201,0.5),transparent_50%),radial-gradient(circle_at_50%_50%,rgba(233,238,251,0.3),transparent_60%)] after:content-[''] after:absolute after:-z-10 after:inset-[-12%] after:blur-2xl after:opacity-70 after:rounded-[32px] after:bg-[linear-gradient(135deg,rgba(37,80,173,0.35),rgba(77,116,201,0.25),rgba(233,238,251,0.35))]`}
           >
             <Image
               src="/images/applications-page.png"
@@ -133,7 +133,7 @@ export function PartnersSection() {
             />
           </div>
         </div>
-        <h2 className="text-3xl font-bold text-center mb-10">
+        <h2 className="text-3xl font-bold text-center mb-10 text-slate-900 dark:text-white">
           Trusted by Leading Companies
         </h2>
         <div className="w-full">
