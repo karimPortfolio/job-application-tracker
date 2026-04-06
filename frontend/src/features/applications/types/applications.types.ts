@@ -85,6 +85,7 @@ export interface CreateApplicationPayload {
   source?: string;
   referalName?: string;
   referalEmail?: string;
+  recaptchaToken?: string;
 }
 
 export interface UpdateApplicationPayload {

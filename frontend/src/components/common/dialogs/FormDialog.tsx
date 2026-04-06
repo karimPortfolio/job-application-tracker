@@ -17,6 +17,8 @@ interface FormDialogProps<T extends FieldValues = FieldValues> {
   formId: string;
   className?: string;
   forceMount?: boolean;
+  onInteractOutside?: (event: any) => void;
+  disableSubmitButton?: boolean;
 }
 
 export function FormDialog<T extends FieldValues = FieldValues>({
@@ -31,10 +33,12 @@ export function FormDialog<T extends FieldValues = FieldValues>({
   formId,
   className,
   forceMount,
+  onInteractOutside,
+  disableSubmitButton,
 }: FormDialogProps<T>) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-        <DialogContent forceMount={forceMount || undefined}  className={cn("sm:max-w-125", className)}>
+        <DialogContent forceMount={forceMount || undefined}  className={cn("sm:max-w-125", className)} onInteractOutside={onInteractOutside}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && (<DialogDescription>{description}</DialogDescription>)}
@@ -44,7 +48,7 @@ export function FormDialog<T extends FieldValues = FieldValues>({
             <DialogClose asChild>
               <Button variant="outline" onClick={onClose}>Cancel</Button>
             </DialogClose>
-            <Button type="submit" form={formId} disabled={loading}>
+            <Button type="submit" form={formId} disabled={loading || disableSubmitButton}>
                 <Save className="mr-2 size-4" />
                 {loading ? 'Saving...' : submitLabel || 'Save'}
             </Button>

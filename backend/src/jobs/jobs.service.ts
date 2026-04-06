@@ -22,6 +22,7 @@ import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { GenerateJobDto } from './dto/generate-job.dto';
 import { buildJobDescriptionPrompt } from 'src/ai/prompts/job-description.prompt';
 import { AIService } from 'src/ai/ai.service';
+import { JobStatus } from './types/jobs.types';
 
 @Injectable()
 export class JobsService {
@@ -45,6 +46,8 @@ export class JobsService {
   async findAll(query: JobQueryDto) {
     const filter = buildJobFilter(query);
     const sort = buildJobSort(query);
+    filter.status = JobStatus.PUBLISHED;
+    
     return this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,

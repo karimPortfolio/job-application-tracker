@@ -9,6 +9,7 @@ import { Job } from "@/features/jobs/types/jobs.types";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
+import { CreatePublicApplicationModal } from "@/features/applications/marketing/components/CreatePublicApplicationModal";
 
 export function JobsClient() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export function JobsClient() {
   });
   const [selectedJobId, setSelectedJobId] = useState<string>("");
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [createPublicApplicationOpen, setCreatePublicApplicationOpen] =
+    useState(false);
 
   const mobileJobId = searchParams.get("jobId");
   const activeJobId = isMobile ? mobileJobId || "" : selectedJobId;
@@ -60,6 +63,24 @@ export function JobsClient() {
     [isMobile, router, searchParams],
   );
 
+  const handleCreatePublicApplicationOpen = useCallback(() => {
+    console.log('clicked');
+    setCreatePublicApplicationOpen(true);
+  }, []);
+
+  const onSuccessfulApplicationCreation = useCallback(() => {
+    setCreatePublicApplicationOpen(false);
+    if (isMobile) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("jobId");
+      const queryString = params.toString();
+      router.push(queryString ? `/jobs?${queryString}` : "/jobs");
+    } else {
+      setDetailsOpen(false);
+      setSelectedJobId("");
+    }
+  }, [isMobile, router, searchParams]);
+
   const handleResetFilters = useCallback(() => {
     setQuery((prev) => ({
       ...prev,
@@ -78,9 +99,19 @@ export function JobsClient() {
 
   return (
     <div className="relative w-full overflow-x-clip bg-zinc-50 text-slate-900 dark:bg-slate-950 dark:text-white">
+      {/* ==== PAGE INCLUDES ==== */}
+      <CreatePublicApplicationModal
+        open={createPublicApplicationOpen}
+        setOpen={setCreatePublicApplicationOpen}
+        jobId={activeJobId}
+        onSuccess={onSuccessfulApplicationCreation}
+      />
+
       <div className="mx-auto pt-40 max-w-7xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl text-center font-semibold tracking-tight text-primary">Find your next role</h1>
+          <h1 className="text-4xl md:text-6xl text-center font-semibold tracking-tight text-primary">
+            Find your next role
+          </h1>
           <p className="mt-5 text-sm md:text-lg text-center text-slate-700 dark:text-slate-200 sm:text-base">
             Browse open opportunities from trusted companies.
           </p>
@@ -93,7 +124,11 @@ export function JobsClient() {
           query={query}
           loading={loading}
           onSearchSubmit={(value) =>
-            setQuery((prev) => ({ ...prev, search: value || undefined, page: 1 }))
+            setQuery((prev) => ({
+              ...prev,
+              search: value || undefined,
+              page: 1,
+            }))
           }
           onEmploymentTypeChange={(value) =>
             setQuery((prev) => ({ ...prev, employmentType: value, page: 1 }))
@@ -120,6 +155,7 @@ export function JobsClient() {
           id={activeJobId}
           open={isDetailsOpen}
           setOpen={handleDetailsOpen}
+          handleCreateApplicationOpen={handleCreatePublicApplicationOpen}
         />
       </div>
       <HomeFooter />

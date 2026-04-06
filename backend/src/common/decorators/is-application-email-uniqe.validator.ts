@@ -1,16 +1,8 @@
-// decorators/is-email-unique.validator.ts
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { 
-  ValidatorConstraint, 
-  ValidatorConstraintInterface, 
-  ValidationArguments, 
-  registerDecorator,
-  ValidationOptions
-} from 'class-validator';
-import { Model } from 'mongoose';
-import { Application, ApplicationDocument } from '../../applications/applications.schema';
-
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import { Model } from "mongoose";
+import { Application, ApplicationDocument } from "src/applications/applications.schema";
 
 @ValidatorConstraint({ name: 'IsEmailUnique', async: true })
 @Injectable()
@@ -19,20 +11,31 @@ export class IsApplicationEmailUniqueConstraint implements ValidatorConstraintIn
     @InjectModel(Application.name) private readonly applicationsModel: Model<ApplicationDocument>,
   ) {}
 
-  async validate(email: string) {
+  async validate(email: string, args: ValidationArguments): Promise<boolean> {
+    // Access the full DTO object to get the job ID
+    const dto = args.object as any;
+    const jobId = dto.job; 
+
+    if (!jobId || !email) {
+      return true; // Let @IsNotEmpty handle missing fields
+    }
+
     try {
-      if (!this.applicationsModel) {
-        return true; // Skip validation if model is not available
-      }
-      const application = await this.applicationsModel.findOne({ email: email });
-      return !application;
+      // Normalize email for comparison
+      const existingApplication = await this.applicationsModel.findOne({ 
+        email: email.toLowerCase().trim(), 
+        job: jobId 
+      }).lean(); // .lean() for better performance (JSON-only)
+
+      return !existingApplication;
     } catch (error) {
-      return true; // Allow if there's an error
+      // If DB fails, we block the application to be safe
+      return false; 
     }
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'Email $value already exists';
+    return 'You have already applied for this position with this email address.';
   }
 }
 

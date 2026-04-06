@@ -19,7 +19,7 @@ interface FileDropZoneProps {
 
 export function FileDropZone({
   acceptedTypes = ["application/pdf", "text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
-  maxSize = 2 * 1024 * 1024, // 2MB default
+  maxSize = 5 * 1024 * 1024, // 5MB default
   onFileSelect,
   onError,
   onFileClear,

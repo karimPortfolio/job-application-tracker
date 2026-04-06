@@ -16,21 +16,21 @@ services:
       - /app/node_modules  # <--- CRITICAL: Prevents host node_modules from overwriting container ones
     restart: unless-stopped
 
-  frontend:
-    build: 
-      context: ./frontend
-    container_name: ats-frontend
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules  # <--- CRITICAL: Prevents host node_modules from overwriting container ones
-      - /app/.next        # <--- OPTIONAL: Speeds up Next.js HMR
-    restart: unless-stopped
+  # frontend:
+  #   build: 
+  #     context: ./frontend
+  #   container_name: ats-frontend
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - ./frontend/.env
+  #   depends_on:
+  #     - backend
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules  # <--- CRITICAL: Prevents host node_modules from overwriting container ones
+  #     - /app/.next        # <--- OPTIONAL: Speeds up Next.js HMR
+  #   restart: unless-stopped
 
   mongo:
     image: mongo:7

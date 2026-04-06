@@ -35,7 +35,6 @@ export const FileInput = <T extends ApplicationFormValues = ApplicationFormValue
             <FileDropZone
               acceptedTypes={[
                 "application/pdf",
-                "text/plain",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
               ]}
               onFileSelect={(file: File) => {
@@ -48,7 +47,7 @@ export const FileInput = <T extends ApplicationFormValues = ApplicationFormValue
               }}
               disabled={disabled}
               label="Upload Resume"
-              description="PDF, TXT, or DOCX (max 2MB)"
+              description="PDF or DOCX (max 5MB)"
             />
           </FormControl>
           <FormMessage />

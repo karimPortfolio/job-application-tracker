@@ -44,6 +44,7 @@ export class Application {
 
   @Prop({ type: String, ref: 'Job' })
   job: string;
+  
   @Prop({ type: String, ref: 'Company' })
   company: string;
 

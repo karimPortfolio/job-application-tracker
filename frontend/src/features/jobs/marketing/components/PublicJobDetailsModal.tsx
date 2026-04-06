@@ -12,17 +12,24 @@ import { useSafeHtmlRender } from "@/hooks/useSafeHtmlRender";
 import type { Job } from "@/features/jobs/types/jobs.types";
 import {
   AlertCircle,
+  Bookmark,
   BriefcaseBusiness,
   Building2,
   Clock3,
   Globe,
   MapPin,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface PublicJobDetailsModalProps {
   id: string;
   open: boolean;
   setOpen: (open: boolean) => void;
+  handleCreateApplicationOpen?: () => void;
 }
 
 const formatEmploymentType = (value: Job["employmentType"]) =>
@@ -40,6 +47,7 @@ export function PublicJobDetailsModal({
   id,
   open,
   setOpen,
+  handleCreateApplicationOpen,
 }: PublicJobDetailsModalProps) {
   const [job, setJob] = useState<Job | null>(null);
   const { findJob, loading, apiError, clearApiError } = usePublicJobActions();
@@ -117,7 +125,9 @@ export function PublicJobDetailsModal({
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
               <div>
-                <h3 className="mb-3 text-base font-semibold">Job description</h3>
+                <h3 className="mb-3 text-base font-semibold">
+                  Job description
+                </h3>
                 <div
                   className="text-sm text-muted-foreground whitespace-pre-wrap [&_ul]:ml-5 [&_ul]:list-disc [&_ol]:ml-5 [&_ol]:list-decimal [&_li]:mb-1"
                   dangerouslySetInnerHTML={{ __html: safeDescription }}
@@ -131,7 +141,13 @@ export function PublicJobDetailsModal({
                   value={formatEmploymentType(job.employmentType)}
                 />
                 <InfoRow
-                  icon={job.isRemote ? <Globe className="size-4" /> : <MapPin className="size-4" />}
+                  icon={
+                    job.isRemote ? (
+                      <Globe className="size-4" />
+                    ) : (
+                      <MapPin className="size-4" />
+                    )
+                  }
                   label="Location"
                   value={
                     job.isRemote
@@ -154,6 +170,30 @@ export function PublicJobDetailsModal({
                   label="Salary"
                   value={formatSalaryRange(job.salaryMin, job.salaryMax)}
                 />
+                <div className="grid md:grid-cols-4 gap-3">
+                  <Button
+                    type="button"
+                    onClick={handleCreateApplicationOpen}
+                    className="w-full col-span-2 lg:col-span-3"
+                  >
+                    Apply now
+                  </Button>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full col-span-2 lg:col-span-1"
+                      >
+                        <Bookmark className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Save job</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </div>
             </div>
 

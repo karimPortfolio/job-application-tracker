@@ -7,6 +7,7 @@ import { ApplicationSchema, Application } from './applications.schema';
 import { Job, JobSchema } from '../jobs/jobs.schema';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsController } from './applications.controller';
+import { PublicApplicationsController } from './public-applications.controller';
 import { ApplicationsCsvExporter } from './exporters/applications-csv.exporter';
 import { ApplicationsXlsxExporter } from './exporters/applications-xlsx.exporter';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
@@ -34,6 +35,6 @@ import { AIService } from '../ai/ai.service';
     IsApplicationEmailUniqueConstraint,
     CompanyGuard,
   ],
-  controllers: [ApplicationsController],
+  controllers: [ApplicationsController, PublicApplicationsController],
 })
 export class ApplicationsModule {}

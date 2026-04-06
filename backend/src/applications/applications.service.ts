@@ -23,6 +23,7 @@ import { UpdateApplicationDto } from './dto/update-application.dto';
 import { parseFileContent } from '../common/utils/fileParser';
 import { buildCandidateResumeParsingPrompt } from 'src/ai/prompts/candidate-resume-parsing.prompt';
 import { AIService } from '../ai/ai.service';
+import { CreatePublicApplicationDto } from './dto/create-public-application.dto';
 
 @Injectable()
 export class ApplicationsService {
@@ -115,6 +116,65 @@ export class ApplicationsService {
 
     this.jobModel
       .updateOne({ _id: job }, { $inc: { applicationsCount: 1 } })
+      .exec();
+
+    return application;
+  }
+
+  async createPublicApplication(
+    dto: CreatePublicApplicationDto,
+    file: Express.Multer.File,
+  ) {
+    let resumeUrl = dto.resumeUrl;
+    if (file && this.s3Uploader.isS3Configured()) {
+      resumeUrl = await this.uploadResumeToS3('public', dto.email, file);
+    }
+
+    const job = await this.jobModel.findById(dto.job);
+
+    if (!job) {
+      throw new BadRequestException('Job not found');
+    }
+
+    const existingApplication = await this.applicationModel
+      .findOne({
+        email: dto.email.toLowerCase().trim(),
+        job: dto.job,
+      })
+      .lean();
+console.log(existingApplication);
+    if (existingApplication) {
+      console.log('Existing application found:', existingApplication);
+      throw new BadRequestException({
+        message: "You have already applied for this job.",
+      });
+    }
+
+    const company = job.company
+      ? typeof job.company === 'string'
+        ? job.company
+        : (job.company as any)._id
+      : undefined;
+
+    const application = await this.applicationModel.create({
+      fullName: dto.fullName,
+      email: dto.email,
+      phoneNumber: dto.phoneNumber,
+      linkedInUrl: dto.linkedInUrl,
+      portfolioUrl: dto.portfolioUrl,
+      resumeUrl,
+      country: dto.country,
+      city: dto.city,
+      job: dto.job,
+      status: 'applied',
+      stage: 'screening',
+      source: dto.source,
+      company,
+      appliedAt: dto.appliedAt ?? new Date().toISOString(),
+    });
+
+    this.jobModel
+      .updateOne({ _id: job._id }, { $inc: { applicationsCount: 1 } })
       .exec();
 
     return application;
