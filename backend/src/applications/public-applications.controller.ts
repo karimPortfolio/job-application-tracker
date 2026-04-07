@@ -53,4 +53,32 @@ export class PublicApplicationsController {
       file,
     );
   }
+
+  
+  @UseGuards(ThrottlerGuard)
+  @Public()
+  @UseInterceptors(FileInterceptor('resume', { storage: memoryStorage() }))
+  @Post("parse-resume")
+  @Throttle({ default: { ttl: 60, limit: 5 } })
+  async parseResume(
+    @UploadedFile(
+      new ParseFilePipe({
+        exceptionFactory: (error) => {
+          throw new HttpException(
+            'The resume is required and must be a PDF file not exceeding 5MB in size.',
+            HttpStatus.BAD_REQUEST,
+          );
+        },
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5242880 }),
+          new FileTypeValidator({ fileType: 'application/pdf' }),
+        ],
+        fileIsRequired: true,
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.applicationsService.parseCandidateResume(file);
+  }
+
 }

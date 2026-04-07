@@ -2,7 +2,6 @@ import { FormDialog } from "@/components/common/dialogs/FormDialog";
 import { CreateApplicationPayload } from "@/features/applications/types/applications.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { useResumeParsing } from "../../hooks/useResumeParsing";
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import { PortfolioUrlInput } from "../../components/form-fields/PortfolioUrlInpu
 import { createPublicApplicationSchema } from "../schemas/create-public-application.schema";
 import ReCAPTCHA from "react-google-recaptcha";
 import { usePublicApplicationsActions } from "../hooks/usePublicApplicationsActions";
+import { useResumeParsing } from "../hooks/useResumeParsing";
 
 interface CreatePublicApplicationModalProps {
   open: boolean;
@@ -121,7 +121,7 @@ export const CreatePublicApplicationModal = ({
       formId="createPublicApplicationForm"
       className="max-h-3/4 sm:max-h-fit sm:max-w-2xl overflow-auto"
       onInteractOutside={(e) => e.preventDefault()}
-      // disableSubmitButton={!isVerified}
+      disableSubmitButton={!isVerified}
     >
       <FormProvider {...form}>
         <form

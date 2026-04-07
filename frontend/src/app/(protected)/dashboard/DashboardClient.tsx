@@ -1,5 +1,6 @@
 "use client";
 
+import { Knob } from "@/components/common/Knob";
 import { ApplicationsStatsByCountries } from "@/features/dashboard/components/ApplicationsStatsByCountries";
 import { ApplicationsStatsByDepartments } from "@/features/dashboard/components/ApplicationsStatsByDepartments";
 import { ApplicationsStatsByJobs } from "@/features/dashboard/components/ApplicationsStatsByJobs";

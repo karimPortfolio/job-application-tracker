@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApiError } from "@/hooks/useApiError";
 import { CreateApplicationPayload } from "../../types/applications.types";
-import { createPublicApplication } from "../../services/public-applications.service";
+import { createPublicApplication } from "../services/public-applications.service";
 
 
 export function usePublicApplicationsActions(refetch?: () => Promise<void>) {
