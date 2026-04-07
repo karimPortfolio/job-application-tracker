@@ -87,6 +87,8 @@ export class Application {
   aiScore?: number;
   @Prop()
   aiSummary?: string;
+  @Prop()
+  aiDecision?: string;
 
   @Prop({ type: String, ref: 'User' })
   user?: string | User;

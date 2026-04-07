@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { openRouterClient } from "./openrouter.client"
+import { groqCloudClient } from "./groqcloud.client"
 
 interface RunAIOptions {
   prompt: string
@@ -15,12 +16,29 @@ export class AIService {
 
   async run({
     prompt,
-    model = "meta-llama/llama-3-8b-instruct",
+    // model = "meta-llama/llama-3-8b-instruct", // used with openrouter
+    model = "llama-3.3-70b-versatile",
     temperature = 0.4,
     maxTokens = 800,
     feature = "generic",
   }: RunAIOptions): Promise<string> {
-    const res = await openRouterClient.post("/chat/completions", {
+    // openrouter setup
+    // const res = await openRouterClient.post("/chat/completions", {
+    //   model,
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content:
+    //         "You are a professional HR assistant generating business-safe content.",
+    //     },
+    //     { role: "user", content: prompt },
+    //   ],
+    //   temperature,
+    //   max_tokens: maxTokens,
+    // })
+
+    // groq cloud setup
+    const res = await groqCloudClient.post("/chat/completions", {
       model,
       messages: [
         {

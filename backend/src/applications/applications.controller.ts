@@ -28,6 +28,7 @@ import { UpdateApplicationStageDto } from './dto/update-application-stage.dto';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { SmartScreeningApplicationDto } from './dto/smart-screenig-application.dto';
 
 @Controller('applications')
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -187,5 +188,14 @@ export class ApplicationsController {
       dto.stage,
     );
     return { message: 'Application stage updated successfully' };
+  }
+
+  @Post("smart-screening")
+  async runningSmartScreening(
+    @Req() req: any,
+    @Body() body: SmartScreeningApplicationDto,
+  ) {
+    const companyId = req.user.company;
+    return this.applicationsService.runningSmartScreening(body.applicationId, companyId);
   }
 }

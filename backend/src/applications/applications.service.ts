@@ -24,6 +24,9 @@ import { parseFileContent } from '../common/utils/fileParser';
 import { buildCandidateResumeParsingPrompt } from 'src/ai/prompts/candidate-resume-parsing.prompt';
 import { AIService } from '../ai/ai.service';
 import { CreatePublicApplicationDto } from './dto/create-public-application.dto';
+import { buildApplicationRatingPrompt } from 'src/ai/prompts/application-rating.prompt';
+import { SmartScreeningAiResponse } from './types/applications.types';
+import { parse } from 'path';
 
 @Injectable()
 export class ApplicationsService {
@@ -142,11 +145,10 @@ export class ApplicationsService {
         job: dto.job,
       })
       .lean();
-console.log(existingApplication);
+
     if (existingApplication) {
-      console.log('Existing application found:', existingApplication);
       throw new BadRequestException({
-        message: "You have already applied for this job.",
+        message: 'You have already applied for this job.',
       });
     }
 
@@ -432,6 +434,56 @@ console.log(existingApplication);
     };
   }
 
+  async runningSmartScreening(applicationId: string, companyId: string) {
+    const application = await this.applicationModel.findById(applicationId).populate('job');
+
+    if (!application) throw new BadRequestException('Application not found');
+
+    if (application.company?.toString() !== companyId.toString()) {
+      throw new ForbiddenException('Access to this resource is forbidden');
+    }
+
+    if (!application.job) {
+      throw new BadRequestException('Associated job not found');
+    }
+
+    const jobDescription = (application.job as any)?.description || '';
+    const resumeStream = await this.getFileFromS3(application.resumeUrl || '');
+
+    if (!resumeStream) {
+      throw new BadRequestException('Resume file not found');
+    }
+
+    const mimeType = this.getFileMimetypeFromUrl(application.resumeUrl || '');
+    (resumeStream as any).mimetype = mimeType;
+
+    const resumeText = await parseFileContent(resumeStream);
+
+    const prompt = buildApplicationRatingPrompt(jobDescription, resumeText);
+
+    const aiResponse = await this.aiService.run({
+      prompt,
+      temperature: 0.2,
+      maxTokens: 600,
+      feature: 'generic',
+    });
+
+    const parsedAiResponse: SmartScreeningAiResponse = this.parsedAiResponse(
+      this.getCleanedAiResponse(aiResponse) || '{}',
+    ) as SmartScreeningAiResponse;
+
+    await this.applicationModel.updateOne(
+      { _id: applicationId },
+      { $set: { 
+        aiScore: parsedAiResponse.score,
+        aiSummary: parsedAiResponse.summary,
+        aiDecision: parsedAiResponse.decision,  
+      }},
+    );
+
+    return parsedAiResponse;
+  }
+
   private async getCachedApplication(applicationId: string, companyId: string) {
     const cachedApplication = await this.cache.get(
       this.getCacheKey(applicationId),
@@ -501,6 +553,32 @@ console.log(existingApplication);
     const key = url.pathname.substring(1); //=== remove leading '/'
 
     return await this.s3Uploader.delete(key);
+  }
+
+  private async getFileFromS3(resumeUrl: string) {
+    if (!this.s3Uploader.isS3Configured()) return null;
+
+    const url = new URL(resumeUrl);
+    const key = url.pathname.substring(1); //==== remove leading '/'
+
+    return await this.s3Uploader.getFileStream(key);
+  }
+
+  private getFileMimetypeFromUrl(fileUrl: string): string {
+    //== extract MIME type from file extension in resumeUrl
+    const fileExtension = (fileUrl || '')
+      .split('.')
+      .pop()
+      ?.toLowerCase() || 'pdf';
+    
+    const mimeTypeMap: Record<string, string> = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      txt: 'text/plain',
+    };
+
+    return mimeTypeMap[fileExtension] || 'application/pdf';
   }
 
   private async getUserOrThrow(userId: string) {

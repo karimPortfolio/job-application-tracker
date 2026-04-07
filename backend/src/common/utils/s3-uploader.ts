@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 
 export interface UploadOptions {
@@ -89,5 +89,24 @@ export class S3Uploader {
         Key: key,
       }),
     );
+  }
+
+  async getFileStream(key: string, bucket?: string) {
+    if (!this.isConfigured) {
+      throw new BadRequestException('S3 upload not configured');
+    }
+
+    const s3 = this.initS3();
+    const command = new GetObjectCommand({
+      Bucket: bucket || this.bucket,
+      Key: key,
+    });
+
+    try {
+      const response = await s3.send(command);
+      return response.Body as any;
+    } catch (error) {
+      throw new BadRequestException('Error retrieving file from S3');
+    } 
   }
 }

@@ -170,37 +170,15 @@ export function PublicJobDetailsModal({
                   label="Salary"
                   value={formatSalaryRange(job.salaryMin, job.salaryMax)}
                 />
-                <div className="grid md:grid-cols-4 gap-3">
-                  <Button
-                    type="button"
-                    onClick={handleCreateApplicationOpen}
-                    className="w-full col-span-2 lg:col-span-3"
-                  >
-                    Apply now
-                  </Button>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full col-span-2 lg:col-span-1"
-                      >
-                        <Bookmark className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Save job</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                <Button
+                  type="button"
+                  onClick={handleCreateApplicationOpen}
+                  className="w-full col-span-2 lg:col-span-3"
+                >
+                  Apply now
+                </Button>
               </div>
-            </div>
-
-            <div className="flex justify-end">
-              <Button type="button" onClick={handleClose} variant="outline">
-                Close
-              </Button>
             </div>
           </CardContent>
         </Card>
