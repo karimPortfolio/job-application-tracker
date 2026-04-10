@@ -8,6 +8,7 @@ import {
   deleteApplication,
   getApplication,
   getApplicationsJobs,
+  smartScreening,
   updateApplication,
 } from "../services/applications.service";
 import {
@@ -125,6 +126,20 @@ export function useApplicationsActions(refetch?: () => Promise<void>) {
     }
   };
 
+  const runSmartScreening = async (id: string) => {
+    setLoading(true);
+    try {
+       const res = await smartScreening(id);
+       if (refetch) await refetch();
+       return res.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     findApplication,
@@ -135,6 +150,7 @@ export function useApplicationsActions(refetch?: () => Promise<void>) {
     changeStage,
     confirmDelete,
     applicationsJobs,
+    runSmartScreening,
     apiError: error,
     clearApiError: clearError,
   };

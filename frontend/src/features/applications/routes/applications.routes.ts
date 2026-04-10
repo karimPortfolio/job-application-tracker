@@ -9,4 +9,5 @@ export const APPLICATIONS_ROUTES = {
   changeStage: (id: string) => `${process.env.NEXT_PUBLIC_API_VERSION || ''}/applications/${id}/stage`,
   parseResume: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/applications/parse-resume`,
   getApplicationsJobs: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/applications/jobs`,
+  smartScreening: `${process.env.NEXT_PUBLIC_API_VERSION || ''}/applications/smart-screening`,
 } as const;

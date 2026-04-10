@@ -18,7 +18,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { usePublicApplicationsActions } from "../hooks/usePublicApplicationsActions";
 import { useResumeParsing } from "../hooks/useResumeParsing";
 
-interface CreatePublicApplicationModalProps {
+interface CreatePublicApplicationDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onSuccess: () => void;
@@ -29,12 +29,12 @@ const createPublicApplicationResolver = zodResolver(
   createPublicApplicationSchema,
 );
 
-export const CreatePublicApplicationModal = ({
+export const CreatePublicApplicationDialog = ({
   open,
   setOpen,
   onSuccess,
   jobId,
-}: CreatePublicApplicationModalProps) => {
+}: CreatePublicApplicationDialogProps) => {
   const { create, loading, apiError, clearApiError } =
     usePublicApplicationsActions();
   const recaptchaRef = useRef<ReCAPTCHA>(null);

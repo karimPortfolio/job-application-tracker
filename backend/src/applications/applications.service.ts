@@ -27,6 +27,7 @@ import { CreatePublicApplicationDto } from './dto/create-public-application.dto'
 import { buildApplicationRatingPrompt } from 'src/ai/prompts/application-rating.prompt';
 import { SmartScreeningAiResponse } from './types/applications.types';
 import { parse } from 'path';
+import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class ApplicationsService {
@@ -44,7 +45,7 @@ export class ApplicationsService {
     private readonly csvExporter: ApplicationsCsvExporter,
     private readonly xlsxExporter: ApplicationsXlsxExporter,
     private readonly s3Uploader: S3Uploader,
-    @Inject('CACHE_MANAGER') private cache: any,
+    @Inject('CACHE_MANAGER') private cache: Cache,
   ) {}
 
   private readonly logger = new Logger(ApplicationsService.name);
@@ -481,11 +482,13 @@ export class ApplicationsService {
       }},
     );
 
+    this.cache.del(this.getCacheKey(applicationId));
+
     return parsedAiResponse;
   }
 
   private async getCachedApplication(applicationId: string, companyId: string) {
-    const cachedApplication = await this.cache.get(
+    const cachedApplication : any = await this.cache.get(
       this.getCacheKey(applicationId),
     );
     if (!cachedApplication) return null;

@@ -9,7 +9,7 @@ export interface ApplicationStage {
 }
 
 export interface SmartScreeningAiResponse {
-  candidateName: 'Mohamed Karim Balla';
+  candidateName: string;
   rating: number;
   score: number;
   summary: string;

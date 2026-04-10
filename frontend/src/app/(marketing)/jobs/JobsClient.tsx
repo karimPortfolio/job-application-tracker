@@ -9,7 +9,7 @@ import { Job } from "@/features/jobs/types/jobs.types";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { CreatePublicApplicationModal } from "@/features/applications/marketing/components/CreatePublicApplicationModal";
+import { CreatePublicApplicationDialog } from "@/features/applications/marketing/components/CreatePublicApplicationDialog";
 
 export function JobsClient() {
   const router = useRouter();
@@ -100,7 +100,7 @@ export function JobsClient() {
   return (
     <div className="relative w-full overflow-x-clip bg-zinc-50 text-slate-900 dark:bg-slate-950 dark:text-white">
       {/* ==== PAGE INCLUDES ==== */}
-      <CreatePublicApplicationModal
+      <CreatePublicApplicationDialog
         open={createPublicApplicationOpen}
         setOpen={setCreatePublicApplicationOpen}
         jobId={activeJobId}

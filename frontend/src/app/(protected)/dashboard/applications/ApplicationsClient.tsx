@@ -5,8 +5,8 @@ import { ApplicationsTable } from "@/features/applications/components/Applicatio
 import { ChangeStageFormDialog } from "@/features/applications/components/ChangeStageFormDialog";
 import { ChangeStatusFormDialog } from "@/features/applications/components/ChangeStatusFormDialog";
 import { CreateApplicationFormDialog } from "@/features/applications/components/CreateApplicationFormDialog";
+import { SmartScreeningDialog } from "@/features/applications/components/SmartScreeningDialog";
 import { UpdateApplicationFormDialog } from "@/features/applications/components/UpdateApplicationFormDialog";
-import { ViewApplicationDialog } from "@/features/applications/components/ViewApplicationDialog";
 import { useApplicationsList } from "@/features/applications/hooks/useApplicationsList";
 import { Application } from "@/features/applications/types/applications.types";
 import { Plus } from "lucide-react";
@@ -19,6 +19,7 @@ export function ApplicationsClient() {
   const [openChangeStatusDialog, setOpenChangeStatusDialog] = useState<boolean>(false);
   const [openChangeStageDialog, setOpenChangeStageDialog] = useState<boolean>(false);
   const [openViewDialog, setOpenViewDialog] = useState<boolean>(false);
+  const [openSmartScreeningDialog, setOpenSmartScreeningDialog] = useState<boolean>(false);
   const [selectedApplication, setSelectedApplication] =
     useState<Application | null>(null);
 
@@ -40,6 +41,11 @@ export function ApplicationsClient() {
   const handleChangeStage = useCallback((application: Application) => {
     setSelectedApplication(application);
     setOpenChangeStageDialog(true);
+  }, []);
+
+  const handleRunningSmartScreening = useCallback((application: Application) => {
+    setSelectedApplication(application);
+    setOpenSmartScreeningDialog(true);
   }, []);
 
   const handleCreateSuccess = useCallback(async () => {
@@ -96,10 +102,10 @@ export function ApplicationsClient() {
         onSuccess={handleStageChangeSuccess}
       />
 
-      <ViewApplicationDialog
-        open={openViewDialog}
-        setOpen={setOpenViewDialog}
-        id={selectedApplication?.id}
+      <SmartScreeningDialog 
+        open={openSmartScreeningDialog}
+        setOpen={setOpenSmartScreeningDialog}
+        application={selectedApplication!}
       />
 
       {/*  PAGE CONTENT  */}
@@ -122,6 +128,7 @@ export function ApplicationsClient() {
         onChangeStatus={handleChangeStatus}
         onChangeStage={handleChangeStage}
         onView={handleView}
+        onRunningSmartScreening={handleRunningSmartScreening}
       />
     </div>
   );

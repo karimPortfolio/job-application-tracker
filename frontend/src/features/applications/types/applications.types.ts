@@ -32,6 +32,7 @@ export interface Application {
   rating?: number;
   aiScore?: number;
   aiSummary?: string;
+  aiDecision?: 'Reject' | 'Move Forward' | 'Needs Review';
   user?: string;
   archivedAt?: string;
   viewedAt?: string;
@@ -114,4 +115,12 @@ export interface PaginatedResponse<T> {
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
+}
+
+
+export interface ApplicationSmartScreeningResult {
+  candidateName: string;
+  score: number;
+  summary: string;
+  decision: 'Reject' | 'Move Forward' | 'Needs Review';
 }

@@ -41,6 +41,7 @@ interface ApplicationsTableProps {
   onChangeStatus?: (application: Application) => void;
   onView?: (application: Application) => void;
   onChangeStage?: (application: Application) => void;
+  onRunningSmartScreening?: (application: Application) => void;
 }
 
 export function ApplicationsTable({
@@ -54,6 +55,7 @@ export function ApplicationsTable({
   onChangeStatus,
   onView,
   onChangeStage,
+  onRunningSmartScreening,
 }: ApplicationsTableProps) {
   const { confirmDelete, loading: isDeleting, applicationsJobs } =
     useApplicationsActions(refetch);
@@ -225,6 +227,7 @@ export function ApplicationsTable({
             onView={onView}
             onChangeStatus={onChangeStatus}
             onChangeStage={onChangeStage}
+            onRunningSmartScreening={onRunningSmartScreening}
             isDeleting={isDeleting}
             confirmDelete={confirmDelete}
           />

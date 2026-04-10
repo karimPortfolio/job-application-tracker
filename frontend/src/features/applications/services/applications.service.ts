@@ -67,3 +67,7 @@ export const getApplicationsJobs = () => {
     APPLICATIONS_ROUTES.getApplicationsJobs,
   );
 };
+
+export const smartScreening = (id: string) => {
+  return api.post(APPLICATIONS_ROUTES.smartScreening, { applicationId: id });
+}
