@@ -50,7 +50,7 @@ import { IsUserEmailUniqueConstraint } from 'src/common/decorators/is-user-email
     EmailVerifiedGuard,
     IsUserEmailUniqueConstraint
   ],
-  exports: [EmailVerifiedGuard],
+  exports: [EmailVerifiedGuard, AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {}

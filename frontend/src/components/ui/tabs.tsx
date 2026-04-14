@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link" // Import Next.js Link
 import { cva, type VariantProps } from "class-variance-authority"
-import { Tabs as TabsPrimitive } from "radix-ui"
+import * as TabsPrimitive from "@radix-ui/react-tabs"
 
 import { cn } from "@/lib/utils"
 
@@ -56,11 +57,19 @@ function TabsList({
   )
 }
 
+//==== optimized TabsTrigger to handle href
+interface TabsTriggerProps extends React.ComponentProps<typeof TabsPrimitive.Trigger> {
+  href?: string;
+}
+
 function TabsTrigger({
   className,
+  href,
+  children,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  return (
+}: TabsTriggerProps) {
+  //=== If href is provided, we wrap the content in a Link and use asChild
+  const content = (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
@@ -70,9 +79,14 @@ function TabsTrigger({
         "after:bg-foreground after:absolute after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100",
         className
       )}
+      asChild={!!href} //=== automatically use asChild if href exists
       {...props}
-    />
+    >
+      {href ? <Link href={href}>{children}</Link> : children}
+    </TabsPrimitive.Trigger>
   )
+
+  return content;
 }
 
 function TabsContent({

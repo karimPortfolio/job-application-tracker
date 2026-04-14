@@ -227,7 +227,7 @@ export class AuthService {
   async me(userId: string) {
     return this.userModel
       .findById(userId)
-      .select('-password')
+      .select('-password -provider')
       .populate('company');
   }
 

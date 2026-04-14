@@ -23,6 +23,9 @@ export class User {
   @Prop({ unique: true, required: true })
   email: string;
 
+  @Prop({ type: String, required: false })
+  avatarUrl: string;
+
   @Prop({ required: true, maxLength: 255, minLength: 8 })
   password: string;
 

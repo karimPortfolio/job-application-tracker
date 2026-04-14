@@ -17,6 +17,7 @@ import { Spinner } from "../ui/spinner";
 import { AvatarDropdownItem } from "@/app/(protected)/onboarding/OnboardingClient";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface AvatarDropdownProps {
   user: User | null;
@@ -77,16 +78,16 @@ export function AvatarDropdown({
       <DropdownMenuContent align="end" className="w-48">
         {items &&
           items.length > 0 &&
-          items.map((item) => (
-            <DropdownMenuItem
-              key={item.label}
-              disabled={item.disabled}
-              onClick={item.onClick}
-              className="cursor-pointer"
-            >
-              {item.icon}
-              {item.label}
-            </DropdownMenuItem>
+          items.map((item, index) => (
+            <Link href={item.href ?? ''} key={index}>
+              <DropdownMenuItem
+                disabled={item.disabled}
+                className="cursor-pointer"
+              >
+                {item.icon}
+                {item.label}
+              </DropdownMenuItem>
+            </Link>
           ))}
 
         <DropdownMenuSeparator />

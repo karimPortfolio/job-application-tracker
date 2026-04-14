@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation";
 export interface AvatarDropdownItem {
   label: string;
   icon: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
+  href?: string;
   disabled?: boolean;
 }
 
@@ -30,17 +31,15 @@ export function OnboardingClient() {
   };
 
   const avatarDropdownItems: AvatarDropdownItem[] = [
-    { label: "Profile", icon: <UserIcon />, onClick: () => {}, disabled: true },
+    { label: "Profile", icon: <UserIcon />, disabled: true },
     {
       label: "Billing",
       icon: <CreditCardIcon />,
-      onClick: () => {},
       disabled: true,
     },
     {
       label: "Settings",
       icon: <SettingsIcon />,
-      onClick: () => {},
       disabled: true,
     },
   ];

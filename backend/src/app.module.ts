@@ -13,6 +13,7 @@ import { ApplicationsModule } from './applications/applications.module'
 import { DashboardModule } from './dashboard/dashboard.module'
 import { seconds, ThrottlerModule } from '@nestjs/throttler'
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
     JobsModule,
     AIModule,
     ApplicationsModule,
-    DashboardModule
+    DashboardModule,
+    ProfileModule
   ],
 })
 export class AppModule {}

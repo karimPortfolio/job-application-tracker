@@ -20,19 +20,19 @@ export function DashboardNavbar() {
     {
       label: "Profile",
       icon: <UserIcon />,
-      onClick: () => {},
+      href: '/dashboard/profile',
       disabled: false,
     },
     {
       label: "Billing",
       icon: <CreditCardIcon />,
-      onClick: () => {},
+      href: '',
       disabled: false,
     },
     {
       label: "Settings",
       icon: <SettingsIcon />,
-      onClick: () => {},
+      href: '',
       disabled: false,
     },
   ];
