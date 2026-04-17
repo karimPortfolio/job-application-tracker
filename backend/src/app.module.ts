@@ -14,6 +14,10 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { seconds, ThrottlerModule } from '@nestjs/throttler'
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
 import { ProfileModule } from './profile/profile.module';
+import { BullModule } from '@nestjs/bullmq';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MailModule } from './mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -37,6 +41,15 @@ import { ProfileModule } from './profile/profile.module';
       response: (req) => req.headers['x-recaptcha-token'],
     }),
 
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: parseInt(process.env.REDIS_PORT ?? '6379'),
+      },
+    }),
+
+    EventEmitterModule.forRoot(),
+
     RedisCacheModule,
 
     AuthModule,
@@ -47,7 +60,9 @@ import { ProfileModule } from './profile/profile.module';
     AIModule,
     ApplicationsModule,
     DashboardModule,
-    ProfileModule
+    ProfileModule,
+    MailModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

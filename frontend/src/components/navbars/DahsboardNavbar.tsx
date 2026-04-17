@@ -5,12 +5,12 @@ import { AvatarDropdown } from "../common/AvatarDropdown";
 import { AvatarDropdownItem } from "@/app/(protected)/onboarding/OnboardingClient";
 import { CreditCardIcon, SettingsIcon, UserIcon } from "lucide-react";
 import { SidebarTrigger } from "../ui/sidebar";
-import { NotificationsDropdown } from "../common/NotificationDropdown";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { ThemeSwitcher } from "../ThemeSwitcher";
+import { NotificationsDropdown } from "@/features/notifications/components/NotificationDropdown";
 
 export function DashboardNavbar() {
   const { user, logout, loading } = useAuth();

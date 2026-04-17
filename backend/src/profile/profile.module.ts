@@ -14,7 +14,8 @@ import { S3Uploader } from "src/common/utils/s3-uploader";
             { name: User.name, schema: UserSchema }
         ]),
         UsersModule,
-        AuthModule
+        AuthModule,
+        
     ],
     exports: [MongooseModule],
     providers: [ProfileService, S3Uploader],

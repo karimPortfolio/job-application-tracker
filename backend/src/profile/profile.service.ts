@@ -10,12 +10,14 @@ import { AuthService } from 'src/auth/auth.service';
 import { PasswordUpdateDto } from './dto/password-update.dto';
 import bcrypt from 'bcrypt';
 import { S3Uploader } from 'src/common/utils/s3-uploader';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export class ProfileService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly authService: AuthService,
     private readonly s3Uploader: S3Uploader,
+    private eventEmitter: EventEmitter2
   ) {}
 
   async updateProfile(
@@ -56,7 +58,8 @@ export class ProfileService {
   }
 
   async updatePassword(user: { sub: string }, body: PasswordUpdateDto) {
-    const currentUser = await this.userModel.findById(user.sub).lean();
+    const userId = user.sub;
+    const currentUser = await this.userModel.findById(userId).lean();
     if (!currentUser) throw new NotFoundException('User not found');
 
     const isPasswordValid = await bcrypt.compare(
@@ -82,6 +85,11 @@ export class ProfileService {
       { _id: currentUser._id },
       { $set: { password: hashedPassword } },
     );
+
+    this.eventEmitter.emit('profile.password_updated', {
+      user: currentUser,
+      timestamp: new Date()
+    });
 
     return { message: 'Password updated successfully' };
   }

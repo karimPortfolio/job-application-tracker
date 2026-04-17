@@ -28,6 +28,7 @@ import { buildApplicationRatingPrompt } from 'src/ai/prompts/application-rating.
 import { SmartScreeningAiResponse } from './types/applications.types';
 import { parse } from 'path';
 import type { Cache } from 'cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ApplicationsService {
@@ -45,6 +46,7 @@ export class ApplicationsService {
     private readonly csvExporter: ApplicationsCsvExporter,
     private readonly xlsxExporter: ApplicationsXlsxExporter,
     private readonly s3Uploader: S3Uploader,
+    private eventEmitter: EventEmitter2,
     @Inject('CACHE_MANAGER') private cache: Cache,
   ) {}
 
@@ -79,7 +81,7 @@ export class ApplicationsService {
     file?: Express.Multer.File,
   ) {
     const company = await this.getCompanyOrThrow(companyId);
-    const userId = await this.getUserOrThrow(user.sub);
+    const userFound = await this.getUserOrThrow(user.sub);
     const job = await this.getJobOrThrow(dto.job);
 
     let resumeUrl = dto.resumeUrl;
@@ -115,7 +117,7 @@ export class ApplicationsService {
       referalEmail: dto.referalEmail,
       appliedAt: dto.appliedAt ?? new Date().toISOString(),
       company: company,
-      user: userId,
+      user: userFound.id,
     });
 
     this.jobModel
@@ -179,6 +181,14 @@ export class ApplicationsService {
     this.jobModel
       .updateOne({ _id: job._id }, { $inc: { applicationsCount: 1 } })
       .exec();
+    
+    const user = await this.getUserOrThrow(job.user as string);
+    
+    this.eventEmitter.emit('application.created', {
+      user: user,
+      jobTitle: job.title,
+      application
+    })
 
     return application;
   }
@@ -584,10 +594,10 @@ export class ApplicationsService {
     return mimeTypeMap[fileExtension] || 'application/pdf';
   }
 
-  private async getUserOrThrow(userId: string) {
+  private async getUserOrThrow(userId: string): Promise<UserDocument> {
     const user = await this.userModel.findById(userId);
     if (!user) throw new BadRequestException('User not found');
-    return userId;
+    return user;
   }
 
   private async getJobOrThrow(jobId: string) {
