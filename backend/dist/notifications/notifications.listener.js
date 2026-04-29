@@ -1,0 +1,86 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationsListener = void 0;
+const common_1 = require("@nestjs/common");
+const event_emitter_1 = require("@nestjs/event-emitter");
+const bullmq_1 = require("@nestjs/bullmq");
+const bullmq_2 = require("bullmq");
+let NotificationsListener = class NotificationsListener {
+    notificationQueue;
+    constructor(notificationQueue) {
+        this.notificationQueue = notificationQueue;
+    }
+    async handlePasswordUpdate(payload) {
+        await this.notificationQueue.add('save-in-app', {
+            userId: payload.user?._id,
+            type: 'SECURITY_ALERT',
+            data: {
+                title: 'Password Changed',
+                message: 'Your password was updated successfully.',
+            },
+        });
+        await this.notificationQueue.add('send-email', {
+            to: payload.user?.email,
+            template: 'password-updated',
+            subject: 'Security Alert: Password Changed',
+            data: {
+                APP_NAME: process.env.APP_NAME || 'Hirely',
+            },
+        });
+    }
+    async handleApplicationCreate(payload) {
+        console.log(payload);
+        await this.notificationQueue.add('save-in-app', {
+            userId: payload.user?._id,
+            type: 'APPLICATION_RECEIVED',
+            data: {
+                title: 'New Application Submitted',
+                message: `You have received a new application for the ${payload.jobTitle} position.`,
+                linkUrl: `${process.env.FRONTEND_URL}/dashboard/applications/${payload.application._id}`,
+            },
+        });
+        await this.notificationQueue.add('send-email', {
+            to: payload.user?.email,
+            template: 'application-received',
+            subject: 'New Application Received',
+            data: {
+                APP_NAME: process.env.APP_NAME || 'Hirely',
+                JOB_TITLE: payload.jobTitle,
+                APPLICATION: payload.application,
+                ACTION_URL: `${process.env.FRONTEND_URL}/dashboard/applications/${payload.application._id}`,
+                ACTION_LABEL: 'Review Application',
+            },
+        });
+    }
+};
+exports.NotificationsListener = NotificationsListener;
+__decorate([
+    (0, event_emitter_1.OnEvent)('profile.password_updated'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationsListener.prototype, "handlePasswordUpdate", null);
+__decorate([
+    (0, event_emitter_1.OnEvent)('application.created'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationsListener.prototype, "handleApplicationCreate", null);
+exports.NotificationsListener = NotificationsListener = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, bullmq_1.InjectQueue)('notifications')),
+    __metadata("design:paramtypes", [bullmq_2.Queue])
+], NotificationsListener);
+//# sourceMappingURL=notifications.listener.js.map
