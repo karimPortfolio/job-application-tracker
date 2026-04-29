@@ -33,7 +33,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
     ThrottlerModule.forRoot({
       throttlers: [{ limit: 5, ttl: seconds(60)}],
-      storage: new ThrottlerStorageRedisService(`redis://ats-redis:${process.env.REDIS_PORT || 6379}`),
+      storage: new ThrottlerStorageRedisService(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`),
     }),
 
      GoogleRecaptchaModule.forRoot({
