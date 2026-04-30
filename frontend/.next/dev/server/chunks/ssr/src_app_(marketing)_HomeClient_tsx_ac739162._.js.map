@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28marketing%29/HomeClient.tsx"],"sourcesContent":["\"use client\";\n\nimport { useAuth } from \"@/features/auth/hooks/useAuth\";\nimport Link from \"next/link\";\n\nexport function HomeClient() {\n  const { user } = useAuth();\n\n  return (\n    <div>\n      Home Client Component\n      <div>\n        {!user && <Link href=\"/auth/login\">Sign In</Link>}\n        {user && <Link href=\"/dashboard\">Dashboard</Link>}\n      </div>\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AACA;AAHA;;;;AAKO,SAAS;IACd,MAAM,EAAE,IAAI,EAAE,GAAG,IAAA,sJAAO;IAExB,qBACE,8OAAC;;YAAI;0BAEH,8OAAC;;oBACE,CAAC,sBAAQ,8OAAC,uKAAI;wBAAC,MAAK;kCAAc;;;;;;oBAClC,sBAAQ,8OAAC,uKAAI;wBAAC,MAAK;kCAAa;;;;;;;;;;;;;;;;;;AAIzC"}}]
-}

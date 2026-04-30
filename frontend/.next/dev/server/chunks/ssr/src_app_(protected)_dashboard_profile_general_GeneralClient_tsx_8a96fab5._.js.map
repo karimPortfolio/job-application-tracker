@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/profile/general/GeneralClient.tsx"],"sourcesContent":["'use client';\n\nexport function GeneralClient() {\n\n    return (\n        <div className=\"w-full\">\n            <h3 className=\"font-medium text-lg\">Personal Informations</h3>\n            <div>\n                 \n            </div>\n        </div>\n    )\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAEO,SAAS;IAEZ,qBACI,8OAAC;QAAI,WAAU;;0BACX,8OAAC;gBAAG,WAAU;0BAAsB;;;;;;0BACpC,8OAAC;;;;;;;;;;;AAKb"}}]
-}

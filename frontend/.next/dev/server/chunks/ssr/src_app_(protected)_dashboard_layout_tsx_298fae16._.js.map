@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/layout.tsx"],"sourcesContent":["\n\nexport default function DashboardLayout({\n  children,\n}: {\n  children: React.ReactNode\n}) {\n  return (\n    <main className=\"flex h-screen\">\n        <div></div>\n    </main>\n  )\n}\n"],"names":[],"mappings":";;;;;;AAEe,SAAS,gBAAgB,EACtC,QAAQ,EAGT;IACC,qBACE,8OAAC;QAAK,WAAU;kBACZ,cAAA,8OAAC;;;;;;;;;;AAGT"}}]
-}

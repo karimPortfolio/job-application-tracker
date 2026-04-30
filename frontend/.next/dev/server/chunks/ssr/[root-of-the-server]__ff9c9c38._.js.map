@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 26, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/jobs/page.tsx"],"sourcesContent":["\nexport default function JobsPage() {\n  return (\n    <div className=\"text-center mt-5 w-full\">Jobs</div>\n  )\n}"],"names":[],"mappings":";;;;;;AACe,SAAS;IACtB,qBACE,8OAAC;QAAI,WAAU;kBAA0B;;;;;;AAE7C"}}]
-}

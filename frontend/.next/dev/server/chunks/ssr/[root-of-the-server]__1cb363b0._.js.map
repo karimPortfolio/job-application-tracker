@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 26, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28marketing%29/jobs/page.tsx"],"sourcesContent":["\nexport default function JobsPage() {\n  return (\n    <main className=\"flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black\">\n    </main>\n  );\n}\n"],"names":[],"mappings":";;;;;;AACe,SAAS;IACtB,qBACE,8OAAC;QAAK,WAAU;;;;;;AAGpB"}}]
-}
