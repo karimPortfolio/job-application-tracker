@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28marketing%29/jobs/JobsClient.tsx"],"sourcesContent":["\"use client\";\nexport function JobsClient() {\n\n  return (\n    <div className=\"w-full\">\n      \n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;AACO,SAAS;IAEd,qBACE,6LAAC;QAAI,WAAU;;;;;;AAInB;KAPgB"}}]
+}

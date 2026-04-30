@@ -1,0 +1,14 @@
+[00:00:01.947] Server  LOG     ✓ Ready in 1717ms
+[00:00:16.720] Server  WARN    ⚠ Cross origin request detected from 192.168.100.176 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:00:17.030] Browser WARN    Image with src "/images/applications-page.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[00:00:35.105] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[00:01:26.984] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[00:02:36.645] Browser LOG     THREE.WebGLRenderer: Context Lost.
+[00:03:17.721] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:03:17.721] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:03:22.930] Browser ERROR   unhandledRejection: AxiosError: Request failed with status code 500
+[00:08:19.515] Server  LOG     ✓ Compiled in 624ms
+[00:10:47.988] Server  LOG     ✓ Compiled in 69ms
+[00:27:12.224] Server  LOG     ✓ Compiled in 57ms

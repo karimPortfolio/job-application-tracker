@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28marketing%29/layout.tsx"],"sourcesContent":["export default function MarketingLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <>{children}</>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,gBAAgB,EACtC,QAAQ,EAGR;IACA,qBACE;kBAAG;;AAEP"}}]
+}

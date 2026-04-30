@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/layout.tsx"],"sourcesContent":["import { CompanyGuard } from \"@/components/guards/CompanyGuard\";\nimport { ProtectedAuthGuard } from \"@/components/guards/ProtectedAuthGuard\";\nimport { VerifiedGuard } from \"@/components/guards/VerifiedGuard\";\n\nexport default function ProtectedLayout({\n  children,\n}: {\n  children: React.ReactNode;\n}) {\n  return (\n    // <ProtectedAuthGuard>\n    // <VerifiedGuard>\n    // <CompanyGuard>\n    <>{children}</>\n    // </CompanyGuard>\n    // </VerifiedGuard>\n    // </ProtectedAuthGuard>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAIe,SAAS,gBAAgB,EACtC,QAAQ,EAGT;IACC,OACE,uBAAuB;IACvB,kBAAkB;IAClB,iBAAiB;kBACjB;kBAAG;;AAKP"}}]
+}

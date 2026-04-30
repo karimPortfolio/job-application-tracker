@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 30, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/applications/%5Bid%5D/ApplicationDetailsClient.tsx"],"sourcesContent":["\n\nexport function ApplicationDetailsClient({ id }: { id: string }) {\n  return (\n    <div className=\"p-4\">\n      \n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAEO,SAAS,yBAAyB,EAAE,EAAE,EAAkB;IAC7D,qBACE,8OAAC;QAAI,WAAU;;;;;;AAInB"}},
+    {"offset": {"line": 49, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/applications/%5Bid%5D/page.tsx"],"sourcesContent":["import { ApplicationDetailsClient } from \"./ApplicationDetailsClient\";\n\n\nexport function ApplicationDetailsPage({ params }: { params: { id: string } }) {\n  const { id } = params;\nconsole.log(\"Application ID:\", id);\n  return (\n    <div className=\"p-4\">\n      <ApplicationDetailsClient id={id} />\n    </div>\n  );\n}\n\n"],"names":[],"mappings":";;;;;AAAA;;;AAGO,SAAS,uBAAuB,EAAE,MAAM,EAA8B;IAC3E,MAAM,EAAE,EAAE,EAAE,GAAG;IACjB,QAAQ,GAAG,CAAC,mBAAmB;IAC7B,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC,2NAAwB;YAAC,IAAI;;;;;;;;;;;AAGpC"}}]
+}

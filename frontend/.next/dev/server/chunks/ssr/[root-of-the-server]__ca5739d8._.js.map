@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 34, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/profile/page.tsx"],"sourcesContent":["import { redirect } from \"next/navigation\"\n\nexport async function generateMetadata() {\n  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'\n  return {\n    title: `Profile - ${appName}`,\n    description: 'Manage your profile effectively.',\n  }\n}\n\nexport default function ProfilePage() {\n    return redirect('/dashboard/profile/general');\n}\n"],"names":[],"mappings":";;;;;;AAAA;AAAA;;AAEO,eAAe;IACpB,MAAM,UAAU,QAAQ,GAAG,CAAC,oBAAoB,IAAI;IACpD,OAAO;QACL,OAAO,CAAC,UAAU,EAAE,SAAS;QAC7B,aAAa;IACf;AACF;AAEe,SAAS;IACpB,OAAO,IAAA,iMAAQ,EAAC;AACpB"}}]
+}

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const updatePasswordSchema = z.object({
-  currentPassword: z.string().optional(),
+  currentPassword: z.string().min(1, "Current Password is required."),
 
   newPassword: z
     .string()
@@ -9,8 +9,7 @@ export const updatePasswordSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
       "Password must include uppercase, lowercase, number, and special character.",
-    )
-    .optional(),
+    ),
 
   newPasswordConfirm: z.string(),
 });

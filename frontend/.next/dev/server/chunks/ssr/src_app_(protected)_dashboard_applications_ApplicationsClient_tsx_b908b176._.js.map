@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/applications/ApplicationsClient.tsx"],"sourcesContent":["'use client';\n\nexport function ApplicationsClient() {\n  return <div>Applications Client Component</div>;\n}"],"names":[],"mappings":";;;;;AAAA;;AAEO,SAAS;IACd,qBAAO,8OAAC;kBAAI;;;;;;AACd"}}]
+}

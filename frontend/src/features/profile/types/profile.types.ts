@@ -3,11 +3,11 @@
 export interface ProfileUpdatePayload {
     email?: string;
     name?: string;
-    avatar?: File | string;
+    avatar?: File;
 };
 
 export interface PasswordUpdatePayload {
-    currentPassword?: string;
-    newPassword?: string;
-    newPasswordConfirm?: string;
+    currentPassword: string;
+    newPassword: string;
+    newPasswordConfirm: string;
 }

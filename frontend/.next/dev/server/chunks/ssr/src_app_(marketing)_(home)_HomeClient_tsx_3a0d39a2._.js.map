@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28marketing%29/%28home%29/HomeClient.tsx"],"sourcesContent":["\"use client\";\n\nimport { useAuth } from \"@/features/auth/hooks/useAuth\";\nimport Link from \"next/link\";\n\nexport function HomeClient() {\n  const { user } = useAuth();\n\n  return (\n    <div>\n      \n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAKO,SAAS;IACd,MAAM,EAAE,IAAI,EAAE,GAAG,IAAA,sJAAO;IAExB,qBACE,8OAAC;;;;;AAIL"}}]
+}

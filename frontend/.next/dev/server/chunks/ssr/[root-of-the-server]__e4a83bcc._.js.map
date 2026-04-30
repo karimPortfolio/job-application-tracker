@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 30, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/DashboardClient.tsx"],"sourcesContent":["\n\nexport function DashboardClient() {\n  return (\n    <div className=\"grid md:grid-cols-2 lg:grid-cols-4 gap-4\">\n        \n    </div>\n  )\n}\n"],"names":[],"mappings":";;;;;;AAEO,SAAS;IACd,qBACE,8OAAC;QAAI,WAAU;;;;;;AAInB"}},
+    {"offset": {"line": 49, "column": 0}, "map": {"version":3,"sources":["file:///Users/mbp14/Documents/programming/job-application-tracker/frontend/src/app/%28protected%29/dashboard/page.tsx"],"sourcesContent":["import { DashboardClient } from \"./DashboardClient\"\n\n\nexport async function generateMetadata() {\n  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Hirely'\n\n  return {\n    title: `Dashboard`,\n    description: 'Manage your job applications and track your career progress with ease.',\n  }\n}\n\nexport default function DashboardPage() {\n  return <DashboardClient />\n}\n"],"names":[],"mappings":";;;;;;;AAAA;;;AAGO,eAAe;IACpB,MAAM,UAAU,QAAQ,GAAG,CAAC,oBAAoB,IAAI;IAEpD,OAAO;QACL,OAAO,CAAC,SAAS,CAAC;QAClB,aAAa;IACf;AACF;AAEe,SAAS;IACtB,qBAAO,8OAAC,+KAAe;;;;;AACzB"}}]
+}
