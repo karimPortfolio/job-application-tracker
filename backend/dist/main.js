@@ -45,7 +45,7 @@ async function bootstrap() {
     });
     app.use((0, helmet_1.default)());
     app.use((0, cookie_parser_1.default)());
-    await app.listen(3000);
+    await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
