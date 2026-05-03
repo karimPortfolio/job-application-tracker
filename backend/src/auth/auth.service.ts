@@ -123,7 +123,7 @@ export class AuthService {
       from: '"Hirely" <no-reply@hirely.com>',
       to: dto.email,
       subject: 'Reset your password',
-      html: this.renderTemplate('reset-password.html', {
+      html: this.renderTemplate('reset-password.hbs', {
         RESET_URL: resetUrl,
         APP_NAME: appName,
       }),
@@ -182,7 +182,7 @@ export class AuthService {
       from: '"Hirely" <no-reply@hirely.com>',
       to: userRecord.email,
       subject: 'Verify your email',
-      html: this.renderTemplate('email-verification.html', {
+      html: this.renderTemplate('email-verification.hbs', {
         VERIFY_URL: verifyUrl,
         APP_NAME: appName,
         CLOUDFRONT_URL: cloudfrontUrl,
@@ -237,7 +237,7 @@ export class AuthService {
   ): string {
     const templatePath = path.join(
       process.cwd(),
-      'src/templates',
+      'src/mail/templates',
       templateName,
     );
 

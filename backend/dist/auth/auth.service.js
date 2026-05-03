@@ -114,7 +114,7 @@ let AuthService = class AuthService {
             from: '"Hirely" <no-reply@hirely.com>',
             to: dto.email,
             subject: 'Reset your password',
-            html: this.renderTemplate('reset-password.html', {
+            html: this.renderTemplate('reset-password.hbs', {
                 RESET_URL: resetUrl,
                 APP_NAME: appName,
             }),
@@ -158,7 +158,7 @@ let AuthService = class AuthService {
             from: '"Hirely" <no-reply@hirely.com>',
             to: userRecord.email,
             subject: 'Verify your email',
-            html: this.renderTemplate('email-verification.html', {
+            html: this.renderTemplate('email-verification.hbs', {
                 VERIFY_URL: verifyUrl,
                 APP_NAME: appName,
                 CLOUDFRONT_URL: cloudfrontUrl,
@@ -196,7 +196,7 @@ let AuthService = class AuthService {
             .populate('company');
     }
     renderTemplate(templateName, replacements) {
-        const templatePath = path_1.default.join(process.cwd(), 'src/templates', templateName);
+        const templatePath = path_1.default.join(process.cwd(), 'src/mail/templates', templateName);
         let html = fs_1.default.readFileSync(templatePath, 'utf8');
         Object.entries(replacements).forEach(([key, value]) => {
             html = html.replace(new RegExp(`{{${key}}}`, 'g'), value);
