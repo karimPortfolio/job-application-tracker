@@ -18,8 +18,8 @@ import {
 import { EmailVerifiedGuard } from './email-verified.guard';
 import { IsUserEmailUniqueConstraint } from 'src/common/decorators/is-user-email-uniqe.validator';
 import { MailModule } from '../mail/mail.module';
-import { AuthMailConsumer } from './auth-mail.process';
 import { BullModule } from '@nestjs/bullmq';
+import { AuthMailConsumer } from './auth-mail.processor';
 
 @Module({
   imports: [
