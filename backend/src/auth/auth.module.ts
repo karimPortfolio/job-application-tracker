@@ -17,6 +17,9 @@ import {
 } from './email-verification.schema';
 import { EmailVerifiedGuard } from './email-verified.guard';
 import { IsUserEmailUniqueConstraint } from 'src/common/decorators/is-user-email-uniqe.validator';
+import { MailModule } from '../mail/mail.module';
+import { AuthMailConsumer } from './auth-mail.process';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -40,7 +43,11 @@ import { IsUserEmailUniqueConstraint } from 'src/common/decorators/is-user-email
         };
       },
     }),
+    BullModule.registerQueue({
+      name: 'authMail',
+    }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    MailModule,
   ],
   providers: [
     AuthService,
@@ -48,7 +55,8 @@ import { IsUserEmailUniqueConstraint } from 'src/common/decorators/is-user-email
     GoogleStrategy,
     GoogleAuthGuard,
     EmailVerifiedGuard,
-    IsUserEmailUniqueConstraint
+    IsUserEmailUniqueConstraint,
+    AuthMailConsumer,
   ],
   exports: [EmailVerifiedGuard, AuthService],
   controllers: [AuthController],

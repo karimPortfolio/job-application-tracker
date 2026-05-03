@@ -11,14 +11,16 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { GoogleProfilePayload } from './google.strategy';
 import { EmailVerification } from './email-verification.schema';
 import { EmailVerificationDto } from './dto/email-verification.dto';
+import { Queue } from 'bullmq';
 export declare class AuthService {
     private readonly userModel;
     private jwtService;
     private readonly passwordResetModel;
     private readonly emailVerificationModel;
+    private readonly authMailQueue;
     private readonly config;
     private cache;
-    constructor(userModel: Model<UserDocument>, jwtService: JwtService, passwordResetModel: Model<PasswordReset>, emailVerificationModel: Model<EmailVerification>, config: ConfigService, cache: Cache);
+    constructor(userModel: Model<UserDocument>, jwtService: JwtService, passwordResetModel: Model<PasswordReset>, emailVerificationModel: Model<EmailVerification>, authMailQueue: Queue, config: ConfigService, cache: Cache);
     register(dto: RegisterDto): Promise<{
         accessToken: string;
     }>;

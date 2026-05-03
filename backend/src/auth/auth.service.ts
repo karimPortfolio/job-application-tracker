@@ -18,13 +18,15 @@ import { LoginDto } from './dto/login.dto';
 import { randomUUID } from 'crypto';
 import { PasswordReset } from './password-reset.schema';
 import { ConfigService } from '@nestjs/config';
-import { transporter } from '../config/transporter';
+// import { transporter } from '../config/transporter';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import jwt from 'jsonwebtoken';
 import { GoogleProfilePayload } from './google.strategy';
 import { EmailVerification } from './email-verification.schema';
 import { EmailVerificationDto } from './dto/email-verification.dto';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +37,7 @@ export class AuthService {
     private readonly passwordResetModel: Model<PasswordReset>,
     @InjectModel(EmailVerification.name)
     private readonly emailVerificationModel: Model<EmailVerification>,
-
+    @InjectQueue('authMail') private readonly authMailQueue: Queue,
     private readonly config: ConfigService,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
@@ -104,7 +106,7 @@ export class AuthService {
   async sendResetPasswordEmail(dto: ForgotPasswordDto) {
     const user = await this.userModel.findOne({ email: dto.email });
 
-    if (!user) return; 
+    if (!user) return;
 
     const token = randomUUID();
     const hashedToken = await bcrypt.hash(token, 10);
@@ -119,14 +121,14 @@ export class AuthService {
     const resetUrl = `${this.config.get('FRONTEND_URL')}/auth/reset-password?token=${token}&email=${dto.email}`;
     const appName = this.config.get('APP_NAME') || 'Hirely';
 
-    await transporter.sendMail({
-      from: '"Hirely" <no-reply@hirely.com>',
+    await this.authMailQueue.add('send-reset-password-mail', {
       to: dto.email,
       subject: 'Reset your password',
-      html: this.renderTemplate('reset-password.hbs', {
+      html: 'reset-password',
+      data: {
         RESET_URL: resetUrl,
         APP_NAME: appName,
-      }),
+      },
     });
   }
 
@@ -152,8 +154,7 @@ export class AuthService {
     await record.deleteOne();
   }
 
-  async sendEmailVerificationLink(user: {sub: string}) {
-
+  async sendEmailVerificationLink(user: { sub: string }) {
     const userRecord = await this.userModel.findById(user.sub);
 
     if (!userRecord) {
@@ -178,16 +179,18 @@ export class AuthService {
     const appName = this.config.get('APP_NAME') || 'Hirely';
     const cloudfrontUrl = this.config.get('AWS_CLOUDFRONT_URL') || '';
 
-    await transporter.sendMail({
-      from: '"Hirely" <no-reply@hirely.com>',
+    await this.authMailQueue.add('send-email-verification-mail', {
       to: userRecord.email,
       subject: 'Verify your email',
-      html: this.renderTemplate('email-verification.hbs', {
+      html: 'email-verification',
+      data: {
         VERIFY_URL: verifyUrl,
         APP_NAME: appName,
         CLOUDFRONT_URL: cloudfrontUrl,
-      }),
+      },
     });
+    
+
   }
 
   async verifyEmail(dto: EmailVerificationDto) {
@@ -203,7 +206,7 @@ export class AuthService {
     if (!tokenValid) {
       throw new BadRequestException('Invalid or expired token');
     }
-    
+
     await this.userModel.updateOne(
       { email: dto.email },
       { emailVerifiedAt: new Date() },

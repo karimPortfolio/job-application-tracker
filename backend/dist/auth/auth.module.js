@@ -22,6 +22,9 @@ const google_auth_guard_1 = require("./google-auth.guard");
 const email_verification_schema_1 = require("./email-verification.schema");
 const email_verified_guard_1 = require("./email-verified.guard");
 const is_user_email_uniqe_validator_1 = require("../common/decorators/is-user-email-uniqe.validator");
+const mail_module_1 = require("../mail/mail.module");
+const auth_mail_process_1 = require("./auth-mail.process");
+const bullmq_1 = require("@nestjs/bullmq");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -44,7 +47,11 @@ exports.AuthModule = AuthModule = __decorate([
                     };
                 },
             }),
+            bullmq_1.BullModule.registerQueue({
+                name: 'authMail',
+            }),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
+            mail_module_1.MailModule,
         ],
         providers: [
             auth_service_1.AuthService,
@@ -52,7 +59,8 @@ exports.AuthModule = AuthModule = __decorate([
             google_strategy_1.GoogleStrategy,
             google_auth_guard_1.GoogleAuthGuard,
             email_verified_guard_1.EmailVerifiedGuard,
-            is_user_email_uniqe_validator_1.IsUserEmailUniqueConstraint
+            is_user_email_uniqe_validator_1.IsUserEmailUniqueConstraint,
+            auth_mail_process_1.AuthMailConsumer,
         ],
         exports: [email_verified_guard_1.EmailVerifiedGuard, auth_service_1.AuthService],
         controllers: [auth_controller_1.AuthController],

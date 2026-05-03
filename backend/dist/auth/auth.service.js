@@ -28,21 +28,24 @@ const user_schema_1 = require("../users/user.schema");
 const crypto_1 = require("crypto");
 const password_reset_schema_1 = require("./password-reset.schema");
 const config_1 = require("@nestjs/config");
-const transporter_1 = require("../config/transporter");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const email_verification_schema_1 = require("./email-verification.schema");
+const bullmq_1 = require("bullmq");
+const bullmq_2 = require("@nestjs/bullmq");
 let AuthService = class AuthService {
     userModel;
     jwtService;
     passwordResetModel;
     emailVerificationModel;
+    authMailQueue;
     config;
     cache;
-    constructor(userModel, jwtService, passwordResetModel, emailVerificationModel, config, cache) {
+    constructor(userModel, jwtService, passwordResetModel, emailVerificationModel, authMailQueue, config, cache) {
         this.userModel = userModel;
         this.jwtService = jwtService;
         this.passwordResetModel = passwordResetModel;
         this.emailVerificationModel = emailVerificationModel;
+        this.authMailQueue = authMailQueue;
         this.config = config;
         this.cache = cache;
     }
@@ -110,14 +113,14 @@ let AuthService = class AuthService {
         });
         const resetUrl = `${this.config.get('FRONTEND_URL')}/auth/reset-password?token=${token}&email=${dto.email}`;
         const appName = this.config.get('APP_NAME') || 'Hirely';
-        await transporter_1.transporter.sendMail({
-            from: '"Hirely" <no-reply@hirely.com>',
+        await this.authMailQueue.add('send-reset-password-mail', {
             to: dto.email,
             subject: 'Reset your password',
-            html: this.renderTemplate('reset-password.hbs', {
+            html: 'reset-password',
+            data: {
                 RESET_URL: resetUrl,
                 APP_NAME: appName,
-            }),
+            },
         });
     }
     async resetPassword(dto) {
@@ -154,15 +157,15 @@ let AuthService = class AuthService {
         const verifyUrl = `${this.config.get('FRONTEND_URL')}/auth/verify-email?token=${token}&email=${userRecord.email}`;
         const appName = this.config.get('APP_NAME') || 'Hirely';
         const cloudfrontUrl = this.config.get('AWS_CLOUDFRONT_URL') || '';
-        await transporter_1.transporter.sendMail({
-            from: '"Hirely" <no-reply@hirely.com>',
+        await this.authMailQueue.add('send-email-verification-mail', {
             to: userRecord.email,
             subject: 'Verify your email',
-            html: this.renderTemplate('email-verification.hbs', {
+            html: 'email-verification',
+            data: {
                 VERIFY_URL: verifyUrl,
                 APP_NAME: appName,
                 CLOUDFRONT_URL: cloudfrontUrl,
-            }),
+            },
         });
     }
     async verifyEmail(dto) {
@@ -210,11 +213,13 @@ exports.AuthService = AuthService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
     __param(2, (0, mongoose_1.InjectModel)(password_reset_schema_1.PasswordReset.name)),
     __param(3, (0, mongoose_1.InjectModel)(email_verification_schema_1.EmailVerification.name)),
-    __param(5, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),
+    __param(4, (0, bullmq_2.InjectQueue)('authMail')),
+    __param(6, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         jwt_1.JwtService,
         mongoose_2.Model,
         mongoose_2.Model,
+        bullmq_1.Queue,
         config_1.ConfigService, Object])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
