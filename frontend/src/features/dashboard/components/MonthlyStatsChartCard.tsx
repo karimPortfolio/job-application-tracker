@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -24,6 +24,7 @@ export function MonthlyStatsChartCard() {
   const [currentYear, setCurrentYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
+  const [initialLoading, setInitialLoading] = useState<boolean>();
 
   const chartConfig = {
     applications: {
@@ -45,7 +46,18 @@ export function MonthlyStatsChartCard() {
     await fetchApplicationsMonthlyStats(year);
   };
 
-  if (loading) {
+  useEffect(() => {
+    setInitialLoading(true);
+    const year = new Date().getFullYear().toString();
+
+    Promise.resolve(
+      fetchApplicationsMonthlyStats(year)
+    ).finally(() =>
+      setInitialLoading(false),
+    );
+  }, []);
+
+  if (loading || initialLoading) {
     return (
       <Card className="animate-pulse">
         <CardHeader className="flex items-center justify-between">

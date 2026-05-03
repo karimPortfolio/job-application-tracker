@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -22,6 +22,7 @@ export function TopJobsByApplications() {
   const [currentYear, setCurrentYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
+  const [initialLoading, setInitialLoading] = useState<boolean>(false);
 
   const yearsOptions = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -36,7 +37,16 @@ export function TopJobsByApplications() {
     await fetchTopJobsByApplications(year);
   };
 
-  if (loading) {
+  useEffect(() => {
+    setInitialLoading(true);
+    const year = new Date().getFullYear().toString();
+    
+    Promise.resolve(
+      fetchTopJobsByApplications(year)
+    ).finally(() => setInitialLoading(false));
+  }, []);
+
+  if (loading || initialLoading) {
     return (
       <Card className="animate-pulse">
         <CardHeader className="flex items-center justify-between">

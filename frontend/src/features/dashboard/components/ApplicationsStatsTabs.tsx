@@ -2,33 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { useDashboardStats } from "../hooks/useDashboardStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusTabContent } from "./tabs-content/StatusTabContent";
@@ -42,13 +18,12 @@ export function ApplicationsStatsTabs() {
     fetchApplicationsStatsByStages,
     loading,
   } = useDashboardStats();
-  const [currentYear, setCurrentYear] = useState<string>(
-    new Date().getFullYear().toString(),
-  );
+
   const [currentTab, setCurrentTab] = useState<string>("status");
 
   useEffect(() => {
     const fetchCurrentTabData = async () => {
+      const currentYear = new Date().getFullYear().toString();
       if (currentTab === "status") {
         return await fetchApplicationsStatsByStatus(currentYear);
       }
@@ -56,7 +31,7 @@ export function ApplicationsStatsTabs() {
     };
 
     fetchCurrentTabData();
-  }, [currentTab, currentYear]);
+  }, [currentTab]);
 
   if (loading) {
     return (

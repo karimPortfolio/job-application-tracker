@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -31,6 +31,7 @@ export function ApplicationsStatsByCountries({
   const [currentYear, setCurrentYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
+  const [initialLoading, setInitialLoading] = useState<boolean>();
 
   const yearsOptions = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -45,7 +46,18 @@ export function ApplicationsStatsByCountries({
     await fetchApplicationsStatsByCountries(year);
   };
 
-  if (loading) {
+  useEffect(() => {
+    setInitialLoading(true);
+    const year = new Date().getFullYear().toString();
+
+    Promise.resolve(
+      fetchApplicationsStatsByCountries(year)
+    ).finally(() =>
+      setInitialLoading(false),
+    );
+  }, []);
+
+  if (loading || initialLoading) {
     return (
       <Card className={cn("animate-pulse", className)}>
         <CardHeader className="flex items-center justify-between">

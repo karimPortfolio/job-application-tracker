@@ -174,20 +174,6 @@ export function useDashboardStats() {
     }
   }
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      fetchDepartmentsTotalStats(),
-      fetchJobsTotalStats(),
-      fetchApplicationsTotalStats(),
-      fetchApplicationsMonthlyStats(new Date().getFullYear().toString()),
-      fetchApplicationsStatsByJobs(new Date().getFullYear().toString()),
-      fetchApplicationsStatsByCountries(new Date().getFullYear().toString()),
-      fetchApplicationsStatsByDepartments(new Date().getFullYear().toString()),
-      fetchTopJobsByApplications(new Date().getFullYear().toString()),
-    ]).finally(() => setLoading(false));
-  }, []);
-
   return {
     departmentsStats,
     jobsStats,
@@ -208,6 +194,9 @@ export function useDashboardStats() {
     fetchApplicationsStatsByStages,
     fetchApplicationsStatsByDepartments,
     fetchTopJobsByApplications,
+    fetchJobsTotalStats,
+    fetchDepartmentsTotalStats,
+    fetchApplicationsTotalStats,
 
     error,
     clearError,

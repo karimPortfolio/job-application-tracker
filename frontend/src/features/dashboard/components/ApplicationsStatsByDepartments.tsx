@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -30,6 +30,7 @@ export function ApplicationsStatsByDepartments() {
   const [currentYear, setCurrentYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
+  const [initialLoading, setInitialLoading] = useState<boolean>();
 
   const palette = useMemo(() => {
     const base = "#2550ad";
@@ -77,7 +78,16 @@ export function ApplicationsStatsByDepartments() {
     [fetchApplicationsStatsByDepartments],
   );
 
-  if (loading) {
+  useEffect(() => {
+    setInitialLoading(true);
+    const year = new Date().getFullYear().toString();
+
+    Promise.resolve(
+      fetchApplicationsStatsByDepartments(year)
+    ).finally(() =>setInitialLoading(false));
+  }, []);
+
+  if (loading || initialLoading) {
     return (
       <Card className="animate-pulse">
         <CardHeader className="flex items-center justify-between">

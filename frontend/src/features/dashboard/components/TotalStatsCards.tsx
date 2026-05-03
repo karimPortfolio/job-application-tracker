@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ArrowDownRight,
@@ -13,8 +13,16 @@ import { cn } from "@/lib/utils";
 import { useDashboardStats } from "../hooks/useDashboardStats";
 
 export function TotalStatsCards() {
-  const { applicationsStats, departmentsStats, jobsStats, loading } =
-    useDashboardStats();
+  const {
+    fetchApplicationsTotalStats,
+    fetchJobsTotalStats,
+    fetchDepartmentsTotalStats,
+    applicationsStats,
+    departmentsStats,
+    jobsStats,
+  } = useDashboardStats();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const data = useMemo(() => {
     if (loading) [];
@@ -37,6 +45,16 @@ export function TotalStatsCards() {
       },
     ];
   }, [applicationsStats, departmentsStats, jobsStats, loading]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    Promise.all([
+      fetchApplicationsTotalStats(),
+      fetchJobsTotalStats(),
+      fetchDepartmentsTotalStats()
+    ]).finally(() => setLoading(false))
+  }, []);
 
   if (loading) {
     return (
@@ -80,7 +98,10 @@ export function TotalStatsCards() {
                   "text-sm flex items-center gap-1",
                 )}
               >
-                <span>{item.stats?.monthsDiff.direction === "up" ? "+" : ""}{item.stats?.monthsDiff.percentage}%</span>
+                <span>
+                  {item.stats?.monthsDiff.direction === "up" ? "+" : ""}
+                  {item.stats?.monthsDiff.percentage}%
+                </span>
                 {item.stats?.monthsDiff.direction === "up" ? (
                   <ArrowUpRight className="h-4 w-4" />
                 ) : (
