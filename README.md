@@ -6,9 +6,11 @@ Hirely is a modern, scalable Job Application & Recruitment Management Platform d
 
 The platform allows organizations to structure their recruitment process by managing departments, jobs, candidates, and applications, while ensuring clean data isolation in a multi-tenant architecture. It includes essential productivity features such as advanced filtering, pagination, and data export (CSV/XLSX) for operational and reporting needs.
 
+**Powered by AI**, Hirely leverages intelligent features including AI-powered resume parsing, smart candidate screening, and automated job description generation to streamline recruitment. A comprehensive data-details dashboard provides real-time insights into jobs, applications, and departments in a modern, user-friendly interface.
+
 Hirely is built with real-world SaaS patterns in mind, focusing on performance, maintainability, and scalability.
 
-### Screenshots
+### A Look Inside: Pages & Features
 
 ##### Sign In Page
 
@@ -19,38 +21,50 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 <img src="https://d2frdw0337g930.cloudfront.net/public/dashboard-page.png" />
 
 
-##### Jobs Page
+##### Dashboard: Jobs Page
 
 <img src="https://d2frdw0337g930.cloudfront.net/public/jobs-page.png" />
 
-##### Create New Job Page
+##### Dashboard: Create New Job Page
 
 <img src="https://d2frdw0337g930.cloudfront.net/public/jobs-creation-page.png" />
 
+##### Dashboard: Applications Page
+
+<img src="https://d2frdw0337g930.cloudfront.net/public/applications-page.png" />
+
+##### Dashboard: Application Details Page
+
+<img src="https://d2frdw0337g930.cloudfront.net/public/application-details-page" />
+
+##### Dashboard: AI Smart Screening Feature
+
+<img src="https://d2frdw0337g930.cloudfront.net/public/smart-screening.png" />
+
 ##### Onboarding Page
 
-![Onboarding Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fonboarding-page.png?alt=media&token=5122493c-74a8-4a35-8c66-2fef404f146a)
+<img src="https://d2frdw0337g930.cloudfront.net/public/onboarding-page.png" />
 
 ##### Dashboard: Departments Page
 
-![Departments Page](https://firebasestorage.googleapis.com/v0/b/karim-portfolio-bc1e8.appspot.com/o/hirely%2Fdashboard.png?alt=media&token=525d6c6c-7ed9-4bbf-8c2d-ac6157b2def2)
-
-##### Dashboard Video
-<a href="https://d2frdw0337g930.cloudfront.net/public/hirely-video.mp4" target="_blank" >
-<img src="https://d2frdw0337g930.cloudfront.net/public/applications-page.png" />
-</a>
+<img src="https://d2frdw0337g930.cloudfront.net/public/departments-page.png" />
 
 
 ### Tech Stack
 
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind/shadcn UI
-- **Backend:** NestJS, MongoDB (Mongoose), Passport JWT, Redis (caching/email flows)
+- **Backend:** NestJS, MongoDB (Mongoose), Passport JWT, Redis (caching/email processing and queus)
+- **AI & LLM:** Grok API, OpenRouter API (for resume parsing, smart screening, job description generation)
 - **Tooling:** Docker, Docker Compose, ESLint, Jest + Supertest for e2e, Excel/CSV export (exceljs)
 
 ### Core Features
 
 - Email/password auth with email verification and password reset
 - Companies, departments, jobs, and candidates management with pagination, sorting, and server-side filters
+- **AI-Powered Resume Parsing** for automated candidate data extraction
+- **Smart Screening** feature for intelligent application filtering
+- **AI Job Description Generator** with enhancement capabilities
+- **Data-Details Dashboard** with real-time analytics and KPIs
 - Unified Filters bar with Apply/Clear and backend sync
 - Data export to CSV/Excel per resource (e.g., departments)
 - Responsive UI
