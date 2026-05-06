@@ -12,6 +12,10 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ### A Look Inside: Pages & Features
 
+##### Home Page
+
+<img src="https://d2frdw0337g930.cloudfront.net/public/home-page.png" />
+
 ##### Sign In Page
 
 ![Sign in Page](https://d2frdw0337g930.cloudfront.net/public/signin-page.png)
