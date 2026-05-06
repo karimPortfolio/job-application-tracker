@@ -21,22 +21,23 @@ export function HomeClient() {
   return (
     <main className="relative w-full overflow-x-clip bg-zinc-50 text-slate-900 dark:bg-slate-950 dark:text-white">
       <div className="h-screen">
-        {isDark ? (
+        {isDark && (
           <LightRays
-          raysOrigin="bottom-center"
-          raysColor="#3a88fe"
-          raysSpeed={1}
-          lightSpread={50}
-          rayLength={20}
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-          followMouse
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="h-full w-full"
-        />) : null}
+            raysOrigin="bottom-center"
+            raysColor="#3a88fe"
+            raysSpeed={1}
+            lightSpread={50}
+            rayLength={20}
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+            followMouse
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
+            className="h-full w-full"
+          />
+        )}
 
         <HeroSection
           user={user}
