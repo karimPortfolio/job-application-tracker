@@ -14,7 +14,7 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ##### Sign In Page
 
-![Sign up Page](https://d2frdw0337g930.cloudfront.net/public/signin-page.png)
+![Sign in Page](https://d2frdw0337g930.cloudfront.net/public/signin-page.png)
 
 ##### Dashboard Page
 
@@ -35,7 +35,7 @@ Hirely is built with real-world SaaS patterns in mind, focusing on performance, 
 
 ##### Dashboard: Application Details Page
 
-<img src="https://d2frdw0337g930.cloudfront.net/public/application-details-page" />
+<img src="https://d2frdw0337g930.cloudfront.net/public/application-details-page.png" />
 
 ##### Dashboard: AI Smart Screening Feature
 
