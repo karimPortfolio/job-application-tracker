@@ -1,5 +1,6 @@
 "use client";
 import LightRays from "@/components/LightRays";
+import { MarketingFooter } from "@/components/MarketingFooter";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { CoreCapabilitiesSection } from "@/features/home/components/CoreCapabilitiesSection";
 import { CreateJobMarketingSection } from "@/features/home/components/CreateJobMarketingSection";
@@ -7,7 +8,6 @@ import { CtaSection } from "@/features/home/components/CtaSection";
 import { FaqSection } from "@/features/home/components/FaqSection";
 import { FeatureShowcaseAccordion } from "@/features/home/components/FeatureShowcaseAccordion";
 import { HeroSection } from "@/features/home/components/HeroSection";
-import { HomeFooter } from "@/features/home/components/HomeFooter";
 import { PartnersSection } from "@/features/home/components/PartnersSection";
 import { ProductPreviewSection } from "@/features/home/components/ProductPreviewSection";
 import { TestimonialsSection } from "@/features/home/components/TestimonialsSection";
@@ -21,22 +21,23 @@ export function HomeClient() {
   return (
     <main className="relative w-full overflow-x-clip bg-zinc-50 text-slate-900 dark:bg-slate-950 dark:text-white">
       <div className="h-screen">
-        {isDark ? (
+        {isDark && (
           <LightRays
-          raysOrigin="bottom-center"
-          raysColor="#3a88fe"
-          raysSpeed={1}
-          lightSpread={50}
-          rayLength={20}
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-          followMouse
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="h-full w-full"
-        />) : null}
+            raysOrigin="bottom-center"
+            raysColor="#3a88fe"
+            raysSpeed={1}
+            lightSpread={50}
+            rayLength={20}
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+            followMouse
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
+            className="h-full w-full"
+          />
+        )}
 
         <HeroSection
           user={user}
@@ -64,8 +65,6 @@ export function HomeClient() {
       <FaqSection />
 
       <CtaSection />
-
-      <HomeFooter />
     </main>
   );
 }
