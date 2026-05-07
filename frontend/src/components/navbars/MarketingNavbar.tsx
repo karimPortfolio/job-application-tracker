@@ -42,7 +42,7 @@ export function MarketingNavbar() {
   }, []);
 
   const navigationItems = [
-    { label: "About", href: "/about" },
+    { label: "Company", href: "/company" },
     { label: "Services", href: "/services" },
     { label: "Jobs", href: "/jobs" },
     { label: "Pricing", href: "/pricing" },
@@ -54,12 +54,14 @@ export function MarketingNavbar() {
       label: "Dashboard",
       icon: <LayoutDashboardIcon />,
       onClick: () => redirect("/dashboard"),
+      href: "/dashboard",
       disabled: false,
     },
     {
       label: "Profile",
       icon: <UserIcon />,
       onClick: () => {},
+      href: "/dashboard/profile",
       disabled: false,
     },
     {

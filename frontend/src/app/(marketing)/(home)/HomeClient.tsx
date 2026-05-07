@@ -1,5 +1,6 @@
 "use client";
 import LightRays from "@/components/LightRays";
+import { MarketingFooter } from "@/components/MarketingFooter";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { CoreCapabilitiesSection } from "@/features/home/components/CoreCapabilitiesSection";
 import { CreateJobMarketingSection } from "@/features/home/components/CreateJobMarketingSection";
@@ -7,7 +8,6 @@ import { CtaSection } from "@/features/home/components/CtaSection";
 import { FaqSection } from "@/features/home/components/FaqSection";
 import { FeatureShowcaseAccordion } from "@/features/home/components/FeatureShowcaseAccordion";
 import { HeroSection } from "@/features/home/components/HeroSection";
-import { HomeFooter } from "@/features/home/components/HomeFooter";
 import { PartnersSection } from "@/features/home/components/PartnersSection";
 import { ProductPreviewSection } from "@/features/home/components/ProductPreviewSection";
 import { TestimonialsSection } from "@/features/home/components/TestimonialsSection";
@@ -65,8 +65,6 @@ export function HomeClient() {
       <FaqSection />
 
       <CtaSection />
-
-      <HomeFooter />
     </main>
   );
 }

@@ -26,12 +26,12 @@ export function GenesisSection() {
       <div className="absolute -left-150 dark:hidden inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_20%)] pointer-events-none"></div>
 
       <div className="px-5 sm:px-0 max-w-full sm:max-w-7xl">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-8 tracking-tight text-black dark:text-white">
+        <h2 className="text-4xl md:text-5xl font-semibold mb-8 tracking-tight text-black dark:text-white">
           Our Genesis
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(250px,auto)]">
-          <Card style={cardGlassStyle} className="md:col-span-2 border rounded-lg bg-transparent dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
+          <Card style={cardGlassStyle} className="md:col-span-2 border rounded-3xl bg-transparent dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
             <CardHeader className="p-6 pb-0">
               <Search className="w-6 h-6 text-primary" strokeWidth={2.5} />
             </CardHeader>
@@ -47,7 +47,7 @@ export function GenesisSection() {
             </CardContent>
           </Card>
 
-          <Card style={cardGlassStyle} className="md:col-span-1 border rounded-lg dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
+          <Card style={cardGlassStyle} className="md:col-span-1 border rounded-3xl dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
             <CardHeader className="p-6 pb-0 flex flex-row justify-end items-start space-y-0">
               <Cpu className="w-8 h-8 text-[#3A3F58]" strokeWidth={1.5} />
             </CardHeader>
@@ -62,7 +62,7 @@ export function GenesisSection() {
             </CardContent>
           </Card>
 
-          <Card style={cardGlassStyle} className="md:col-span-1 border rounded-lg dark:border-white/5 text-white flex flex-col justify-end transition-transform hover:-translate-y-1 duration-300 shadow-none">
+          <Card style={cardGlassStyle} className="md:col-span-1 border rounded-3xl dark:border-white/5 text-white flex flex-col justify-end transition-transform hover:-translate-y-1 duration-300 shadow-none">
             <CardContent className="p-8 pb-5">
               <CardTitle className="text-3xl font-semibold mb-2 tracking-tight border-none text-black dark:text-white">
                 10M+
@@ -73,7 +73,7 @@ export function GenesisSection() {
             </CardContent>
           </Card>
 
-          <Card style={cardGlassStyle} className="md:col-span-2 border rounded-lg dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
+          <Card style={cardGlassStyle} className="md:col-span-2 border rounded-3xl dark:border-white/5 text-white flex flex-col justify-between transition-transform hover:-translate-y-1 duration-300 shadow-none">
             <CardHeader className="p-6 pb-0">
               <Compass className="w-6 h-6 text-primary" strokeWidth={2.5} />
             </CardHeader>

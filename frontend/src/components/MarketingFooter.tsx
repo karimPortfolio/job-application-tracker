@@ -1,7 +1,9 @@
+"use client";
+
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 
-export function HomeFooter() {
+export function MarketingFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-slate-200/80 bg-zinc-50/95 dark:border-white/10 dark:bg-slate-950/90">
       <div
