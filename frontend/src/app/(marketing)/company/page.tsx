@@ -1,4 +1,4 @@
-import { CtaSection } from "@/features/company/components/CtaSection";
+import { MarketingCtaSection } from "@/components/MarketingCtaSection";
 import { CultureSection } from "@/features/company/components/CultureSection";
 import { FoundersSection } from "@/features/company/components/FoundersSection";
 import { GenesisSection } from "@/features/company/components/GenesisSection";
@@ -41,7 +41,7 @@ export default function CompanyPage() {
       <ImpactAndPrinciplesSection />
       <CultureSection />
       <FoundersSection />
-      <CtaSection />
+      <MarketingCtaSection />
     </main>
   );
 }

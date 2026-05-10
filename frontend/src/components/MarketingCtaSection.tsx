@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
-export function CtaSection() {
+export function MarketingCtaSection() {
   return (
     <section className="relative py-24 px-6 overflow-hidden transition-colors duration-300">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-500/10 dark:bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>

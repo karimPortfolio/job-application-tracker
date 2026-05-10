@@ -4,7 +4,6 @@ import { PublicJobDetailsModal } from "@/features/jobs/marketing/components/Publ
 import { PublicJobsGrid } from "@/features/jobs/marketing/components/PublicJobsGrid";
 import { PublicJobsSearchBar } from "@/features/jobs/marketing/components/PublicJobsSearchBar";
 import { usePublicJobsList } from "@/features/jobs/hooks/usePublicJobsList";
-import { HomeFooter } from "@/features/home/components/HomeFooter";
 import { Job } from "@/features/jobs/types/jobs.types";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -158,7 +157,6 @@ export function JobsClient() {
           handleCreateApplicationOpen={handleCreatePublicApplicationOpen}
         />
       </div>
-      <HomeFooter />
     </div>
   );
 }
