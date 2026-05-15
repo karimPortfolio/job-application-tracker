@@ -11,10 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanySchema = exports.Company = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const subscriptions_enums_1 = require("../billing/enums/subscriptions.enums");
 let Company = class Company {
     name;
     industry;
     websiteUrl;
+    adminEmail;
+    stripeCustomerId;
+    stripeSubscriptionId;
+    aiFeaturesCredits;
+    plan;
+    duration;
+    subscriptionStatus;
+    subscriptionExpiresAt;
 };
 exports.Company = Company;
 __decorate([
@@ -32,6 +41,38 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Company.prototype, "websiteUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false, maxLength: 255 }),
+    __metadata("design:type", String)
+], Company.prototype, "adminEmail", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Company.prototype, "stripeCustomerId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Company.prototype, "stripeSubscriptionId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Company.prototype, "aiFeaturesCredits", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'FREE', enum: subscriptions_enums_1.SubscriptionPlan }),
+    __metadata("design:type", String)
+], Company.prototype, "plan", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: subscriptions_enums_1.SubscriptionDuration }),
+    __metadata("design:type", String)
+], Company.prototype, "duration", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'inactive', enum: subscriptions_enums_1.SubscriptionStatus }),
+    __metadata("design:type", String)
+], Company.prototype, "subscriptionStatus", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Company.prototype, "subscriptionExpiresAt", void 0);
 exports.Company = Company = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Company);

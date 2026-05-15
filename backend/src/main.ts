@@ -11,7 +11,8 @@ async function bootstrap() {
       colors: true,
       timestamp: true,
       logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
-    })
+    }),
+    rawBody: true
   })
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -35,18 +36,20 @@ async function bootstrap() {
     })
   );
 
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'auth/google', method: RequestMethod.GET },
       { path: 'auth/google/redirect', method: RequestMethod.GET },
       { path: 'auth/google/callback', method: RequestMethod.GET },
+      { path: 'stripe/webhook', method: RequestMethod.POST },
     ],
   });
 
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-  });
 
   app.use(helmet());
   app.use(cookieParser());

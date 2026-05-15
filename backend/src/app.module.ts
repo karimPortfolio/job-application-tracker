@@ -1,28 +1,30 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
-import { MongooseModule } from '@nestjs/mongoose'
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
-import { AuthModule } from './auth/auth.module'
-import { UsersModule } from './users/users.module'
-import { CompaniesModule } from './companies/companies.module'
-import { DepartmentsModule } from './departments/departments.module'
-import { RedisCacheModule } from './common/cache/redis.module'
-import { JobsModule } from './jobs/jobs.module'
-import { AIModule } from './ai/ai.module'
-import { ApplicationsModule } from './applications/applications.module'
-import { DashboardModule } from './dashboard/dashboard.module'
-import { seconds, ThrottlerModule } from '@nestjs/throttler'
-import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { CompaniesModule } from './companies/companies.module';
+import { DepartmentsModule } from './departments/departments.module';
+import { RedisCacheModule } from './common/cache/redis.module';
+import { JobsModule } from './jobs/jobs.module';
+import { AIModule } from './ai/ai.module';
+import { ApplicationsModule } from './applications/applications.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { ProfileModule } from './profile/profile.module';
 import { BullModule } from '@nestjs/bullmq';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BillingModule } from './billing/billing.module';
+import { SharedStripeModule } from './shared/stripe.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-     MongooseModule.forRootAsync({
+    MongooseModule.forRootAsync({
       useFactory: () => ({
         uri:
           process.env.NODE_ENV === 'test'
@@ -32,11 +34,13 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
 
     ThrottlerModule.forRoot({
-      throttlers: [{ limit: 5, ttl: seconds(60)}],
-      storage: new ThrottlerStorageRedisService(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`),
+      throttlers: [{ limit: 5, ttl: 60 }],
+      storage: new ThrottlerStorageRedisService(
+        `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`,
+      ),
     }),
 
-     GoogleRecaptchaModule.forRoot({
+    GoogleRecaptchaModule.forRoot({
       secretKey: process.env.RECAPTCHA_SECRET_KEY,
       response: (req) => req.headers['x-recaptcha-token'],
     }),
@@ -63,6 +67,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProfileModule,
     MailModule,
     NotificationsModule,
+    SharedStripeModule,
+    BillingModule,
   ],
+  exports: [SharedStripeModule],
 })
 export class AppModule {}

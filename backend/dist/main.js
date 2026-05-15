@@ -15,7 +15,8 @@ async function bootstrap() {
             colors: true,
             timestamp: true,
             logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
-        })
+        }),
+        rawBody: true
     });
     (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.enableCors({ origin: true, credentials: true });
@@ -32,16 +33,17 @@ async function bootstrap() {
             });
         },
     }));
+    app.enableVersioning({
+        type: common_1.VersioningType.URI,
+        defaultVersion: '1',
+    });
     app.setGlobalPrefix('api', {
         exclude: [
             { path: 'auth/google', method: common_1.RequestMethod.GET },
             { path: 'auth/google/redirect', method: common_1.RequestMethod.GET },
             { path: 'auth/google/callback', method: common_1.RequestMethod.GET },
+            { path: 'stripe/webhook', method: common_1.RequestMethod.POST },
         ],
-    });
-    app.enableVersioning({
-        type: common_1.VersioningType.URI,
-        defaultVersion: '1',
     });
     app.use((0, helmet_1.default)());
     app.use((0, cookie_parser_1.default)());

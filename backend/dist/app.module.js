@@ -27,6 +27,8 @@ const bullmq_1 = require("@nestjs/bullmq");
 const notifications_module_1 = require("./notifications/notifications.module");
 const mail_module_1 = require("./mail/mail.module");
 const event_emitter_1 = require("@nestjs/event-emitter");
+const billing_module_1 = require("./billing/billing.module");
+const stripe_module_1 = require("./shared/stripe.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,7 +44,7 @@ exports.AppModule = AppModule = __decorate([
                 }),
             }),
             throttler_1.ThrottlerModule.forRoot({
-                throttlers: [{ limit: 5, ttl: (0, throttler_1.seconds)(60) }],
+                throttlers: [{ limit: 5, ttl: 60 }],
                 storage: new throttler_storage_redis_1.ThrottlerStorageRedisService(`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`),
             }),
             google_recaptcha_1.GoogleRecaptchaModule.forRoot({
@@ -68,7 +70,10 @@ exports.AppModule = AppModule = __decorate([
             profile_module_1.ProfileModule,
             mail_module_1.MailModule,
             notifications_module_1.NotificationsModule,
+            stripe_module_1.SharedStripeModule,
+            billing_module_1.BillingModule,
         ],
+        exports: [stripe_module_1.SharedStripeModule],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
