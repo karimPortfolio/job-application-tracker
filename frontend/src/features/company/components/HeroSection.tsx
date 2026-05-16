@@ -1,6 +1,6 @@
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center dark:bg-[#131527] px-4 overflow-hidden font-sans">
+    <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden font-sans">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_60%)] pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto">

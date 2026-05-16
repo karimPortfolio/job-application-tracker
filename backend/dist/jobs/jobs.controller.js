@@ -25,6 +25,7 @@ const class_transformer_1 = require("class-transformer");
 const job_response_dto_1 = require("./dto/job-response.dto");
 const update_job_status_dto_1 = require("./dto/update-job-status.dto");
 const generate_job_dto_1 = require("./dto/generate-job.dto");
+const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCreditsGuard");
 let JobsController = class JobsController {
     jobsService;
     constructor(jobsService) {
@@ -116,6 +117,7 @@ __decorate([
 ], JobsController.prototype, "createJob", null);
 __decorate([
     (0, common_1.Post)('generate-description'),
+    (0, common_1.UseGuards)(SubscriptionCreditsGuard_1.SubscriptionCreditsGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [generate_job_dto_1.GenerateJobDto]),

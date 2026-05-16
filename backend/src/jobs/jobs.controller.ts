@@ -24,6 +24,7 @@ import { JobResponseDto } from './dto/job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { Department } from '../departments/departments.schema';
 import { GenerateJobDto } from './dto/generate-job.dto';
+import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsGuard';
 
 @Controller('jobs')
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -79,6 +80,7 @@ export class JobsController {
   }
 
   @Post('generate-description')
+  @UseGuards(SubscriptionCreditsGuard)
   async generateJobDescription(@Body() dto: GenerateJobDto) {
     return this.jobsService.getGeneratedJobDescription(dto);
   }

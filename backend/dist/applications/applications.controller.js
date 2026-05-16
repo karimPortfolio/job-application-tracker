@@ -26,6 +26,7 @@ const update_application_stage_dto_1 = require("./dto/update-application-stage.d
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const smart_screenig_application_dto_1 = require("./dto/smart-screenig-application.dto");
+const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCreditsGuard");
 let ApplicationsController = class ApplicationsController {
     applicationsService;
     constructor(applicationsService) {
@@ -122,6 +123,7 @@ __decorate([
 ], ApplicationsController.prototype, "createApplication", null);
 __decorate([
     (0, common_1.Post)('parse-resume'),
+    (0, common_1.UseGuards)(SubscriptionCreditsGuard_1.SubscriptionCreditsGuard),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('resume', { storage: (0, multer_1.memoryStorage)() })),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
@@ -199,6 +201,7 @@ __decorate([
 ], ApplicationsController.prototype, "updateApplicationStage", null);
 __decorate([
     (0, common_1.Post)("smart-screening"),
+    (0, common_1.UseGuards)(SubscriptionCreditsGuard_1.SubscriptionCreditsGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

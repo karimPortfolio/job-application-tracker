@@ -29,6 +29,7 @@ import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { SmartScreeningApplicationDto } from './dto/smart-screenig-application.dto';
+import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsGuard';
 
 @Controller('applications')
 @UseGuards(AuthGuard('jwt'), CompanyGuard)
@@ -98,6 +99,7 @@ export class ApplicationsController {
   }
 
   @Post('parse-resume')
+  @UseGuards(SubscriptionCreditsGuard)
   @UseInterceptors(FileInterceptor('resume', { storage: memoryStorage() }))
   async parseCandidateResume(
     @UploadedFile(
@@ -191,6 +193,7 @@ export class ApplicationsController {
   }
 
   @Post("smart-screening")
+  @UseGuards(SubscriptionCreditsGuard) 
   async runningSmartScreening(
     @Req() req: any,
     @Body() body: SmartScreeningApplicationDto,
