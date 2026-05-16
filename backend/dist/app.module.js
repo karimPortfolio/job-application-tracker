@@ -29,6 +29,8 @@ const mail_module_1 = require("./mail/mail.module");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const billing_module_1 = require("./billing/billing.module");
 const stripe_module_1 = require("./shared/stripe.module");
+const core_1 = require("@nestjs/core");
+const credit_deduction_interceptor_1 = require("./common/interceptors/credit-deduction.interceptor");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -74,6 +76,12 @@ exports.AppModule = AppModule = __decorate([
             billing_module_1.BillingModule,
         ],
         exports: [stripe_module_1.SharedStripeModule],
+        providers: [
+            {
+                provide: core_1.APP_INTERCEPTOR,
+                useClass: credit_deduction_interceptor_1.CreditDeductionInterceptor,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

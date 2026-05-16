@@ -27,6 +27,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const smart_screenig_application_dto_1 = require("./dto/smart-screenig-application.dto");
 const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCreditsGuard");
+const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorator");
 let ApplicationsController = class ApplicationsController {
     applicationsService;
     constructor(applicationsService) {
@@ -124,6 +125,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('parse-resume'),
     (0, common_1.UseGuards)(SubscriptionCreditsGuard_1.SubscriptionCreditsGuard),
+    (0, ai_feature_decorator_1.AIFeature)({ credits: 1 }),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('resume', { storage: (0, multer_1.memoryStorage)() })),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
@@ -202,6 +204,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)("smart-screening"),
     (0, common_1.UseGuards)(SubscriptionCreditsGuard_1.SubscriptionCreditsGuard),
+    (0, ai_feature_decorator_1.AIFeature)({ credits: 1 }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

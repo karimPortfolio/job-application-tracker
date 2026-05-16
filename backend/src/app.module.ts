@@ -20,6 +20,8 @@ import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BillingModule } from './billing/billing.module';
 import { SharedStripeModule } from './shared/stripe.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CreditDeductionInterceptor } from './common/interceptors/credit-deduction.interceptor';
 
 @Module({
   imports: [
@@ -71,5 +73,11 @@ import { SharedStripeModule } from './shared/stripe.module';
     BillingModule,
   ],
   exports: [SharedStripeModule],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CreditDeductionInterceptor,
+    },
+  ],
 })
 export class AppModule {}
