@@ -53,5 +53,4 @@ export declare class AuthService {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>) | null>;
-    private renderTemplate;
 }

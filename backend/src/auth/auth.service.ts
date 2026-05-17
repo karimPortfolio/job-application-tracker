@@ -18,7 +18,6 @@ import { LoginDto } from './dto/login.dto';
 import { randomUUID } from 'crypto';
 import { PasswordReset } from './password-reset.schema';
 import { ConfigService } from '@nestjs/config';
-// import { transporter } from '../config/transporter';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import jwt from 'jsonwebtoken';
@@ -189,8 +188,6 @@ export class AuthService {
         CLOUDFRONT_URL: cloudfrontUrl,
       },
     });
-    
-
   }
 
   async verifyEmail(dto: EmailVerificationDto) {
@@ -231,25 +228,9 @@ export class AuthService {
     return this.userModel
       .findById(userId)
       .select('-password -provider')
-      .populate('company');
-  }
-
-  private renderTemplate(
-    templateName: string,
-    replacements: Record<string, string>,
-  ): string {
-    const templatePath = path.join(
-      process.cwd(),
-      'src/mail/templates',
-      templateName,
-    );
-
-    let html = fs.readFileSync(templatePath, 'utf8');
-
-    Object.entries(replacements).forEach(([key, value]) => {
-      html = html.replace(new RegExp(`{{${key}}}`, 'g'), value);
-    });
-
-    return html;
+      .populate(
+        'company',
+        '-stripeSubscriptionId -stripeCustomerId -adminEmail',
+      );
   }
 }

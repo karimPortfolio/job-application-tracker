@@ -22,8 +22,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_2 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const user_schema_1 = require("../users/user.schema");
 const crypto_1 = require("crypto");
 const password_reset_schema_1 = require("./password-reset.schema");
@@ -196,15 +194,7 @@ let AuthService = class AuthService {
         return this.userModel
             .findById(userId)
             .select('-password -provider')
-            .populate('company');
-    }
-    renderTemplate(templateName, replacements) {
-        const templatePath = path_1.default.join(process.cwd(), 'src/mail/templates', templateName);
-        let html = fs_1.default.readFileSync(templatePath, 'utf8');
-        Object.entries(replacements).forEach(([key, value]) => {
-            html = html.replace(new RegExp(`{{${key}}}`, 'g'), value);
-        });
-        return html;
+            .populate('company', '-stripeSubscriptionId -stripeCustomerId -adminEmail');
     }
 };
 exports.AuthService = AuthService;
