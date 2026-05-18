@@ -49,7 +49,7 @@ export class StripeWebhookService {
     await this.companyModel.findOneAndUpdate(
       { stripeSubscriptionId: sub.id },
       {
-        subscriptionStatus: SubscriptionStatus.INACTIVE,
+        subscriptionStatus: SubscriptionStatus.ACTIVE,
         plan: SubscriptionPlan.FREE,
         aiFeaturesCredits: 0,
         subscriptionExpiresAt: null,

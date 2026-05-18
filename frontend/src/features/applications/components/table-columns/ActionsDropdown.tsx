@@ -6,8 +6,7 @@ import {
   ArrowRightLeft,
   Route,
   BrainCircuit,
-  Zap,
-  Sparkles,
+  Lock,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
+import { SubscriptionGuard } from "@/components/guards/SubscrpitionGuard";
 
 interface ActionsDropdownProps {
   onView?: (application: Application) => void;
@@ -55,9 +55,7 @@ export function ActionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <Link
-          href={`/dashboard/applications/${row.id}`}
-        >
+        <Link href={`/dashboard/applications/${row.id}`}>
           <DropdownMenuItem className="cursor-pointer">
             <Eye className="mr-2 h-4 w-4" />
             View Details
@@ -84,24 +82,45 @@ export function ActionsDropdown({
           <Route className="mr-2 h-4 w-4" />
           Change Stage
         </DropdownMenuItem>
-        <Tooltip>
-          <TooltipTrigger>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => onRunningSmartScreening?.(row)}
-            >
-              <BrainCircuit className=" mr-2 w-4" />
-              Run Smart Screening
-            </DropdownMenuItem>
-          </TooltipTrigger>
-          <TooltipContent side="left" className="w-52">
-            <p>
-              Runs an automated evaluation of this candidate. The AI ranks the
-              applicant’s fit for the role by cross-referencing their background
-              with the specific needs of the job.
-            </p>
-          </TooltipContent>
-        </Tooltip>
+
+        <SubscriptionGuard
+          fallback={() => (
+            <Tooltip>
+              <TooltipTrigger>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  disabled
+                >
+                  <Lock className=" mr-2 w-4" />
+                  Run Smart Screening
+                </DropdownMenuItem>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="w-52">
+                <p>Upgrade to Pro to unlock this feature</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+        >
+          <Tooltip>
+            <TooltipTrigger>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => onRunningSmartScreening?.(row)}
+              >
+                <BrainCircuit className=" mr-2 w-4" />
+                Run Smart Screening
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="w-52">
+              <p>
+                Runs an automated evaluation of this candidate. The AI ranks the
+                applicant’s fit for the role by cross-referencing their
+                background with the specific needs of the job.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </SubscriptionGuard>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"

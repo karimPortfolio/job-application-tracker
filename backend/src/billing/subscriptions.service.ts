@@ -1,17 +1,17 @@
 import { InjectStripeClient } from '@golevelup/nestjs-stripe';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CompanyDocument } from '../companies/company.schema';
+import { Company, CompanyDocument } from '../companies/company.schema';
 import Stripe from 'stripe';
 import { Model } from 'mongoose';
-import { SubscriptionDuration, SubscriptionPlan } from './enums/subscriptions.enums';
+import { SubscriptionDuration, SubscriptionPlan, SubscriptionStatus } from './enums/subscriptions.enums';
 
 
 @Injectable()
 export class SubscriptionsService {
   constructor(
     @InjectStripeClient() private readonly stripe: Stripe,
-    @InjectModel('Company')
+    @InjectModel(Company.name)
     private readonly companyModel: Model<CompanyDocument>,
   ) {}
 
@@ -23,14 +23,16 @@ export class SubscriptionsService {
     const company = (await this.companyModel.findById(
       companyId,
     )) as CompanyDocument;
-    
+
     const successUrl = `${process.env.FRONTEND_URL}/settings/company/billing?success=true`;
 
     if (plan === SubscriptionPlan.FREE) {
-      await this.companyModel.findByIdAndUpdate(companyId, {
-        subscriptionPlan: SubscriptionPlan.FREE,
-        subscriptionDuration: SubscriptionDuration.MONTHLY,
+      await this.companyModel.findByIdAndUpdate(company._id, {
+        plan: SubscriptionPlan.FREE,
+        duration: duration,
         stripeSubscriptionId: null,
+        subscriptionStatus: SubscriptionStatus.ACTIVE,
+        subscriptionExpiresAt: null
       });
       return { url: successUrl };
     }

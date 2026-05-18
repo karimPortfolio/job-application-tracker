@@ -1,5 +1,13 @@
-import type { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
-import type { CreateJobPayload, UpdateJobPayload } from "../../types/jobs.types";
+import type {
+  FieldValues,
+  Path,
+  PathValue,
+  UseFormReturn,
+} from "react-hook-form";
+import type {
+  CreateJobPayload,
+  UpdateJobPayload,
+} from "../../types/jobs.types";
 import {
   FormControl,
   FormField,
@@ -14,8 +22,9 @@ import { useJobActions } from "../../hooks/useJobsActions";
 import { memo, useMemo } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
+import { SubscriptionGuard } from "@/components/guards/SubscrpitionGuard";
+import { FallBackButton } from "../FallbackButton";
 
-type JobFormValues = CreateJobPayload | UpdateJobPayload;
 type JobFormBase = FieldValues & {
   description?: string;
   title?: string;
@@ -25,9 +34,7 @@ type JobFormBase = FieldValues & {
   experienceLevel?: string;
 };
 
-interface DescriptionEditorProps<
-  T extends JobFormBase = CreateJobPayload,
-> {
+interface DescriptionEditorProps<T extends JobFormBase = CreateJobPayload> {
   form: UseFormReturn<T>;
 }
 
@@ -46,7 +53,9 @@ export function DescriptionEditor<T extends JobFormBase = CreateJobPayload>({
     try {
       const values = form.getValues();
       if (!values.title || !values.department) {
-        throw new Error("Title and Department are required to generate a description.");
+        throw new Error(
+          "Title and Department are required to generate a description.",
+        );
       }
 
       const generatedDescription = await generateDescription({
@@ -63,7 +72,7 @@ export function DescriptionEditor<T extends JobFormBase = CreateJobPayload>({
     } catch (error) {
       toast.error(
         (error as Error).message ||
-          "An error occurred while generating the job description."
+          "An error occurred while generating the job description.",
       );
     }
   };
@@ -77,25 +86,29 @@ export function DescriptionEditor<T extends JobFormBase = CreateJobPayload>({
           <FormLabel className="mb-0 flex justify-between items-center">
             <div>Description</div>
             <div>
-              <Button
-                size="sm"
-                type="button"
-                onClick={handleGenerateDescription}
-                disabled={loading}
-                className="border border-transparent text-white shadow-sm hover:opacity-90 disabled:opacity-70"
-                style={{
-                  background:
-                    "linear-gradient(#0f172a, #0f172a) padding-box, linear-gradient(90deg, #4338ca, #0284c7) border-box",
-                }}
+              <SubscriptionGuard
+                fallback={() => <FallBackButton text={getButtonText} />}
               >
-                <ButtonLoadingWrapper
-                  isLoading={loading}
-                  loadingText="Generating..."
+                <Button
+                  size="sm"
+                  type="button"
+                  onClick={handleGenerateDescription}
+                  disabled={loading}
+                  className="border border-transparent text-white shadow-sm hover:opacity-90 disabled:opacity-70"
+                  style={{
+                    background:
+                      "linear-gradient(#0f172a, #0f172a) padding-box, linear-gradient(90deg, #4338ca, #0284c7) border-box",
+                  }}
                 >
-                  <Sparkles className="h-4 w-4 text-white" />
-                  {getButtonText}
-                </ButtonLoadingWrapper>
-              </Button>
+                  <ButtonLoadingWrapper
+                    isLoading={loading}
+                    loadingText="Generating..."
+                  >
+                    <Sparkles className="h-4 w-4 text-white" />
+                    {getButtonText}
+                  </ButtonLoadingWrapper>
+                </Button>
+              </SubscriptionGuard>
             </div>
           </FormLabel>
           <FormControl>

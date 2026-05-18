@@ -1,23 +1,30 @@
+export interface Company {
+  id: number;
+  name: string;
+  industry: string;
+  websiteUrl?: string;
+  aiFeaturesCredits?: number;
+  plan?: string;
+  duration?: string;
+  subscriptionStatus?: string;
+  subscriptionExpiresAt?: Date;
+}
 export interface User {
   id: number;
   name: string;
   email: string;
   avatarUrl?: string | null;
-  company: {
-    id: number;
-    name: string;
-    slug?: string | null;
-  };
+  company: Company;
   membershipType: {
     value: "owner" | "member" | "admin";
     label: string;
     color: string;
     hex_color: string;
   };
-  permissions?: string[] | null; 
+  permissions?: string[] | null;
   emailVerifiedAt?: string | null;
   createdAt: string;
-  updatedAt?: string| null;
+  updatedAt?: string | null;
 }
 
 export interface AuthResponse {
@@ -50,5 +57,4 @@ export interface ResetPasswordCredentials {
   password_confirmation: string;
 }
 
-
-export type ValidationErrors = Record<string, string[]>
+export type ValidationErrors = Record<string, string[]>;
