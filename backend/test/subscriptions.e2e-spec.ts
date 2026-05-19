@@ -75,16 +75,4 @@ describe('Subscriptions Controller (e2e - minimal)', () => {
       payload.duration,
     )
   })
-
-  it('POST /subscriptions/cancel -> returns cancellation message', async () => {
-    const payload = { companyId: 'company123' }
-
-    const res = await request(app.getHttpServer())
-      .post('/subscriptions/cancel')
-      .send(payload)
-      .expect(201)
-
-    expect(res.body).toHaveProperty('message', 'Your subscription has been successfully canceled.')
-    expect(mockSubscriptionsService.cancelCompanySubscription).toHaveBeenCalledWith(payload.companyId)
-  })
 })

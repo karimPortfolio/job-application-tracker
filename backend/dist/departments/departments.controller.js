@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DepartmentsController = void 0;
 const common_1 = require("@nestjs/common");
 const departments_service_1 = require("./departments.service");
-const passport_1 = require("@nestjs/passport");
 const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 const create_department_dto_1 = require("./dto/create-department.dto");
 const update_department_dto_1 = require("./dto/update-department.dto");
 const department_query_dto_1 = require("./dto/department-query.dto");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const email_verified_guard_1 = require("../auth/email-verified.guard");
 let DepartmentsController = class DepartmentsController {
     departmentsService;
     constructor(departmentsService) {
@@ -104,7 +105,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DepartmentsController.prototype, "delete", null);
 exports.DepartmentsController = DepartmentsController = __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
     (0, common_1.Controller)('departments'),
     __metadata("design:paramtypes", [departments_service_1.DepartmentsService])
 ], DepartmentsController);

@@ -12,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
-import { AuthGuard } from '@nestjs/passport';
 import { JobQueryDto } from './dto/job-query.dto';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -26,9 +25,11 @@ import { Department } from '../departments/departments.schema';
 import { GenerateJobDto } from './dto/generate-job.dto';
 import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsGuard';
 import { AIFeature } from '../common/decorators/ai-feature.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 
 @Controller('jobs')
-@UseGuards(AuthGuard('jwt'), CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 

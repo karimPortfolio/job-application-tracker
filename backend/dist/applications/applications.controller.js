@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApplicationsController = void 0;
 const common_1 = require("@nestjs/common");
 const applications_service_1 = require("./applications.service");
-const passport_1 = require("@nestjs/passport");
 const application_query_dto_1 = require("./dto/application-query.dto");
 const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 const create_application_dto_1 = require("./dto/create-application.dto");
@@ -28,6 +27,8 @@ const multer_1 = require("multer");
 const smart_screenig_application_dto_1 = require("./dto/smart-screenig-application.dto");
 const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCreditsGuard");
 const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorator");
+const email_verified_guard_1 = require("../auth/email-verified.guard");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let ApplicationsController = class ApplicationsController {
     applicationsService;
     constructor(applicationsService) {
@@ -213,7 +214,7 @@ __decorate([
 ], ApplicationsController.prototype, "runningSmartScreening", null);
 exports.ApplicationsController = ApplicationsController = __decorate([
     (0, common_1.Controller)('applications'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
     __metadata("design:paramtypes", [applications_service_1.ApplicationsService])
 ], ApplicationsController);
 //# sourceMappingURL=applications.controller.js.map

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobsController = void 0;
 const common_1 = require("@nestjs/common");
 const jobs_service_1 = require("./jobs.service");
-const passport_1 = require("@nestjs/passport");
 const job_query_dto_1 = require("./dto/job-query.dto");
 const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 const create_job_dto_1 = require("./dto/create-job.dto");
@@ -27,6 +26,8 @@ const update_job_status_dto_1 = require("./dto/update-job-status.dto");
 const generate_job_dto_1 = require("./dto/generate-job.dto");
 const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCreditsGuard");
 const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorator");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const email_verified_guard_1 = require("../auth/email-verified.guard");
 let JobsController = class JobsController {
     jobsService;
     constructor(jobsService) {
@@ -182,7 +183,7 @@ __decorate([
 ], JobsController.prototype, "updateJobStatus", null);
 exports.JobsController = JobsController = __decorate([
     (0, common_1.Controller)('jobs'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
     __metadata("design:paramtypes", [jobs_service_1.JobsService])
 ], JobsController);
 //# sourceMappingURL=jobs.controller.js.map

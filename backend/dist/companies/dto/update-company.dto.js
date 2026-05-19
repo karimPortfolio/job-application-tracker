@@ -15,6 +15,7 @@ class UpdateCompanyDto {
     name;
     industry;
     websiteUrl;
+    adminEmail;
 }
 exports.UpdateCompanyDto = UpdateCompanyDto;
 __decorate([
@@ -26,7 +27,7 @@ __decorate([
 ], UpdateCompanyDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.ValidateIf)((o, v) => v !== undefined),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Title cannot be empty' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Industry cannot be empty' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MaxLength)(255),
     __metadata("design:type", String)
@@ -40,4 +41,11 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], UpdateCompanyDto.prototype, "websiteUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEmail)({}, { message: 'Admin Email must be a valid email address' }),
+    (0, class_validator_1.MaxLength)(255),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "adminEmail", void 0);
 //# sourceMappingURL=update-company.dto.js.map

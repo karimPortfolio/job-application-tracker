@@ -18,9 +18,11 @@ const profile_service_1 = require("./profile.service");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const profile_update_dto_1 = require("./dto/profile-update.dto");
 const password_update_dto_1 = require("./dto/password-update.dto");
-const passport_1 = require("@nestjs/passport");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
+const CompanyGuard_1 = require("../common/guards/CompanyGuard");
+const email_verified_guard_1 = require("../auth/email-verified.guard");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let ProfileController = class ProfileController {
     profileService;
     constructor(profileService) {
@@ -60,7 +62,7 @@ __decorate([
 ], ProfileController.prototype, "updatePassword", null);
 exports.ProfileController = ProfileController = __decorate([
     (0, common_1.Controller)('profile'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
     __metadata("design:paramtypes", [profile_service_1.ProfileService])
 ], ProfileController);
 //# sourceMappingURL=profile.controller.js.map

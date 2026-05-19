@@ -12,11 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserSchema = exports.User = void 0;
+exports.UserSchema = exports.User = exports.UserPreferences = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const date_fns_1 = require("date-fns");
 const mongoose_2 = require("mongoose");
 const mongoose_lean_virtuals_1 = __importDefault(require("mongoose-lean-virtuals"));
+let UserPreferences = class UserPreferences {
+    theme;
+    notifications;
+};
+exports.UserPreferences = UserPreferences;
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'system', enum: ['light', 'dark', 'system'] }),
+    __metadata("design:type", String)
+], UserPreferences.prototype, "theme", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: {
+            email: { type: Boolean, default: true },
+            push: { type: Boolean, default: true },
+            marketing: { type: Boolean, default: true },
+        },
+        default: {},
+    }),
+    __metadata("design:type", Object)
+], UserPreferences.prototype, "notifications", void 0);
+exports.UserPreferences = UserPreferences = __decorate([
+    (0, mongoose_1.Schema)({ _id: false })
+], UserPreferences);
 let User = class User {
     name;
     email;
@@ -26,6 +49,7 @@ let User = class User {
     googleId;
     company;
     emailVerifiedAt;
+    preferences;
     createdAt;
 };
 exports.User = User;
@@ -61,6 +85,13 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Date, default: null }),
     __metadata("design:type", Object)
 ], User.prototype, "emailVerifiedAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: mongoose_1.SchemaFactory.createForClass(UserPreferences),
+        default: () => ({}),
+    }),
+    __metadata("design:type", UserPreferences)
+], User.prototype, "preferences", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({
         timestamps: true,

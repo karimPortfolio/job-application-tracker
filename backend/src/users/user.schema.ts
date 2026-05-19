@@ -6,6 +6,26 @@ import { Company } from '../companies/company.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
+@Schema({ _id: false })
+export class UserPreferences {
+  @Prop({ default: 'system', enum: ['light', 'dark', 'system'] })
+  theme: string;
+
+  @Prop({
+    type: {
+      email: { type: Boolean, default: true },
+      push: { type: Boolean, default: true },
+      marketing: { type: Boolean, default: true },
+    },
+    default: {},
+  })
+  notifications: {
+    email: boolean;
+    push: boolean;
+    marketing: boolean;
+  };
+}
+
 @Schema({
   timestamps: true,
   toJSON: {
@@ -40,6 +60,12 @@ export class User {
 
   @Prop({ type: Date, default: null })
   emailVerifiedAt: Date | null;
+
+  @Prop({
+    type: SchemaFactory.createForClass(UserPreferences),
+    default: () => ({}),
+  })
+  preferences: UserPreferences;
 
   createdAt: Date;
 }

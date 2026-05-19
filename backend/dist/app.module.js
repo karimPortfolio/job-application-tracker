@@ -31,6 +31,7 @@ const billing_module_1 = require("./billing/billing.module");
 const stripe_module_1 = require("./shared/stripe.module");
 const core_1 = require("@nestjs/core");
 const credit_deduction_interceptor_1 = require("./common/interceptors/credit-deduction.interceptor");
+const settings_module_1 = require("./settings/settings.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -74,6 +75,7 @@ exports.AppModule = AppModule = __decorate([
             notifications_module_1.NotificationsModule,
             stripe_module_1.SharedStripeModule,
             billing_module_1.BillingModule,
+            settings_module_1.SettingsModule
         ],
         exports: [stripe_module_1.SharedStripeModule],
         providers: [

@@ -64,8 +64,6 @@ let CompaniesService = class CompaniesService {
     }
     async update(dto, user) {
         let companyId = user.company;
-        if (!companyId)
-            throw new common_1.ForbiddenException('User has no company.');
         const company = await this.companyModel
             .findByIdAndUpdate(companyId, dto, {
             new: true,

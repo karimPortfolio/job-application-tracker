@@ -14,10 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationsController = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const notifications_service_1 = require("./notifications.service");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const job_query_dto_1 = require("../jobs/dto/job-query.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const email_verified_guard_1 = require("../auth/email-verified.guard");
+const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 let NotificationsController = class NotificationsController {
     notificationsService;
     constructor(notificationsService) {
@@ -59,7 +61,7 @@ __decorate([
 ], NotificationsController.prototype, "markAllNotificationsAsRead", null);
 exports.NotificationsController = NotificationsController = __decorate([
     (0, common_1.Controller)('notifications'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
     __param(0, (0, common_1.Inject)()),
     __metadata("design:paramtypes", [notifications_service_1.NotificationsService])
 ], NotificationsController);

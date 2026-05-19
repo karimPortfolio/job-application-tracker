@@ -12,15 +12,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
-import { AuthGuard } from '@nestjs/passport';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { DepartmentQueryDto } from './dto/department-query.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { Response } from 'express';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 
-@UseGuards(AuthGuard('jwt'), CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 @Controller('departments')
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}

@@ -18,7 +18,6 @@ const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const companies_service_1 = require("./companies.service");
 const create_company_dto_1 = require("./dto/create-company.dto");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
-const update_company_dto_1 = require("./dto/update-company.dto");
 const email_verified_guard_1 = require("../auth/email-verified.guard");
 let CompaniesController = class CompaniesController {
     companiesService;
@@ -32,9 +31,6 @@ let CompaniesController = class CompaniesController {
     }
     show(user) {
         return this.companiesService.findMyCompany(user);
-    }
-    update(dto, user) {
-        return this.companiesService.update(dto, user);
     }
 };
 exports.CompaniesController = CompaniesController;
@@ -54,14 +50,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CompaniesController.prototype, "show", null);
-__decorate([
-    (0, common_1.Patch)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [update_company_dto_1.UpdateCompanyDto, Object]),
-    __metadata("design:returntype", void 0)
-], CompaniesController.prototype, "update", null);
 exports.CompaniesController = CompaniesController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard),
     (0, common_1.Controller)({

@@ -3,13 +3,15 @@ import { ProfileService } from "./profile.service";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { ProfileUpdateDto } from "./dto/profile-update.dto";
 import { PasswordUpdateDto } from "./dto/password-update.dto";
-import { AuthGuard } from "@nestjs/passport";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { memoryStorage } from "multer";
+import { CompanyGuard } from "src/common/guards/CompanyGuard";
+import { EmailVerifiedGuard } from "src/auth/email-verified.guard";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 
 @Controller('profile')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 export class ProfileController {
     constructor (
         private readonly profileService: ProfileService,

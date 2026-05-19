@@ -1,11 +1,12 @@
 import { Controller, Get, Inject, Query, Req, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dasboard.service';
-import { AuthGuard } from '@nestjs/passport';
 import { CompanyGuard } from 'src/common/guards/CompanyGuard';
 import { StatsResponse } from './types/dashboard.types';
 import { DashboardQueryDto } from './dashboard-query.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 
-@UseGuards(AuthGuard('jwt'), CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 @Controller('dashboard')
 export class DashboardController {
   constructor(

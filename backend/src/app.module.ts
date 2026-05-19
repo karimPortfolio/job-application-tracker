@@ -22,6 +22,7 @@ import { BillingModule } from './billing/billing.module';
 import { SharedStripeModule } from './shared/stripe.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CreditDeductionInterceptor } from './common/interceptors/credit-deduction.interceptor';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { CreditDeductionInterceptor } from './common/interceptors/credit-deducti
     NotificationsModule,
     SharedStripeModule,
     BillingModule,
+    SettingsModule
   ],
   exports: [SharedStripeModule],
   providers: [

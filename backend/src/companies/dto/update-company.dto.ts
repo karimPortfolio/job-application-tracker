@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -15,7 +16,7 @@ export class UpdateCompanyDto {
   name: string;
 
   @ValidateIf((o, v) => v !== undefined) //====only skip if the key is MISSING
-  @IsNotEmpty({ message: 'Title cannot be empty' })
+  @IsNotEmpty({ message: 'Industry cannot be empty' })
   @IsString()
   @MaxLength(255)
   industry: string;
@@ -27,4 +28,10 @@ export class UpdateCompanyDto {
     message: 'websiteUrl must be a valid URL (e.g., https://example.com)',
   })
   websiteUrl: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEmail({}, { message: 'Admin Email must be a valid email address' })
+  @MaxLength(255)
+  adminEmail: string;
 }

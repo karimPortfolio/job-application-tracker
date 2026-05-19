@@ -14,7 +14,7 @@ import { User, UserSchema } from '../users/user.schema'
     ]),
     UsersModule,
   ],
-  exports: [MongooseModule],
+  exports: [MongooseModule, CompaniesService],
   providers: [CompaniesService],
   controllers: [CompaniesController]
 })

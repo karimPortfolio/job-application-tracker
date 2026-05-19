@@ -26,7 +26,7 @@ exports.CompaniesModule = CompaniesModule = __decorate([
             ]),
             users_module_1.UsersModule,
         ],
-        exports: [mongoose_1.MongooseModule],
+        exports: [mongoose_1.MongooseModule, companies_service_1.CompaniesService],
         providers: [companies_service_1.CompaniesService],
         controllers: [companies_controller_1.CompaniesController]
     })

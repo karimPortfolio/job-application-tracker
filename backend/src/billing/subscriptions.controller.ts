@@ -1,12 +1,13 @@
 // subscription.controller.ts
 import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
-import { AuthGuard } from '@nestjs/passport';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { SubscriptionDuration, SubscriptionPlan } from './enums/subscriptions.enums';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 
 @Controller('subscriptions')
-@UseGuards(AuthGuard('jwt'), CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 export class SubscriptionsController {
   constructor(private readonly subscriptionsService: SubscriptionsService) {}
 
@@ -22,12 +23,5 @@ export class SubscriptionsController {
     );
     
     return { url: session.url };
-  }
-
-  @Post('cancel')
-  async cancelSubscription(
-    @Req() req: any
-  ) {
-    return await this.subscriptionsService.cancelCompanySubscription(req.user.company);
   }
 }

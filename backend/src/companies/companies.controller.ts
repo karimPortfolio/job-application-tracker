@@ -28,10 +28,4 @@ export class CompaniesController {
   {
     return this.companiesService.findMyCompany(user);
   }
-
-  @Patch()
-  update(@Body() dto: UpdateCompanyDto, @CurrentUser() user: UserDocument)
-  {
-    return this.companiesService.update(dto, user);
-  }
 }

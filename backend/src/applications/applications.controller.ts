@@ -17,7 +17,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
-import { AuthGuard } from '@nestjs/passport';
 import { ApplicationQueryDto } from './dto/application-query.dto';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { CreateApplicationDto } from './dto/create-application.dto';
@@ -31,9 +30,11 @@ import { memoryStorage } from 'multer';
 import { SmartScreeningApplicationDto } from './dto/smart-screenig-application.dto';
 import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsGuard';
 import { AIFeature } from 'src/common/decorators/ai-feature.decorator';
+import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('applications')
-@UseGuards(AuthGuard('jwt'), CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
