@@ -18,6 +18,7 @@ export class UserPreferences {
       marketing: { type: Boolean, default: true },
     },
     default: {},
+    _id: false
   })
   notifications: {
     email: boolean;

@@ -1,15 +1,28 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  MaxLength,
-  ValidateIf,
-} from 'class-validator';
+import { IsBoolean, IsOptional, IsString, IsIn, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class NotificationPreferencesDto {
+  @IsBoolean()
+  @IsOptional()
+  email?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  push?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  marketing?: boolean;
+}
 
 export class UpdatePreferencesDto {
-  @ValidateIf((o, v) => v !== undefined)
-  @IsNotEmpty({ message: 'Theme cannot be empty' })
-  @IsEnum(['light', 'dark', 'system'])
-  @MaxLength(255)
-  theme: 'light' | 'dark' | 'system';
+  @IsString()
+  @IsOptional()
+  @IsIn(['light', 'dark', 'system'])
+  theme?: 'light' | 'dark' | 'system';
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => NotificationPreferencesDto)
+  notifications?: NotificationPreferencesDto;
 }

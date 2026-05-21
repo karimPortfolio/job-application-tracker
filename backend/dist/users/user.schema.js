@@ -34,6 +34,7 @@ __decorate([
             marketing: { type: Boolean, default: true },
         },
         default: {},
+        _id: false
     }),
     __metadata("design:type", Object)
 ], UserPreferences.prototype, "notifications", void 0);

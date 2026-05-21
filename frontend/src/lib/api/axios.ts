@@ -15,6 +15,7 @@ api.interceptors.response.use(
   (response) => {
     const method = response.config?.method?.toLowerCase();
     const endpoint = response.config?.url || "";
+    const message = response.data.message || null;
 
     if (
       typeof window !== "undefined" &&
@@ -24,7 +25,7 @@ api.interceptors.response.use(
       !endpoint.includes("/auth/login") &&
       !endpoint.includes("/auth/logout")
     ) {
-      toast.success("Request completed successfully");
+      toast.success(message ?? "Request completed successfully");
     }
 
     return response;

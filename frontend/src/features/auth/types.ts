@@ -21,6 +21,14 @@ export interface User {
     color: string;
     hex_color: string;
   };
+  preferences?: {
+    theme?: "dark" | "light" | "system";
+    notifications?: {
+      email?: boolean;
+      push?: boolean;
+      marketing?: boolean;
+    };
+  };
   permissions?: string[] | null;
   emailVerifiedAt?: string | null;
   createdAt: string;

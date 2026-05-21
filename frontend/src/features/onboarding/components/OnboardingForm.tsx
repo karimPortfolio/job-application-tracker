@@ -25,7 +25,7 @@ import type { IndustryOptions, OnboardingPayload } from "../types/onboarding.typ
 import { onboardingSchema } from "../schemas/onboarding.schema";
 import { useOnboarding } from "../hooks/useOnboarding";
 
-const industryOptions: IndustryOptions = [
+export const industryOptions: IndustryOptions = [
   { value: "software", label: "Software & AI" },
   { value: "design", label: "Design & Creative" },
   { value: "manufacturing", label: "Manufacturing" },
