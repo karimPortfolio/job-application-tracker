@@ -5,6 +5,7 @@ import { useBillingActions } from "../../hooks/useBillingActions";
 import { CurrentPlanCard } from "./CurrentPlanCard";
 import { PaymentMethodsCard } from "./PaymentMethodsCard";
 import { LatestInvoicesDataTable } from "./LatestInvoicesDataTable";
+import { Alert } from "@/components/ui/alert";
 
 export function BillingDetails() {
   const { fetchCompanyBillingDetails, billingDetails, loading } =
@@ -28,26 +29,32 @@ export function BillingDetails() {
     <div className="flex flex-col space-y-12">
       <div className="flex flex-col space-y-5">
         <div className="font-medium">Current Plan</div>
-        {subscription && (
+        {subscription ? (
           <CurrentPlanCard subscription={subscription} loading={loading} />
+        ) : (
+          <Alert className="flex justify-center p-5">No record found.</Alert>
         )}
       </div>
 
       <div className="flex flex-col space-y-5">
         <div className="font-medium">Latest Payment Methods</div>
-        {paymentMethods && (
+        {paymentMethods ? (
           <PaymentMethodsCard
             paymentMethods={paymentMethods}
             loading={loading}
           />
+        ) : (
+          <Alert className="flex justify-center p-5">No record found.</Alert>
         )}
       </div>
 
       <div className="flex flex-col space-y-5">
         <div className="font-medium">Latest Invoices</div>
         <div>
-          {invoices && (
+          {invoices ? (
             <LatestInvoicesDataTable invoices={invoices} loading={loading} />
+          ) : (
+            <Alert className="flex justify-center p-5">No record found.</Alert>
           )}
         </div>
       </div>
