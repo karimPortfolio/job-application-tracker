@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Inject,
   Patch,
   Post,
@@ -34,6 +35,13 @@ export class SettingsController {
     @CurrentUser() user: { sub: string; company: string },
   ) {
     await this.companiesService.update(dto, user);
+  }
+
+  @Get("company/billing")
+  async billingDetails(
+    @Req() req: any
+  ) {
+    return await this.subscriptionsService.getCompanyBillingDetails(req.user.company);
   }
 
   @Post('company/billing/cancel')

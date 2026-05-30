@@ -16,7 +16,7 @@ import { usePricingActions } from "../hooks/usePricingActions";
 import { redirect } from "next/navigation";
 import { LoadingButton } from "@/components/ui/loading-button";
 
-const PRICING_CURRENCY_SYMBOL = "$";
+export const PRICING_CURRENCY_SYMBOL = "$";
 
 export function PricingPlanCard({
   pricingPlan,

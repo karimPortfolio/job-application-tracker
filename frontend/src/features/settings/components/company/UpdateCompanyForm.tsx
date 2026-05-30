@@ -24,6 +24,10 @@ import {
 } from "@/components/ui/select";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { Save } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { updateCompanySchema } from "../../schemas/update-company.schema";
+
+const formResolver = zodResolver(updateCompanySchema);
 
 export function UpdateCompanyForm() {
   const { user } = useAuthStore();
@@ -31,6 +35,7 @@ export function UpdateCompanyForm() {
     useCompanyActions();
 
   const form = useForm<CompanyPayload>({
+    resolver: formResolver,
     defaultValues: {
       name: user?.company?.name ?? "",
       industry: user?.company?.industry ?? "",

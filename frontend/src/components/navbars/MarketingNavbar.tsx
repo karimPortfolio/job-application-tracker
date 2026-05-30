@@ -68,12 +68,14 @@ export function MarketingNavbar() {
       label: "Billing",
       icon: <CreditCardIcon />,
       onClick: () => {},
+      href: "/dashboard/settings/company/billing",
       disabled: false,
     },
     {
       label: "Settings",
       icon: <SettingsIcon />,
       onClick: () => {},
+      href: "/dashboard/settings/company",
       disabled: false,
     },
   ];

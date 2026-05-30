@@ -94,7 +94,7 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
     }, "id"> & {
         id: string;
     }> | undefined;
-    company?: import("mongoose").SchemaDefinitionProperty<Types.ObjectId | Company | null, User, import("mongoose").Document<unknown, {}, User, {
+    company?: import("mongoose").SchemaDefinitionProperty<Company | Types.ObjectId | null, User, import("mongoose").Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<User & {
         _id: Types.ObjectId;

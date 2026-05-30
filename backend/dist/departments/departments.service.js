@@ -69,9 +69,9 @@ let DepartmentsService = class DepartmentsService {
         return department;
     }
     async findDepartmentById(departmentId, companyId) {
-        const chachedDepartment = await this.getChachedDepartment(departmentId, companyId);
-        if (chachedDepartment) {
-            return chachedDepartment;
+        const cachedDepartment = await this.getCachedDepartment(departmentId, companyId);
+        if (cachedDepartment) {
+            return cachedDepartment;
         }
         const department = await this.departmentModel.findById(departmentId);
         if (!department) {
@@ -113,12 +113,12 @@ let DepartmentsService = class DepartmentsService {
         }
         return this.csvExporter.export(departments);
     }
-    async getChachedDepartment(departmentId, companyId) {
-        const chachedDepartment = await this.cache.get(this.getCacheKey(departmentId));
-        if (!chachedDepartment) {
+    async getCachedDepartment(departmentId, companyId) {
+        const cachedDepartment = await this.cache.get(this.getCacheKey(departmentId));
+        if (!cachedDepartment) {
             return null;
         }
-        return chachedDepartment;
+        return cachedDepartment;
     }
     async getDepartmentsForExport(company, query) {
         return this.departmentModel

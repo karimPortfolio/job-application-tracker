@@ -1,8 +1,11 @@
 // subscription.controller.ts
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
-import { SubscriptionDuration, SubscriptionPlan } from './enums/subscriptions.enums';
+import {
+  SubscriptionDuration,
+  SubscriptionPlan,
+} from './enums/subscriptions.enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 
@@ -13,15 +16,15 @@ export class SubscriptionsController {
 
   @Post('checkout')
   async createCheckout(
-    @Body() body: { plan: SubscriptionPlan, duration: SubscriptionDuration },
-    @Req() req: any
+    @Body() body: { plan: SubscriptionPlan; duration: SubscriptionDuration },
+    @Req() req: any,
   ) {
     const session = await this.subscriptionsService.createCompanySubscription(
-      req.user.company, 
+      req.user.company,
       body.plan,
-      body.duration
+      body.duration,
     );
-    
+
     return { url: session.url };
   }
 }

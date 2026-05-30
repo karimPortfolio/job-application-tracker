@@ -77,13 +77,13 @@ export class DepartmentsService {
   }
 
   async findDepartmentById(departmentId: string, companyId: string) {
-    const chachedDepartment = await this.getChachedDepartment(
+    const cachedDepartment = await this.getCachedDepartment(
       departmentId,
       companyId,
     );
 
-    if (chachedDepartment) {
-      return chachedDepartment;
+    if (cachedDepartment) {
+      return cachedDepartment;
     }
 
     const department = await this.departmentModel.findById(departmentId);
@@ -91,10 +91,6 @@ export class DepartmentsService {
     if (!department) {
       throw new BadRequestException('Department not found');
     }
-
-    // if (department.company?.toString() !== companyId) {
-    //   throw new ForbiddenException('Access to this resource is forbidden');
-    // }
 
     await this.cache.set(this.getCacheKey(departmentId), department, 60 * 1000); //60s
 
@@ -161,20 +157,16 @@ export class DepartmentsService {
     return this.csvExporter.export(departments);
   }
 
-  private async getChachedDepartment(departmentId: string, companyId: string) {
-    const chachedDepartment = await this.cache.get(
+  private async getCachedDepartment(departmentId: string, companyId: string) {
+    const cachedDepartment = await this.cache.get(
       this.getCacheKey(departmentId),
     );
 
-    if (!chachedDepartment) {
+    if (!cachedDepartment) {
       return null;
     }
-
-    // if (chachedDepartment.company?.toString() !== companyId) {
-    //   throw new ForbiddenException('Access to this resource is forbidden');
-    // }
-
-    return chachedDepartment;
+    
+    return cachedDepartment;
   }
 
   private async getDepartmentsForExport(company: string, query: any) {

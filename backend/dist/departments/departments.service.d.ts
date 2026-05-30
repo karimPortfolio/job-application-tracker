@@ -55,7 +55,7 @@ export declare class DepartmentsService {
         message: string;
     }>;
     exportDepartments(companyId: string, format: 'csv' | 'xlsx', query: any): Promise<import("stream").PassThrough>;
-    private getChachedDepartment;
+    private getCachedDepartment;
     private getDepartmentsForExport;
     private getCompanyOrThrow;
     private getUserorThrow;

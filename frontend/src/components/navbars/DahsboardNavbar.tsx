@@ -26,13 +26,13 @@ export function DashboardNavbar() {
     {
       label: "Billing",
       icon: <CreditCardIcon />,
-      href: '',
+      href: '/dashboard/settings/company/billing',
       disabled: false,
     },
     {
       label: "Settings",
       icon: <SettingsIcon />,
-      href: '',
+      href: '/dashboard/settings',
       disabled: false,
     },
   ];
