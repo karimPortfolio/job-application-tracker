@@ -1,7 +1,6 @@
 import { useTheme } from "next-themes";
 import { SubscriptionDuration } from "../enums/pricing.enums";
 import { PricingPlan } from "../types/pricing.types";
-import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import {
   Card,
@@ -13,8 +12,8 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { usePricingActions } from "../hooks/usePricingActions";
-import { redirect } from "next/navigation";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { useMemo } from "react";
 
 export const PRICING_CURRENCY_SYMBOL = "$";
 
@@ -25,7 +24,7 @@ export function PricingPlanCard({
   pricingPlan: PricingPlan;
   isMonthly: boolean;
 }) {
-  const { subscriptionCheckout, loading, apiError, clearApiError } =
+  const { subscriptionCheckout, loading, clearApiError } =
     usePricingActions();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -35,11 +34,16 @@ export function PricingPlanCard({
     backdropFilter: "blur(12px)",
   };
 
+  const buttonLabel = useMemo(() => {
+    if (pricingPlan.isCurrentlyActive) return "Current Plan";
+    return "Get started";
+  }, [pricingPlan.isCurrentlyActive])
+
   const handleSubscriptionCheckout = async () => {
     const duration = isMonthly
       ? SubscriptionDuration.MONTHLY
       : SubscriptionDuration.YEARLY;
-    
+    clearApiError();
     try
     {
       const url = await subscriptionCheckout({ plan: pricingPlan.plan, duration });
@@ -89,9 +93,11 @@ export function PricingPlanCard({
           size="lg"
           className="w-full text-md"
           isLoading={loading}
+          disabled={pricingPlan.isCurrentlyActive}
+          variant={pricingPlan.isCurrentlyActive ? "outline" : "default"}
           onClick={handleSubscriptionCheckout}
         >
-          { loading ? "Please wait..." : "Get Started" }
+          { loading ? "Please wait..." : buttonLabel }
         </LoadingButton>
       </CardAction>
     </Card>

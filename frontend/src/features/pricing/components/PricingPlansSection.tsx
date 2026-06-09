@@ -1,12 +1,19 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
-import { SubscriptionPlan } from "../enums/pricing.enums";
+import { SubscriptionDuration, SubscriptionPlan } from "../enums/pricing.enums";
 import { PricingPlan } from "../types/pricing.types";
 import { PricingPlanCard } from "./PricingPlanCard";
+import { useAuthStore } from "@/stores/auth.store";
 
 export function PricingPlansSection() {
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
+  const { user } = useAuthStore();
+  const currentCompanySubscriptionPlan = user?.company.plan;
+  const currentCompanySubscriptionDuration = user?.company.duration;
+  const selectedDuration = isMonthly
+    ? SubscriptionDuration.MONTHLY
+    : SubscriptionDuration.YEARLY;
 
   const pricingPlans = useMemo(
     () => [
@@ -23,6 +30,9 @@ export function PricingPlansSection() {
           "Limited support",
         ],
         popular: false,
+        isCurrentlyActive:
+          currentCompanySubscriptionPlan === SubscriptionPlan.FREE &&
+          currentCompanySubscriptionDuration === selectedDuration,
       },
       {
         plan: SubscriptionPlan.PRO,
@@ -38,6 +48,9 @@ export function PricingPlansSection() {
           "24/7 Priority support",
         ],
         popular: true,
+        isCurrentlyActive:
+          currentCompanySubscriptionPlan === SubscriptionPlan.PRO &&
+          currentCompanySubscriptionDuration === selectedDuration,
       },
       {
         plan: SubscriptionPlan.ENTERPRISE,
@@ -53,6 +66,9 @@ export function PricingPlansSection() {
           "SSO & Custom Security",
         ],
         popular: false,
+        isCurrentlyActive:
+          currentCompanySubscriptionPlan === SubscriptionPlan.ENTERPRISE &&
+          currentCompanySubscriptionDuration === selectedDuration,
       },
     ],
     [isMonthly],

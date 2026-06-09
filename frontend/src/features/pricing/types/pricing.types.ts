@@ -6,7 +6,8 @@ export interface PricingPlan {
   description: string,
   price: number,
   features: string[],
-  popular: boolean
+  popular: boolean,
+  isCurrentlyActive: boolean,
 };
 
 export interface SubscriptionPayload {

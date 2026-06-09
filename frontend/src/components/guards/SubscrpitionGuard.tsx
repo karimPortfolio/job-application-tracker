@@ -9,14 +9,23 @@ import { ReactNode } from "react";
 export function SubscriptionGuard({
   children,
   fallback,
+  redirectTo,
 }: {
   children: ReactNode;
   fallback?: ReactNode | (() => ReactNode);
+  redirectTo?: string;
 }) {
   const { user } = useAuthStore();
 
-  const renderFallback = () =>
+  const renderFallback = () => {
+    if (redirectTo) {
+      console.log("Redirecting to:", redirectTo);
+      window.location.href = redirectTo;
+      return null;
+    }
+
     typeof fallback === "function" ? fallback() : fallback ?? null;
+  };
 
   if (!user || !user.company) {
     return renderFallback();

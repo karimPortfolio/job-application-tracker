@@ -1,7 +1,7 @@
 import { useApiError } from "@/hooks/useApiError";
 import { useState } from "react";
 import { BillingDetails } from "../types/settings.types";
-import { getBillingDetails } from "../services/settings.service";
+import { cancelBilling, getBillingDetails } from "../services/settings.service";
 
 export function useBillingActions() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,10 +22,24 @@ export function useBillingActions() {
     }
   }
 
+  async function cancelCompanySubscription() {
+    setLoading(true);
+    try {
+      const response = await cancelBilling();
+      return response;
+    }  catch (err) {
+      handleError(err);
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     billingDetails,
     fetchCompanyBillingDetails,
+    cancelCompanySubscription,
 
     apiError: error,
     clearApiError: clearError,

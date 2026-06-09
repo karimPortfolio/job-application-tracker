@@ -12,6 +12,7 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { SubscriptionStatus } from "@/features/pricing/enums/pricing.enums";
 import { BillingDetails } from "../../types/settings.types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBillingActions } from "../../hooks/useBillingActions";
 
 export function CurrentPlanCard({
   subscription,
@@ -21,6 +22,16 @@ export function CurrentPlanCard({
   loading: boolean;
 }) {
   if (loading) return <LoadingPlaceholder />;
+
+  const { cancelCompanySubscription, fetchCompanyBillingDetails, loading: cancelling } =
+    useBillingActions();
+
+  const handleCancelling = async () => {
+    Promise.all([
+      await cancelCompanySubscription(),
+      await fetchCompanyBillingDetails()
+    ]);
+  }
 
   const subscriptionPrice = useMemo(() => {
     if (subscription.plan?.price) {
@@ -75,7 +86,13 @@ export function CurrentPlanCard({
         </div>
       </CardContent>
       <CardFooter>
-        <LoadingButton size="sm">Cancel Subscription</LoadingButton>
+        <LoadingButton
+          size="sm"
+          isLoading={cancelling}
+          onClick={handleCancelling}
+        >
+          Cancel Subscription
+        </LoadingButton>
       </CardFooter>
     </Card>
   );

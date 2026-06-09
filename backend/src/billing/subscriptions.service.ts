@@ -34,7 +34,7 @@ export class SubscriptionsService {
       companyId,
     )) as CompanyDocument;
 
-    const successUrl = `${process.env.FRONTEND_URL}/settings/company/billing?success=true`;
+    const successUrl = `${process.env.FRONTEND_URL}/dashboard/settings/company/billing?success=true`;
 
     if (plan === SubscriptionPlan.FREE) {
       await this.companyModel.findByIdAndUpdate(company._id, {
