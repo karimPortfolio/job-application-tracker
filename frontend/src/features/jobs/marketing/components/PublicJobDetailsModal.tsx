@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { useJobActions } from "../../hooks/useJobsActions";
 
 interface PublicJobDetailsModalProps {
   id: string;
@@ -51,7 +54,19 @@ export function PublicJobDetailsModal({
 }: PublicJobDetailsModalProps) {
   const [job, setJob] = useState<Job | null>(null);
   const { findJob, loading, apiError, clearApiError } = usePublicJobActions();
+  const { savePublicJob, loading: saving } = useJobActions();
   const safeDescription = useSafeHtmlRender(job?.description ?? "");
+  const { isAuthenticated } = useAuth();
+
+  const bookmarkIcon = useMemo(() => {
+    if (!job) return;
+
+    if (job.saved) {
+      return <Bookmark className="size-5.5" fill="#2550ad" stroke="#2550ad" />;
+    }
+
+    return <Bookmark className="size-5.5" />;
+  }, [job?.saved]);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -81,23 +96,23 @@ export function PublicJobDetailsModal({
       loading={false}
       className="w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-5xl max-h-[88vh] overflow-y-auto"
     >
-      {loading ? (
+      {loading && (
         <div className="space-y-4 p-1">
           <Skeleton className="h-6 w-2/3" />
           <Skeleton className="h-4 w-1/3" />
           <Skeleton className="h-48 w-full" />
         </div>
-      ) : null}
+      )}
 
-      {!loading && apiError ? (
+      {!loading && apiError && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>{apiError.title}</AlertTitle>
           <AlertDescription>{apiError.message}</AlertDescription>
         </Alert>
-      ) : null}
+      )}
 
-      {!loading && !apiError && !job ? (
+      {!loading && !apiError && !job && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Job not found</AlertTitle>
@@ -105,9 +120,9 @@ export function PublicJobDetailsModal({
             The selected job no longer exists or could not be loaded.
           </AlertDescription>
         </Alert>
-      ) : null}
+      )}
 
-      {job ? (
+      {job && (
         <Card className="border-0 bg-transparent shadow-none">
           <CardContent className="space-y-6 px-0">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -171,18 +186,39 @@ export function PublicJobDetailsModal({
                   value={formatSalaryRange(job.salaryMin, job.salaryMax)}
                 />
 
-                <Button
-                  type="button"
-                  onClick={handleCreateApplicationOpen}
-                  className="w-full col-span-2 lg:col-span-3"
-                >
-                  Apply now
-                </Button>
+                <div className="flex items-center gap-2">
+                  {isAuthenticated && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <LoadingButton
+                          variant="ghost"
+                          isLoading={saving}
+                          onClick={() => savePublicJob(job.id)}
+                          className="shadow-none"
+                        >
+                          {!loading && bookmarkIcon}
+                        </LoadingButton>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {job.saved && <p>Job already saved</p>}
+                        {!job.saved && <p>Save job</p>}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+
+                  <Button
+                    type="button"
+                    onClick={handleCreateApplicationOpen}
+                    className="flex-1"
+                  >
+                    Apply now
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
-      ) : null}
+      )}
     </ViewDialog>
   );
 }

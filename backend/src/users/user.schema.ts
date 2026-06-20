@@ -59,6 +59,9 @@ export class User {
   @Prop({ type: Types.ObjectId, ref: 'Company', default: null })
   company: Company | Types.ObjectId | null;
 
+  @Prop({ type: String, enum: ['user', 'recruiter', 'admin'], default: 'user' })
+  role: 'user' | 'recruiter' | 'admin';
+
   @Prop({ type: Date, default: null })
   emailVerifiedAt: Date | null;
 

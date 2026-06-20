@@ -20,8 +20,9 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 @Controller('departments')
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}

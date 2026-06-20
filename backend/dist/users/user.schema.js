@@ -49,6 +49,7 @@ let User = class User {
     provider;
     googleId;
     company;
+    role;
     emailVerifiedAt;
     preferences;
     createdAt;
@@ -82,6 +83,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Company', default: null }),
     __metadata("design:type", Object)
 ], User.prototype, "company", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, enum: ['user', 'recruiter', 'admin'], default: 'user' }),
+    __metadata("design:type", String)
+], User.prototype, "role", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Date, default: null }),
     __metadata("design:type", Object)

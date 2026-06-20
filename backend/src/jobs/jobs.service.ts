@@ -23,12 +23,16 @@ import { GenerateJobDto } from './dto/generate-job.dto';
 import { buildJobDescriptionPrompt } from 'src/ai/prompts/job-description.prompt';
 import { AIService } from 'src/ai/ai.service';
 import { JobStatus } from './types/jobs.types';
+import { SavedJobs, SavedJobsDocument } from './saved-jobs-schema';
+import { Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class JobsService {
   constructor(
     @InjectModel(Job.name)
     private readonly jobModel: PaginateModel<JobDocument>,
+    @InjectModel(SavedJobs.name)
+    private readonly savedJobsModel: PaginateModel<SavedJobsDocument>,
     @InjectModel('Company')
     private readonly companyModel: Model<CompanyDocument>,
     @InjectModel('Department')
@@ -38,7 +42,7 @@ export class JobsService {
     private readonly csvExporter: JobsCsvExporter,
     private readonly xlsxExporter: JobsXlsxExporter,
     private readonly aiService: AIService,
-    @Inject('CACHE_MANAGER') private cache: any,
+    @Inject('CACHE_MANAGER') private cache: Cache,
   ) {}
 
   private readonly logger = new Logger(JobsService.name);
@@ -47,7 +51,7 @@ export class JobsService {
     const filter = buildJobFilter(query);
     const sort = buildJobSort(query);
     filter.status = JobStatus.PUBLISHED;
-    
+
     return this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,
@@ -125,25 +129,109 @@ export class JobsService {
     return job;
   }
 
-  async getPublicJobById(jobId: string) {
+  async getPublicJobById(jobId: string, user: { sub: string } | null) {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (cachedJob) return cachedJob;
 
-    const job = await this.jobModel.findOne({
-      _id: jobId,
-      status: 'published',
+    const selectedJob = await this.jobModel
+      .findOne({
+        _id: jobId,
+        status: 'published',
+      })
+      .select('-user -__v')
+      .populate([
+        { path: 'department', select: 'title' },
+        { path: 'company', select: 'name' },
+      ])
+      .lean({ virtuals: true });
+
+    if (!selectedJob)
+      throw new BadRequestException(
+        'Selected job not found or not available. It may have been removed or is not published.',
+      );
+
+    if (!user) {
+      await this.cache.set(this.getCacheKey(jobId), selectedJob, 60 * 1000);
+      return selectedJob;
+    }
+
+    const userId = await this.getUserorThrow(user.sub);
+    const isSaved = await this.savedJobsModel.exists({
+      job: jobId,
+      user: userId,
     });
 
-    if (!job) throw new BadRequestException('Job not found');
-
-    await job.populate([
-      { path: 'department', select: 'title' },
-      { path: 'company', select: 'name' },
-    ]);
+    const job = {
+      ...selectedJob,
+      saved: !!isSaved,
+    };
 
     await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
-
     return job;
+  }
+
+  async saveJob(jobId: string, user: { sub: string }) {
+    const job = await this.jobModel
+      .findOne({
+        _id: jobId,
+        status: 'published',
+      })
+      .select('_id')
+      .lean();
+
+    if (!job)
+      throw new BadRequestException(
+        'Selected job not found or not available. It may have been removed or is not published.',
+      );
+
+    const userId = await this.getUserorThrow(user.sub);
+
+    try {
+      const result = await this.savedJobsModel.findOneAndUpdate(
+        { job: job._id.toString(), user: userId },
+        { $setOnInsert: { job: job._id.toString(), user: userId } },
+        {
+          upsert: true,
+          new: true,
+          rawResult: true,
+          includeResultMetadata: true,
+        },
+      );
+
+      if (!result.lastErrorObject?.upserted) {
+        throw new BadRequestException(
+          'This job is already saved to your list.',
+        );
+      }
+    } catch (error: any) {
+      if (error.code === 11000) {
+        throw new BadRequestException(
+          'This job is already saved to your list.',
+        );
+      }
+      throw error;
+    }
+
+    await this.cache.del(this.getCacheKey(jobId));
+
+    return { message: 'Job saved with success.' };
+  }
+
+  async unsaveJob(jobId: string, user: { sub: string }) {
+    const userId = await this.getUserorThrow(user.sub);
+
+    const deletedDoc = await this.savedJobsModel.findOneAndDelete({
+      job: jobId,
+      user: userId,
+    });
+
+    if (!deletedDoc) {
+      throw new BadRequestException('This job is not saved in your list.');
+    }
+
+    await this.cache.del(this.getCacheKey(jobId));
+
+    return { message: 'Job removed from saved list successfully.' };
   }
 
   async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {
@@ -284,10 +372,6 @@ export class JobsService {
   private async getCachedJob(jobId: string, companyId: string) {
     const cachedJob = await this.cache.get(this.getCacheKey(jobId));
     if (!cachedJob) return null;
-
-    if (cachedJob.company?._id?.toString() !== companyId.toString()) {
-      throw new ForbiddenException('Access to this resource is forbidden');
-    }
 
     return cachedJob;
   }

@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const jobs_service_1 = require("./jobs.service");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const job_query_dto_1 = require("./dto/job-query.dto");
+const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
+const OptionalAuthGuard_1 = require("../common/guards/OptionalAuthGuard");
 let PublicJobsController = class PublicJobsController {
     jobsService;
     constructor(jobsService) {
@@ -25,8 +27,8 @@ let PublicJobsController = class PublicJobsController {
     findAll(query) {
         return this.jobsService.findAll(query);
     }
-    findOne(id) {
-        return this.jobsService.getPublicJobById(id);
+    findOne(id, user) {
+        return this.jobsService.getPublicJobById(id, user);
     }
 };
 exports.PublicJobsController = PublicJobsController;
@@ -42,11 +44,13 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], PublicJobsController.prototype, "findOne", null);
 exports.PublicJobsController = PublicJobsController = __decorate([
+    (0, common_1.UseGuards)(OptionalAuthGuard_1.OptionalAuthGuard),
     (0, common_1.Controller)('public-jobs'),
     __metadata("design:paramtypes", [jobs_service_1.JobsService])
 ], PublicJobsController);

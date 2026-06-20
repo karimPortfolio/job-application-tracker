@@ -8,6 +8,7 @@ export interface Job {
   employmentType: 'full-time' | 'part-time' | 'contract' | 'internship';
   experienceLevel: 'junior' | 'mid' | 'senior' | 'lead';
   isRemote?: boolean;
+  saved?: boolean;
   status: 'draft' | 'published' | 'closed' | 'archived';
   salaryMin?: number;
   salaryMax?: number;

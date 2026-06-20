@@ -11,8 +11,11 @@ import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { GenerateJobDto } from './dto/generate-job.dto';
 import { AIService } from 'src/ai/ai.service';
+import { SavedJobsDocument } from './saved-jobs-schema';
+import { Cache } from '@nestjs/cache-manager';
 export declare class JobsService {
     private readonly jobModel;
+    private readonly savedJobsModel;
     private readonly companyModel;
     private readonly departmentModel;
     private readonly userModel;
@@ -20,7 +23,7 @@ export declare class JobsService {
     private readonly xlsxExporter;
     private readonly aiService;
     private cache;
-    constructor(jobModel: PaginateModel<JobDocument>, companyModel: Model<CompanyDocument>, departmentModel: Model<DepartmentDocument>, userModel: Model<UserDocument>, csvExporter: JobsCsvExporter, xlsxExporter: JobsXlsxExporter, aiService: AIService, cache: any);
+    constructor(jobModel: PaginateModel<JobDocument>, savedJobsModel: PaginateModel<SavedJobsDocument>, companyModel: Model<CompanyDocument>, departmentModel: Model<DepartmentDocument>, userModel: Model<UserDocument>, csvExporter: JobsCsvExporter, xlsxExporter: JobsXlsxExporter, aiService: AIService, cache: Cache);
     private readonly logger;
     findAll(query: JobQueryDto): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
         _id: import("mongoose").Types.ObjectId;
@@ -113,8 +116,20 @@ export declare class JobsService {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
-    getJobById(jobId: string, companyId: string): Promise<any>;
-    getPublicJobById(jobId: string): Promise<any>;
+    getJobById(jobId: string, companyId: string): Promise<{}>;
+    getPublicJobById(jobId: string, user: {
+        sub: string;
+    } | null): Promise<{}>;
+    saveJob(jobId: string, user: {
+        sub: string;
+    }): Promise<{
+        message: string;
+    }>;
+    unsaveJob(jobId: string, user: {
+        sub: string;
+    }): Promise<{
+        message: string;
+    }>;
     updateJob(jobId: string, companyId: string, dto: UpdateJobDto): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -179,7 +194,7 @@ export declare class JobsService {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>) | null>;
-    getCompanyDepartments(companyId: string): Promise<any>;
+    getCompanyDepartments(companyId: string): Promise<{}>;
     getGeneratedJobDescription(dto: GenerateJobDto): Promise<{
         context: string;
     }>;

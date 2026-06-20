@@ -7,8 +7,9 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import type { JwtPayload } from '../auth/types/jwt-payload.type';
 import { EmailVerifiedGuard } from '../auth/email-verified.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, RecruiterRoleGuard)
 @Controller({
   path: 'company',
   version: '1',

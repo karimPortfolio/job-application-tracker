@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from 'zod';
+import { z } from "zod";
 import { useAuth } from "../hooks/useAuth";
 import { createRegisterSchema } from "../schemas/register.schema";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -15,12 +15,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
-import { LoadingButton } from '@/components/ui/loading-button'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircleIcon } from 'lucide-react'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
+import { UserRole } from "../types";
 
 type RegisterFormValues = z.infer<ReturnType<typeof createRegisterSchema>>;
 
@@ -28,26 +29,28 @@ export default function RegisterForm() {
   const router = useRouter();
   const { register, apiError, clearApiError } = useAuth();
 
-  const schema = useMemo(() => createRegisterSchema(), [])
+  const schema = useMemo(() => createRegisterSchema(), []);
 
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(schema),
+    // resolver: zodResolver(schema),
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
       password: "",
       password_confirmation: "",
+      role: false,
       accepted_terms: false,
     },
-  })
+  });
 
-  const passwordValue = form.watch('password') ?? ''
-  const { debouncedValue: debouncedPassword } = useDebounce(passwordValue, 250)
+  const passwordValue = form.watch("password") ?? "";
+  const { debouncedValue: debouncedPassword } = useDebounce(passwordValue, 250);
 
   const onSubmit: SubmitHandler<RegisterFormValues> = async (values) => {
     clearApiError();
     try {
+      values.role = values.role ? UserRole.RECRUITER : UserRole.USER;
       await register(values);
       router.push("/dashboard");
     } catch {
@@ -57,30 +60,58 @@ export default function RegisterForm() {
 
   const strength = useMemo(() => {
     if (!debouncedPassword) {
-      return { label: 'Weak', percent: 0, barClass: 'bg-gray-200', textClass: 'text-gray-500' }
+      return {
+        label: "Weak",
+        percent: 0,
+        barClass: "bg-gray-200",
+        textClass: "text-gray-500",
+      };
     }
 
-    const checks = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/]
-    const score = checks.reduce((acc, regex) => acc + (regex.test(debouncedPassword) ? 1 : 0), 0) + (debouncedPassword.length >= 12 ? 1 : 0)
+    const checks = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/];
+    const score =
+      checks.reduce(
+        (acc, regex) => acc + (regex.test(debouncedPassword) ? 1 : 0),
+        0,
+      ) + (debouncedPassword.length >= 12 ? 1 : 0);
 
-    if (score >= 4) return { label: 'Strong', percent: 100, barClass: 'bg-green-500', textClass: 'text-green-700' }
-    if (score >= 2) return { label: 'Medium', percent: 60, barClass: 'bg-yellow-400', textClass: 'text-yellow-700' }
-    return { label: 'Weak', percent: 30, barClass: 'bg-red-500', textClass: 'text-red-700' }
-  }, [debouncedPassword])
+    if (score >= 4)
+      return {
+        label: "Strong",
+        percent: 100,
+        barClass: "bg-green-500",
+        textClass: "text-green-700",
+      };
+    if (score >= 2)
+      return {
+        label: "Medium",
+        percent: 60,
+        barClass: "bg-yellow-400",
+        textClass: "text-yellow-700",
+      };
+    return {
+      label: "Weak",
+      percent: 30,
+      barClass: "bg-red-500",
+      textClass: "text-red-700",
+    };
+  }, [debouncedPassword]);
 
   useEffect(() => {
     if (apiError?.validationErrors) {
       Object.entries(apiError.validationErrors).forEach(([field, messages]) => {
-        const message = Array.isArray(messages) ? messages[0] : String(messages)
+        const message = Array.isArray(messages)
+          ? messages[0]
+          : String(messages);
         form.setError(field as keyof RegisterFormValues, {
-          type: 'server',
+          type: "server",
           message,
-        })
-      })
+        });
+      });
     } else {
-      form.clearErrors()
+      form.clearErrors();
     }
-  }, [apiError?.validationErrors, form])
+  }, [apiError?.validationErrors, form]);
 
   return (
     <Form {...form}>
@@ -170,6 +201,29 @@ export default function RegisterForm() {
               <FormControl>
                 <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem className="space-y-0">
+              <div className="flex items-center space-x-2 mt-4">
+                <FormControl>
+                  <Checkbox
+                    ref={field.ref}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="text-sm font-medium leading-none">
+                  I am registering as a Recruiter
+                  <small className="dark:text-gray-600 text-gray-500">(Leave unchecked if you are a Job Seeker)</small>
+                </FormLabel>
+              </div>
               <FormMessage />
             </FormItem>
           )}

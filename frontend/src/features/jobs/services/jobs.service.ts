@@ -44,3 +44,7 @@ export const getDepartments = () => {
 export const changeStatus = (id: string, status: string) => {
   return api.patch(JOBS_ROUTES.changeStatus(id), { status });
 }
+
+export const saveJob = (id: string) => {
+  return api.post(JOBS_ROUTES.saveJob(id));
+}

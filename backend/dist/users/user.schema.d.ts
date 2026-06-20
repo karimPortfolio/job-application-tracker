@@ -17,6 +17,7 @@ export declare class User {
     provider: 'local' | 'google';
     googleId?: string | null;
     company: Company | Types.ObjectId | null;
+    role: 'user' | 'recruiter' | 'admin';
     emailVerifiedAt: Date | null;
     preferences: UserPreferences;
     createdAt: Date;
@@ -95,6 +96,15 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         id: string;
     }> | undefined;
     company?: import("mongoose").SchemaDefinitionProperty<Company | Types.ObjectId | null, User, import("mongoose").Document<unknown, {}, User, {
+        id: string;
+    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<User & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }> | undefined;
+    role?: import("mongoose").SchemaDefinitionProperty<"user" | "recruiter" | "admin", User, import("mongoose").Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<User & {
         _id: Types.ObjectId;

@@ -25,8 +25,11 @@ const jobs_xlsx_exporter_1 = require("./exporters/jobs-xlsx.exporter");
 const job_description_prompt_1 = require("../ai/prompts/job-description.prompt");
 const ai_service_1 = require("../ai/ai.service");
 const jobs_types_1 = require("./types/jobs.types");
+const saved_jobs_schema_1 = require("./saved-jobs-schema");
+const cache_manager_1 = require("@nestjs/cache-manager");
 let JobsService = JobsService_1 = class JobsService {
     jobModel;
+    savedJobsModel;
     companyModel;
     departmentModel;
     userModel;
@@ -34,8 +37,9 @@ let JobsService = JobsService_1 = class JobsService {
     xlsxExporter;
     aiService;
     cache;
-    constructor(jobModel, companyModel, departmentModel, userModel, csvExporter, xlsxExporter, aiService, cache) {
+    constructor(jobModel, savedJobsModel, companyModel, departmentModel, userModel, csvExporter, xlsxExporter, aiService, cache) {
         this.jobModel = jobModel;
+        this.savedJobsModel = savedJobsModel;
         this.companyModel = companyModel;
         this.departmentModel = departmentModel;
         this.userModel = userModel;
@@ -116,22 +120,81 @@ let JobsService = JobsService_1 = class JobsService {
         await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
         return job;
     }
-    async getPublicJobById(jobId) {
+    async getPublicJobById(jobId, user) {
         const cachedJob = await this.cache.get(this.getCacheKey(jobId));
         if (cachedJob)
             return cachedJob;
-        const job = await this.jobModel.findOne({
+        const selectedJob = await this.jobModel
+            .findOne({
             _id: jobId,
             status: 'published',
-        });
-        if (!job)
-            throw new common_1.BadRequestException('Job not found');
-        await job.populate([
+        })
+            .select('-user -__v')
+            .populate([
             { path: 'department', select: 'title' },
             { path: 'company', select: 'name' },
-        ]);
+        ])
+            .lean({ virtuals: true });
+        if (!selectedJob)
+            throw new common_1.BadRequestException('Selected job not found or not available. It may have been removed or is not published.');
+        if (!user) {
+            await this.cache.set(this.getCacheKey(jobId), selectedJob, 60 * 1000);
+            return selectedJob;
+        }
+        const userId = await this.getUserorThrow(user.sub);
+        const isSaved = await this.savedJobsModel.exists({
+            job: jobId,
+            user: userId,
+        });
+        const job = {
+            ...selectedJob,
+            saved: !!isSaved,
+        };
         await this.cache.set(this.getCacheKey(jobId), job, 60 * 1000);
         return job;
+    }
+    async saveJob(jobId, user) {
+        const job = await this.jobModel
+            .findOne({
+            _id: jobId,
+            status: 'published',
+        })
+            .select('_id')
+            .lean();
+        if (!job)
+            throw new common_1.BadRequestException('Selected job not found or not available. It may have been removed or is not published.');
+        const userId = await this.getUserorThrow(user.sub);
+        try {
+            const result = await this.savedJobsModel.findOneAndUpdate({ job: job._id.toString(), user: userId }, { $setOnInsert: { job: job._id.toString(), user: userId } }, {
+                upsert: true,
+                new: true,
+                rawResult: true,
+                includeResultMetadata: true,
+            });
+            if (!result.lastErrorObject?.upserted) {
+                throw new common_1.BadRequestException('This job is already saved to your list.');
+            }
+        }
+        catch (error) {
+            if (error.code === 11000) {
+                throw new common_1.BadRequestException('This job is already saved to your list.');
+            }
+            throw error;
+        }
+        await this.cache.del(this.getCacheKey(jobId));
+        return { message: 'Job saved with success.' };
+    }
+    async unsaveJob(jobId, user) {
+        const userId = await this.getUserorThrow(user.sub);
+        const deletedDoc = await this.savedJobsModel.findOneAndDelete({
+            job: jobId,
+            user: userId,
+        });
+        if (!deletedDoc) {
+            throw new common_1.BadRequestException('This job is not saved in your list.');
+        }
+        await this.cache.del(this.getCacheKey(jobId));
+        return { message: 'Job removed from saved list successfully.' };
     }
     async updateJob(jobId, companyId, dto) {
         const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
@@ -225,9 +288,6 @@ let JobsService = JobsService_1 = class JobsService {
         const cachedJob = await this.cache.get(this.getCacheKey(jobId));
         if (!cachedJob)
             return null;
-        if (cachedJob.company?._id?.toString() !== companyId.toString()) {
-            throw new common_1.ForbiddenException('Access to this resource is forbidden');
-        }
         return cachedJob;
     }
     getCompanyDepartmentsCacheKey(companyId) {
@@ -259,15 +319,17 @@ exports.JobsService = JobsService;
 exports.JobsService = JobsService = JobsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(jobs_schema_1.Job.name)),
-    __param(1, (0, mongoose_1.InjectModel)('Company')),
-    __param(2, (0, mongoose_1.InjectModel)('Department')),
-    __param(3, (0, mongoose_1.InjectModel)('User')),
-    __param(7, (0, common_1.Inject)('CACHE_MANAGER')),
-    __metadata("design:paramtypes", [Object, mongoose_2.Model,
+    __param(1, (0, mongoose_1.InjectModel)(saved_jobs_schema_1.SavedJobs.name)),
+    __param(2, (0, mongoose_1.InjectModel)('Company')),
+    __param(3, (0, mongoose_1.InjectModel)('Department')),
+    __param(4, (0, mongoose_1.InjectModel)('User')),
+    __param(8, (0, common_1.Inject)('CACHE_MANAGER')),
+    __metadata("design:paramtypes", [Object, Object, mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         jobs_csv_exporter_1.JobsCsvExporter,
         jobs_xlsx_exporter_1.JobsXlsxExporter,
-        ai_service_1.AIService, Object])
+        ai_service_1.AIService,
+        cache_manager_1.Cache])
 ], JobsService);
 //# sourceMappingURL=jobs.service.js.map

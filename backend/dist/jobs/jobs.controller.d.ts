@@ -5,7 +5,6 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import type { Response } from 'express';
 import { JobResponseDto } from './dto/job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
-import { Department } from '../departments/departments.schema';
 import { GenerateJobDto } from './dto/generate-job.dto';
 export declare class JobsController {
     private readonly jobsService;
@@ -45,8 +44,8 @@ export declare class JobsController {
     generateJobDescription(dto: GenerateJobDto): Promise<{
         context: string;
     }>;
-    getCompanyDepartments(req: any): Promise<Department[]>;
-    getJobById(req: any, jobId: string): Promise<any>;
+    getCompanyDepartments(req: any): Promise<{}>;
+    getJobById(req: any, jobId: string): Promise<{}>;
     updateJob(req: any, jobId: string, dto: UpdateJobDto): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./jobs.schema").Job, {}, import("mongoose").DefaultSchemaOptions> & import("./jobs.schema").Job & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -72,6 +71,16 @@ export declare class JobsController {
         message: string;
     }>;
     updateJobStatus(req: any, jobId: string, dto: UpdateJobStatusDto): Promise<{
+        message: string;
+    }>;
+    saveJob(user: {
+        sub: string;
+    }, jobId: string): Promise<{
+        message: string;
+    }>;
+    unsaveJob(user: {
+        sub: string;
+    }, jobId: string): Promise<{
         message: string;
     }>;
 }

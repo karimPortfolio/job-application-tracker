@@ -55,6 +55,7 @@ let AuthService = class AuthService {
             email: dto.email,
             password: hash,
             provider: 'local',
+            role: dto.role || 'user'
         });
         return this.signToken(user);
     }

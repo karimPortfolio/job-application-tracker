@@ -8,9 +8,10 @@ import {
 } from './enums/subscriptions.enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
 @Controller('subscriptions')
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 export class SubscriptionsController {
   constructor(private readonly subscriptionsService: SubscriptionsService) {}
 

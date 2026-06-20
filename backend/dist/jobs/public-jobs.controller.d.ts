@@ -40,5 +40,7 @@ export declare class PublicJobsController {
     } & {
         [key: string]: any;
     })>>;
-    findOne(id: string): Promise<any>;
+    findOne(id: string, user: {
+        sub: string;
+    }): Promise<{}>;
 }

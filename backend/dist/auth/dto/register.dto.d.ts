@@ -3,4 +3,5 @@ export declare class RegisterDto {
     last_name: string;
     email: string;
     password: string;
+    role: 'user' | 'recruiter' | 'admin';
 }

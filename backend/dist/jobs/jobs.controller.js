@@ -28,6 +28,7 @@ const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCredits
 const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorator");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const email_verified_guard_1 = require("../auth/email-verified.guard");
+const RecruiterRoleGuard_1 = require("../common/guards/RecruiterRoleGuard");
 let JobsController = class JobsController {
     jobsService;
     constructor(jobsService) {
@@ -87,6 +88,13 @@ let JobsController = class JobsController {
         const companyId = req.user.company;
         await this.jobsService.updateJobStatus(jobId, companyId, dto);
         return { message: 'Job status updated successfully' };
+    }
+    async saveJob(user, jobId) {
+        return await this.jobsService.saveJob(jobId, user);
+    }
+    async unsaveJob(user, jobId) {
+        console.log(jobId);
+        return await this.jobsService.unsaveJob(jobId, user);
     }
 };
 exports.JobsController = JobsController;
@@ -181,9 +189,25 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, update_job_status_dto_1.UpdateJobStatusDto]),
     __metadata("design:returntype", Promise)
 ], JobsController.prototype, "updateJobStatus", null);
+__decorate([
+    (0, common_1.Post)(':id/save'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], JobsController.prototype, "saveJob", null);
+__decorate([
+    (0, common_1.Post)(':id/unsave'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], JobsController.prototype, "unsaveJob", null);
 exports.JobsController = JobsController = __decorate([
     (0, common_1.Controller)('jobs'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard, RecruiterRoleGuard_1.RecruiterRoleGuard),
     __metadata("design:paramtypes", [jobs_service_1.JobsService])
 ], JobsController);
 //# sourceMappingURL=jobs.controller.js.map

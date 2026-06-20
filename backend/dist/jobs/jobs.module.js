@@ -20,6 +20,9 @@ const jobs_csv_exporter_1 = require("./exporters/jobs-csv.exporter");
 const jobs_xlsx_exporter_1 = require("./exporters/jobs-xlsx.exporter");
 const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 const public_jobs_controller_1 = require("./public-jobs.controller");
+const saved_jobs_schema_1 = require("./saved-jobs-schema");
+const OptionalAuthGuard_1 = require("../common/guards/OptionalAuthGuard");
+const jwt_1 = require("@nestjs/jwt");
 let JobsModule = class JobsModule {
 };
 exports.JobsModule = JobsModule;
@@ -28,14 +31,19 @@ exports.JobsModule = JobsModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: jobs_schema_1.Job.name, schema: jobs_schema_1.JobSchema },
+                { name: saved_jobs_schema_1.SavedJobs.name, schema: saved_jobs_schema_1.SavedJobsSchema },
                 { name: company_schema_1.Company.name, schema: company_schema_1.CompanySchema },
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
                 { name: departments_schema_1.Department.name, schema: departments_schema_1.DepartmentSchema },
             ]),
+            jwt_1.JwtModule.register({
+                secret: process.env.JWT_SECRET,
+                signOptions: { expiresIn: '1d' },
+            }),
             users_module_1.UsersModule,
         ],
-        exports: [mongoose_1.MongooseModule],
-        providers: [jobs_service_1.JobsService, jobs_csv_exporter_1.JobsCsvExporter, jobs_xlsx_exporter_1.JobsXlsxExporter, CompanyGuard_1.CompanyGuard],
+        exports: [mongoose_1.MongooseModule, OptionalAuthGuard_1.OptionalAuthGuard],
+        providers: [jobs_service_1.JobsService, jobs_csv_exporter_1.JobsCsvExporter, jobs_xlsx_exporter_1.JobsXlsxExporter, CompanyGuard_1.CompanyGuard, OptionalAuthGuard_1.OptionalAuthGuard],
         controllers: [jobs_controller_1.JobsController, public_jobs_controller_1.PublicJobsController],
     })
 ], JobsModule);

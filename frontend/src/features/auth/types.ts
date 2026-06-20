@@ -29,11 +29,18 @@ export interface User {
       marketing?: boolean;
     };
   };
+  role?: string;
   permissions?: string[] | null;
   emailVerifiedAt?: string | null;
   createdAt: string;
   updatedAt?: string | null;
 }
+
+export enum UserRole {
+  RECRUITER='recruiter',
+  USER='user',
+  ADMIN='admin'
+};
 
 export interface AuthResponse {
   user: User;
@@ -45,6 +52,7 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   password_confirmation?: string;
+  role?: string;
   accepted_terms: boolean;
 }
 

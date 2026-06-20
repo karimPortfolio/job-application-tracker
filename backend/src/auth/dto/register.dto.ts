@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, isString, IsString, MaxLength, MinLength } from 'class-validator'
+import { IsEmail, IsEnum, IsNotEmpty, isString, IsString, MaxLength, MinLength } from 'class-validator'
 import { IsUserEmailUnique } from 'src/common/decorators/is-user-email-uniqe.validator'
 
 export class RegisterDto {
@@ -21,4 +21,8 @@ export class RegisterDto {
   @MinLength(8)
   @MaxLength(255)
   password: string
+
+
+  @IsEnum(['user', 'recruiter', 'admin'])
+  role: 'user' | 'recruiter' | 'admin';
 }

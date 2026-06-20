@@ -19,6 +19,7 @@ const CompanyGuard_1 = require("../common/guards/CompanyGuard");
 const dashboard_query_dto_1 = require("./dashboard-query.dto");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const email_verified_guard_1 = require("../auth/email-verified.guard");
+const RecruiterRoleGuard_1 = require("../common/guards/RecruiterRoleGuard");
 let DashboardController = class DashboardController {
     dashboardService;
     constructor(dashboardService) {
@@ -152,7 +153,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getTopJobsByApplications", null);
 exports.DashboardController = DashboardController = __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard, RecruiterRoleGuard_1.RecruiterRoleGuard),
     (0, common_1.Controller)('dashboard'),
     __param(0, (0, common_1.Inject)()),
     __metadata("design:paramtypes", [dasboard_service_1.DashboardService])

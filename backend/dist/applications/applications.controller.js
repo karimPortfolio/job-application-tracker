@@ -29,6 +29,7 @@ const SubscriptionCreditsGuard_1 = require("../common/guards/SubscriptionCredits
 const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorator");
 const email_verified_guard_1 = require("../auth/email-verified.guard");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const RecruiterRoleGuard_1 = require("../common/guards/RecruiterRoleGuard");
 let ApplicationsController = class ApplicationsController {
     applicationsService;
     constructor(applicationsService) {
@@ -214,7 +215,7 @@ __decorate([
 ], ApplicationsController.prototype, "runningSmartScreening", null);
 exports.ApplicationsController = ApplicationsController = __decorate([
     (0, common_1.Controller)('applications'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, email_verified_guard_1.EmailVerifiedGuard, CompanyGuard_1.CompanyGuard, RecruiterRoleGuard_1.RecruiterRoleGuard),
     __metadata("design:paramtypes", [applications_service_1.ApplicationsService])
 ], ApplicationsController);
 //# sourceMappingURL=applications.controller.js.map

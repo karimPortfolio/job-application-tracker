@@ -1,25 +1,25 @@
-import { Sidebar } from "@/components/common/Sidebar"
-import { DashboardNavbar } from "@/components/navbars/DahsboardNavbar"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-
+import { Sidebar } from "@/components/common/Sidebar";
+import { ActiveSubscriptionGuard } from "@/components/guards/ActiveSubscriptionGuard";
+import { DashboardNavbar } from "@/components/navbars/DahsboardNavbar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full min-w-0">
-        <Sidebar />
+    <ActiveSubscriptionGuard redirectTo="/pricing">
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full min-w-0">
+          <Sidebar />
 
-        <div className="flex flex-col flex-1 min-w-0">
-          <DashboardNavbar />
-          <main className="flex-1 min-w-0 p-5 pt-0">
-            {children}
-          </main>
+          <div className="flex flex-col flex-1 min-w-0">
+            <DashboardNavbar />
+            <main className="flex-1 min-w-0 p-5 pt-0">{children}</main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
-  )
+      </SidebarProvider>
+    </ActiveSubscriptionGuard>
+  );
 }

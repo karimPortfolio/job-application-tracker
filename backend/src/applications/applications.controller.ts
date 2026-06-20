@@ -32,9 +32,10 @@ import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsG
 import { AIFeature } from 'src/common/decorators/ai-feature.decorator';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
 @Controller('applications')
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 

@@ -1,5 +1,6 @@
 // schemas/register.schema.ts
 import { z } from "zod";
+import { UserRole } from "../types";
 
 export const createRegisterSchema = () =>
   z
@@ -18,6 +19,8 @@ export const createRegisterSchema = () =>
 
       first_name: z.string().min(1, 'First name is required.'),
       last_name: z.string().min(1, 'Last name is required.'),
+      
+      role: z.any().optional(),
 
       accepted_terms: z.boolean().refine((val) => val === true, {
         message: 'You must accept the terms and conditions.',

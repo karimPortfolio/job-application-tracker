@@ -8,6 +8,7 @@ import {
   generateJobDescription,
   getDepartments,
   getJob,
+  saveJob,
   updateJob,
 } from "../services/jobs.service";
 import {
@@ -128,6 +129,19 @@ export function useJobActions(refetch?: () => Promise<void>) {
     }
   }
 
+  const savePublicJob = async (id: string) => {
+    setLoading(true);
+    try {
+      await saveJob(id);
+      if (refetch) await refetch();
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     findJob: findJob,
@@ -138,6 +152,7 @@ export function useJobActions(refetch?: () => Promise<void>) {
     refetchJobsDepartments,
     confirmDelete,
     generateDescription,
+    savePublicJob,
     apiError: error,
     clearApiError: clearError,
   };

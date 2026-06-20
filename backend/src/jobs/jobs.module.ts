@@ -14,19 +14,27 @@ import { JobsCsvExporter } from './exporters/jobs-csv.exporter';
 import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { PublicJobsController } from './public-jobs.controller';
+import { SavedJobs, SavedJobsSchema } from './saved-jobs-schema';
+import { OptionalAuthGuard } from 'src/common/guards/OptionalAuthGuard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Job.name, schema: JobSchema },
+      { name: SavedJobs.name, schema: SavedJobsSchema },
       { name: Company.name, schema: CompanySchema },
       { name: User.name, schema: UserSchema },
       { name: Department.name, schema: DepartmentSchema },
     ]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),
     UsersModule,
   ],
-  exports: [MongooseModule],
-  providers: [JobsService, JobsCsvExporter, JobsXlsxExporter, CompanyGuard],
+  exports: [MongooseModule, OptionalAuthGuard],
+  providers: [JobsService, JobsCsvExporter, JobsXlsxExporter, CompanyGuard, OptionalAuthGuard],
   controllers: [JobsController, PublicJobsController],
 })
 export class JobsModule {}

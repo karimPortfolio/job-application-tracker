@@ -1,8 +1,7 @@
 import { CompanyGuard } from "@/components/guards/CompanyGuard";
 import { ProtectedAuthGuard } from "@/components/guards/ProtectedAuthGuard";
-import { SubscriptionGuard } from "@/components/guards/SubscrpitionGuard";
+import { RecruiterRoleGuard } from "@/components/guards/RecruiterRoleGuard";
 import { VerifiedGuard } from "@/components/guards/VerifiedGuard";
-import { redirect } from "next/navigation";
 
 export default function ProtectedLayout({
   children,
@@ -12,11 +11,9 @@ export default function ProtectedLayout({
   return (
     <ProtectedAuthGuard>
       <VerifiedGuard>
-        <CompanyGuard>
-          <SubscriptionGuard redirectTo="/pricing">
-            {children}
-          </SubscriptionGuard>
-        </CompanyGuard>
+        <RecruiterRoleGuard>
+          <CompanyGuard>{children}</CompanyGuard>
+        </RecruiterRoleGuard>
       </VerifiedGuard>
     </ProtectedAuthGuard>
   );

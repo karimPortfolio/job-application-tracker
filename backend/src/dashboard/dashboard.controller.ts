@@ -5,8 +5,9 @@ import { StatsResponse } from './types/dashboard.types';
 import { DashboardQueryDto } from './dashboard-query.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 @Controller('dashboard')
 export class DashboardController {
   constructor(

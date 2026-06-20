@@ -10,8 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import type { Cache } from 'cache-manager';
-import fs from 'fs';
-import path from 'path';
 import { User, UserDocument } from '../users/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -49,6 +47,7 @@ export class AuthService {
       email: dto.email,
       password: hash,
       provider: 'local',
+      role: dto.role || 'user'
     });
 
     return this.signToken(user);

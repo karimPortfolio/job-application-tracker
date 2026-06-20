@@ -17,8 +17,9 @@ import { CompanyGuard } from 'src/common/guards/CompanyGuard';
 import { SubscriptionsService } from 'src/billing/subscriptions.service';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 import { SettingsService } from './settings.service';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 @Controller({
   path: 'settings',
   version: '1',

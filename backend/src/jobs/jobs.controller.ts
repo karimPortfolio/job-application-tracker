@@ -27,9 +27,10 @@ import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsG
 import { AIFeature } from '../common/decorators/ai-feature.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
+import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
 
 @Controller('jobs')
-@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard)
+@UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
@@ -89,7 +90,7 @@ export class JobsController {
   }
 
   @Get('departments')
-  async getCompanyDepartments(@Req() req: any): Promise<Department[]> {
+  async getCompanyDepartments(@Req() req: any) {
     const companyId = req.user.company;
     return this.jobsService.getCompanyDepartments(companyId);
   }
@@ -137,5 +138,22 @@ export class JobsController {
     const companyId = req.user.company;
     await this.jobsService.updateJobStatus(jobId, companyId, dto);
     return { message: 'Job status updated successfully' };
+  }
+
+  @Post(':id/save')
+  async saveJob(
+    @CurrentUser() user: { sub: string },
+    @Param('id') jobId: string,
+  ) {
+    return await this.jobsService.saveJob(jobId, user);
+  }
+
+  @Post(':id/unsave')
+  async unsaveJob(
+    @CurrentUser() user: { sub: string },
+    @Param('id') jobId: string,
+  ) {
+    console.log(jobId);
+    return await this.jobsService.unsaveJob(jobId, user);
   }
 }

@@ -9,8 +9,8 @@ import { useAuthStore } from "@/stores/auth.store";
 export function PricingPlansSection() {
   const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const { user } = useAuthStore();
-  const currentCompanySubscriptionPlan = user?.company.plan;
-  const currentCompanySubscriptionDuration = user?.company.duration;
+  const currentCompanySubscriptionPlan = user?.company?.plan;
+  const currentCompanySubscriptionDuration = user?.company?.duration;
   const selectedDuration = isMonthly
     ? SubscriptionDuration.MONTHLY
     : SubscriptionDuration.YEARLY;
