@@ -25,7 +25,9 @@ export declare class JobsService {
     private cache;
     constructor(jobModel: PaginateModel<JobDocument>, savedJobsModel: PaginateModel<SavedJobsDocument>, companyModel: Model<CompanyDocument>, departmentModel: Model<DepartmentDocument>, userModel: Model<UserDocument>, csvExporter: JobsCsvExporter, xlsxExporter: JobsXlsxExporter, aiService: AIService, cache: Cache);
     private readonly logger;
-    findAll(query: JobQueryDto): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
+    findPublicJobs(query: JobQueryDto, user: {
+        sub: string;
+    } | null): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -124,11 +126,13 @@ export declare class JobsService {
         sub: string;
     }): Promise<{
         message: string;
+        saved: boolean;
     }>;
     unsaveJob(jobId: string, user: {
         sub: string;
     }): Promise<{
         message: string;
+        unsaved: boolean;
     }>;
     updateJob(jobId: string, companyId: string, dto: UpdateJobDto): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
         _id: import("mongoose").Types.ObjectId;

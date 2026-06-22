@@ -48,3 +48,7 @@ export const changeStatus = (id: string, status: string) => {
 export const saveJob = (id: string) => {
   return api.post(JOBS_ROUTES.saveJob(id));
 }
+
+export const unsaveJob = (id: string) => {
+  return api.post(JOBS_ROUTES.unsaveJob(id));
+}

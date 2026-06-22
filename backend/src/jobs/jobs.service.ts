@@ -47,12 +47,12 @@ export class JobsService {
 
   private readonly logger = new Logger(JobsService.name);
 
-  async findAll(query: JobQueryDto) {
+  async findPublicJobs(query: JobQueryDto, user: { sub: string } | null) {
     const filter = buildJobFilter(query);
     const sort = buildJobSort(query);
     filter.status = JobStatus.PUBLISHED;
 
-    return this.jobModel.paginate(filter, {
+    const paginatedResult = await this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,
       sort,
@@ -64,6 +64,8 @@ export class JobsService {
       lean: true,
       leanWithVirtuals: true,
     } as any);
+
+    return paginatedResult;
   }
 
   async getCompanyJobs(companyId: string, query: JobQueryDto) {
@@ -71,14 +73,12 @@ export class JobsService {
     const filter = buildJobFilter(query, company);
     const sort = buildJobSort(query);
 
-    return this.jobModel.paginate(filter, {
+    return await this.jobModel.paginate(filter, {
       page: query.page || 1,
       limit: query.limit || 10,
       sort,
-      populate: [
-        { path: 'department', select: 'title' },
-        { path: 'user', select: 'name' },
-      ],
+      select: '-description -user',
+      populate: [{ path: 'department', select: 'title' }],
       lean: true,
       leanWithVirtuals: true,
     } as any);
@@ -214,7 +214,7 @@ export class JobsService {
 
     await this.cache.del(this.getCacheKey(jobId));
 
-    return { message: 'Job saved with success.' };
+    return { message: 'Job saved with success.', saved: true };
   }
 
   async unsaveJob(jobId: string, user: { sub: string }) {
@@ -231,7 +231,10 @@ export class JobsService {
 
     await this.cache.del(this.getCacheKey(jobId));
 
-    return { message: 'Job removed from saved list successfully.' };
+    return {
+      message: 'Job removed from saved list successfully.',
+      unsaved: true,
+    };
   }
 
   async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {

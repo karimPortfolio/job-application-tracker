@@ -3,7 +3,9 @@ import { JobQueryDto } from "./dto/job-query.dto";
 export declare class PublicJobsController {
     private readonly jobsService;
     constructor(jobsService: JobsService);
-    findAll(query: JobQueryDto): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, import("./jobs.schema").Job, {}, import("mongoose").DefaultSchemaOptions> & import("./jobs.schema").Job & {
+    findAll(query: JobQueryDto, user: {
+        sub: string;
+    } | null): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, import("./jobs.schema").Job, {}, import("mongoose").DefaultSchemaOptions> & import("./jobs.schema").Job & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -42,5 +44,5 @@ export declare class PublicJobsController {
     })>>;
     findOne(id: string, user: {
         sub: string;
-    }): Promise<{}>;
+    } | null): Promise<{}>;
 }

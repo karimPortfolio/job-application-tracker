@@ -24,8 +24,8 @@ let PublicJobsController = class PublicJobsController {
     constructor(jobsService) {
         this.jobsService = jobsService;
     }
-    findAll(query) {
-        return this.jobsService.findAll(query);
+    findAll(query, user) {
+        return this.jobsService.findPublicJobs(query, user);
     }
     findOne(id, user) {
         return this.jobsService.getPublicJobById(id, user);
@@ -36,8 +36,9 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [job_query_dto_1.JobQueryDto]),
+    __metadata("design:paramtypes", [job_query_dto_1.JobQueryDto, Object]),
     __metadata("design:returntype", void 0)
 ], PublicJobsController.prototype, "findAll", null);
 __decorate([

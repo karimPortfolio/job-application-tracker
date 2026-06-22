@@ -54,12 +54,12 @@ export function PublicJobDetailsModal({
 }: PublicJobDetailsModalProps) {
   const [job, setJob] = useState<Job | null>(null);
   const { findJob, loading, apiError, clearApiError } = usePublicJobActions();
-  const { savePublicJob, loading: saving } = useJobActions();
+  const { savePublicJob, unsavePublicJob, loading: saving } = useJobActions();
   const safeDescription = useSafeHtmlRender(job?.description ?? "");
   const { isAuthenticated } = useAuth();
 
   const bookmarkIcon = useMemo(() => {
-    if (!job) return;
+    if (!job || loading || saving) return null;
 
     if (job.saved) {
       return <Bookmark className="size-5.5" fill="#2550ad" stroke="#2550ad" />;
@@ -68,17 +68,34 @@ export function PublicJobDetailsModal({
     return <Bookmark className="size-5.5" />;
   }, [job?.saved]);
 
-  useEffect(() => {
-    const fetchJob = async () => {
-      if (!open || !id) return;
-      try {
-        const data = await findJob(id);
-        setJob(data);
-      } catch {
-        setJob(null);
-      }
-    };
+  const fetchJob = async () => {
+    if (!open || !id) return;
+    try {
+      const data = await findJob(id);
+      setJob(data);
+    } catch {
+      setJob(null);
+    }
+  };
 
+  const saveOrUnsaveJob = async (id: string) => {
+    try {
+      if (job?.saved) {
+        const result = await unsavePublicJob(id);
+        if (result && result.unsaved) {
+          fetchJob();
+        }
+        return;
+      }
+
+      const result = await savePublicJob(id);
+      if (result && result.saved) {
+        fetchJob();
+      }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
     fetchJob();
   }, [id, open]);
 
@@ -192,11 +209,12 @@ export function PublicJobDetailsModal({
                       <TooltipTrigger asChild>
                         <LoadingButton
                           variant="ghost"
-                          isLoading={saving}
-                          onClick={() => savePublicJob(job.id)}
+                          isLoading={saving || loading}
+                          onClick={() => saveOrUnsaveJob(job._id)}
                           className="shadow-none"
+                          showChildrenOnLoading={false}
                         >
-                          {!loading && bookmarkIcon}
+                          {bookmarkIcon}
                         </LoadingButton>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -209,7 +227,7 @@ export function PublicJobDetailsModal({
                   <Button
                     type="button"
                     onClick={handleCreateApplicationOpen}
-                    className="flex-1"
+                    className="flex-1 ms-auto"
                   >
                     Apply now
                   </Button>

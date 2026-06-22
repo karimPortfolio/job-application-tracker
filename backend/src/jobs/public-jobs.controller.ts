@@ -15,13 +15,13 @@ export class PublicJobsController {
 
     @Public()
     @Get()
-    findAll(@Query() query: JobQueryDto) {
-        return this.jobsService.findAll(query);
+    findAll(@Query() query: JobQueryDto, @CurrentUser() user: { sub: string } | null) {
+        return this.jobsService.findPublicJobs(query, user);
     }
 
     @Public()
     @Get(':id')
-    findOne(@Param('id') id: string, @CurrentUser() user: { sub: string }) {
+    findOne(@Param('id') id: string, @CurrentUser() user: { sub: string } | null) {
         return this.jobsService.getPublicJobById(id, user);
     }
 }

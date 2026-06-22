@@ -77,10 +77,12 @@ export declare class JobsController {
         sub: string;
     }, jobId: string): Promise<{
         message: string;
+        saved: boolean;
     }>;
     unsaveJob(user: {
         sub: string;
     }, jobId: string): Promise<{
         message: string;
+        unsaved: boolean;
     }>;
 }

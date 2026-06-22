@@ -9,6 +9,7 @@ import {
   getDepartments,
   getJob,
   saveJob,
+  unsaveJob,
   updateJob,
 } from "../services/jobs.service";
 import {
@@ -132,8 +133,21 @@ export function useJobActions(refetch?: () => Promise<void>) {
   const savePublicJob = async (id: string) => {
     setLoading(true);
     try {
-      await saveJob(id);
-      if (refetch) await refetch();
+      const response = await saveJob(id);
+      return response?.data;
+    } catch (err) {
+      handleError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const unsavePublicJob = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await unsaveJob(id);
+      return response?.data;
     } catch (err) {
       handleError(err);
       throw err;
@@ -153,6 +167,7 @@ export function useJobActions(refetch?: () => Promise<void>) {
     confirmDelete,
     generateDescription,
     savePublicJob,
+    unsavePublicJob,
     apiError: error,
     clearApiError: clearError,
   };

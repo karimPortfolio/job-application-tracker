@@ -49,11 +49,11 @@ let JobsService = JobsService_1 = class JobsService {
         this.cache = cache;
     }
     logger = new common_1.Logger(JobsService_1.name);
-    async findAll(query) {
+    async findPublicJobs(query, user) {
         const filter = (0, jobs_filters_1.buildJobFilter)(query);
         const sort = (0, jobs_sort_1.buildJobSort)(query);
         filter.status = jobs_types_1.JobStatus.PUBLISHED;
-        return this.jobModel.paginate(filter, {
+        const paginatedResult = await this.jobModel.paginate(filter, {
             page: query.page || 1,
             limit: query.limit || 10,
             sort,
@@ -65,19 +65,18 @@ let JobsService = JobsService_1 = class JobsService {
             lean: true,
             leanWithVirtuals: true,
         });
+        return paginatedResult;
     }
     async getCompanyJobs(companyId, query) {
         const company = await this.getCompanyOrThrow(companyId);
         const filter = (0, jobs_filters_1.buildJobFilter)(query, company);
         const sort = (0, jobs_sort_1.buildJobSort)(query);
-        return this.jobModel.paginate(filter, {
+        return await this.jobModel.paginate(filter, {
             page: query.page || 1,
             limit: query.limit || 10,
             sort,
-            populate: [
-                { path: 'department', select: 'title' },
-                { path: 'user', select: 'name' },
-            ],
+            select: '-description -user',
+            populate: [{ path: 'department', select: 'title' }],
             lean: true,
             leanWithVirtuals: true,
         });
@@ -182,7 +181,7 @@ let JobsService = JobsService_1 = class JobsService {
             throw error;
         }
         await this.cache.del(this.getCacheKey(jobId));
-        return { message: 'Job saved with success.' };
+        return { message: 'Job saved with success.', saved: true };
     }
     async unsaveJob(jobId, user) {
         const userId = await this.getUserorThrow(user.sub);
@@ -194,7 +193,10 @@ let JobsService = JobsService_1 = class JobsService {
             throw new common_1.BadRequestException('This job is not saved in your list.');
         }
         await this.cache.del(this.getCacheKey(jobId));
-        return { message: 'Job removed from saved list successfully.' };
+        return {
+            message: 'Job removed from saved list successfully.',
+            unsaved: true,
+        };
     }
     async updateJob(jobId, companyId, dto) {
         const job = await this.jobModel.findOne({ _id: jobId, company: companyId });

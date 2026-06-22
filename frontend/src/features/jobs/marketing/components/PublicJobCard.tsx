@@ -27,6 +27,7 @@ import { useJobActions } from "../../hooks/useJobsActions";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useMemo } from "react";
+import { useJobsList } from "../../hooks/useJobsList";
 
 interface PublicJobCardProps {
   job: Job;
@@ -45,16 +46,29 @@ const formatSalaryRange = (salaryMin?: number, salaryMax?: number) => {
 };
 
 export function PublicJobCard({ job, onViewDetails }: PublicJobCardProps) {
-  const { savePublicJob, loading } = useJobActions();
+  const { savePublicJob, unsavePublicJob, loading } = useJobActions();
+  const { refetch, loading: refetching } = useJobsList();
   const { isAuthenticated } = useAuth();
 
   const bookmarkIcon = useMemo(() => {
+    if (!job || loading || refetching) return null;
+
     if (job.saved) {
-      return <Bookmark className="size-5.5" fill="#2550ad" stroke="#2550ad" />
+      return <Bookmark className="size-5.5" fill="#2550ad" stroke="#2550ad" />;
     }
 
-    return <Bookmark className="size-5.5"  />
-  }, [job.saved]);
+    return <Bookmark className="size-5.5" />;
+  }, [job?.saved]);
+
+  const saveOrUnsaveJob = async (id: string) => {
+    if (job.saved) {
+      await unsavePublicJob(id);
+    } else {
+      await savePublicJob(id);
+    }
+
+    await refetch();
+  };
 
   return (
     <Card className="flex shadow-none h-full flex-col rounded-2xl border-slate-200/80 bg-white/90 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800/90 dark:bg-slate-900/70">
@@ -95,16 +109,14 @@ export function PublicJobCard({ job, onViewDetails }: PublicJobCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 pb-4">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-            {formatSalaryRange(job.salaryMin, job.salaryMax)}
-          </p>
-          <p className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-            <Clock3 className="size-3.5" />
-            Posted {job.createdAtDiff || job.createdAt}
-          </p>
-        </div>
+      <CardContent className="flex-1 flex items-center justify-between pb-4 space-y-1">
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+          {formatSalaryRange(job.salaryMin, job.salaryMax)}
+        </p>
+        <p className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+          <Clock3 className="size-3.5" />
+          Posted {job.createdAtDiff || job.createdAt}
+        </p>
       </CardContent>
 
       <CardFooter className="mt-auto flex items-center justify-between border-t border-slate-200/80 pt-4 dark:border-slate-800/80">
@@ -113,16 +125,16 @@ export function PublicJobCard({ job, onViewDetails }: PublicJobCardProps) {
             <TooltipTrigger asChild>
               <LoadingButton
                 variant="ghost"
-                isLoading={loading}
-                onClick={() => savePublicJob(job.id)}
+                isLoading={loading || refetching}
+                onClick={() => saveOrUnsaveJob(job.id)}
                 className="shadow-none"
               >
-                {!loading && bookmarkIcon}
+                {bookmarkIcon}
               </LoadingButton>
             </TooltipTrigger>
             <TooltipContent>
-              { job.saved && <p>Job already saved</p> }
-              { !job.saved && <p>Save job</p> }
+              {job.saved && <p>Job already saved</p>}
+              {!job.saved && <p>Save job</p>}
             </TooltipContent>
           </Tooltip>
         )}
