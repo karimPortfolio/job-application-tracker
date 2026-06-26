@@ -37,7 +37,7 @@ export class JobsController {
   @Get()
   async getCompanyJobs(@Req() req: any, @Query() query: JobQueryDto) {
     const companyId = req.user.company;
-    
+
     const result = await this.jobsService.getCompanyJobs(companyId, query);
     return {
       ...result,
@@ -84,7 +84,7 @@ export class JobsController {
 
   @Post('generate-description')
   @UseGuards(SubscriptionCreditsGuard)
-  @AIFeature({ credits: 1 }) 
+  @AIFeature({ credits: 1 })
   async generateJobDescription(@Body() dto: GenerateJobDto) {
     return this.jobsService.getGeneratedJobDescription(dto);
   }
@@ -93,6 +93,14 @@ export class JobsController {
   async getCompanyDepartments(@Req() req: any) {
     const companyId = req.user.company;
     return this.jobsService.getCompanyDepartments(companyId);
+  }
+
+  @Get('saved-jobs')
+  async findSavedJobs(
+    @CurrentUser() user: { sub: string },
+    @Query() query: JobQueryDto,
+  ) {
+    return await this.jobsService.findSavedJobs(query, user);
   }
 
   @Get(':id')
@@ -153,7 +161,6 @@ export class JobsController {
     @CurrentUser() user: { sub: string },
     @Param('id') jobId: string,
   ) {
-    console.log(jobId);
     return await this.jobsService.unsaveJob(jobId, user);
   }
 }

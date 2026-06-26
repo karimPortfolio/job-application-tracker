@@ -198,6 +198,32 @@ let JobsService = JobsService_1 = class JobsService {
             unsaved: true,
         };
     }
+    async findSavedJobs(query, user) {
+        const userId = await this.getUserorThrow(user.sub);
+        if (!userId)
+            throw new common_1.UnauthorizedException();
+        const filter = (0, jobs_filters_1.buildJobFilter)(query);
+        const sort = (0, jobs_sort_1.buildJobSort)(query);
+        filter.user = userId;
+        return await this.savedJobsModel.paginate(filter, {
+            page: query.page || 1,
+            limit: query.limit || 10,
+            sort,
+            select: '-user -description',
+            populate: [
+                {
+                    path: 'job',
+                    select: '-description -user -__v',
+                    populate: [
+                        { path: 'department', select: 'title' },
+                        { path: 'company', select: 'name' },
+                    ],
+                },
+            ],
+            lean: true,
+            leanWithVirtuals: true,
+        });
+    }
     async updateJob(jobId, companyId, dto) {
         const job = await this.jobModel.findOne({ _id: jobId, company: companyId });
         if (!job)

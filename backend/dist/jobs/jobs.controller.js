@@ -64,6 +64,9 @@ let JobsController = class JobsController {
         const companyId = req.user.company;
         return this.jobsService.getCompanyDepartments(companyId);
     }
+    async findSavedJobs(user, query) {
+        return await this.jobsService.findSavedJobs(query, user);
+    }
     async getJobById(req, jobId) {
         const companyId = req.user.company;
         return this.jobsService.getJobById(jobId, companyId);
@@ -93,7 +96,6 @@ let JobsController = class JobsController {
         return await this.jobsService.saveJob(jobId, user);
     }
     async unsaveJob(user, jobId) {
-        console.log(jobId);
         return await this.jobsService.unsaveJob(jobId, user);
     }
 };
@@ -141,6 +143,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], JobsController.prototype, "getCompanyDepartments", null);
+__decorate([
+    (0, common_1.Get)('saved-jobs'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, job_query_dto_1.JobQueryDto]),
+    __metadata("design:returntype", Promise)
+], JobsController.prototype, "findSavedJobs", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Req)()),

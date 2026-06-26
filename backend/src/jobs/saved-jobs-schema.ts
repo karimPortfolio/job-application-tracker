@@ -4,6 +4,7 @@ import { Job } from "../jobs/jobs.schema";
 import { User } from "../users/user.schema";
 import { formatDistanceToNow } from "date-fns";
 import leanVirtuals from 'mongoose-lean-virtuals';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 
 export type SavedJobsDocument = HydratedDocument<SavedJobs>;
@@ -39,3 +40,4 @@ SavedJobsSchema.index({ user: 1, job: 1 }, { unique: true });
 SavedJobsSchema.index({ user: 1 });
 SavedJobsSchema.set('toJSON', { virtuals: true });
 SavedJobsSchema.set('toObject', { virtuals: true });
+SavedJobsSchema.plugin(mongoosePaginate);

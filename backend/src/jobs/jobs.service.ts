@@ -5,6 +5,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Model, type PaginateModel } from 'mongoose';
 import { Job, JobDocument } from './jobs.schema';
@@ -235,6 +236,34 @@ export class JobsService {
       message: 'Job removed from saved list successfully.',
       unsaved: true,
     };
+  }
+
+  async findSavedJobs(query: JobQueryDto, user: { sub: string }) {
+    const userId = await this.getUserorThrow(user.sub);
+    if (!userId) throw new UnauthorizedException();
+
+    const filter = buildJobFilter(query);
+    const sort = buildJobSort(query);
+    filter.user = userId;
+
+    return await this.savedJobsModel.paginate(filter, {
+      page: query.page || 1,
+      limit: query.limit || 10,
+      sort,
+      select: '-user -description',
+      populate: [
+        {
+          path: 'job',
+          select: '-description -user -__v',
+          populate: [
+            { path: 'department', select: 'title' },
+            { path: 'company', select: 'name' },
+          ],
+        },
+      ],
+      lean: true,
+      leanWithVirtuals: true,
+    } as any);
   }
 
   async updateJob(jobId: string, companyId: string, dto: UpdateJobDto) {

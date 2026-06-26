@@ -11,7 +11,7 @@ import { JobsXlsxExporter } from './exporters/jobs-xlsx.exporter';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { GenerateJobDto } from './dto/generate-job.dto';
 import { AIService } from 'src/ai/ai.service';
-import { SavedJobsDocument } from './saved-jobs-schema';
+import { SavedJobs, SavedJobsDocument } from './saved-jobs-schema';
 import { Cache } from '@nestjs/cache-manager';
 export declare class JobsService {
     private readonly jobModel;
@@ -134,6 +134,45 @@ export declare class JobsService {
         message: string;
         unsaved: boolean;
     }>;
+    findSavedJobs(query: JobQueryDto, user: {
+        sub: string;
+    }): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }) | (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }, {}, import("mongoose").DefaultSchemaOptions> & import("mongoose").Document<unknown, {}, SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }>) | (import("mongoose").Document<unknown, {}, SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & {
+        id: string;
+    }) | (import("mongoose").Document<unknown, {}, SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & {
+        [key: string]: any;
+    })>>;
     updateJob(jobId: string, companyId: string, dto: UpdateJobDto): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Job, {}, import("mongoose").DefaultSchemaOptions> & Job & {
         _id: import("mongoose").Types.ObjectId;
     } & {

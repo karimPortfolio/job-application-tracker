@@ -45,6 +45,45 @@ export declare class JobsController {
         context: string;
     }>;
     getCompanyDepartments(req: any): Promise<{}>;
+    findSavedJobs(user: {
+        sub: string;
+    }, query: JobQueryDto): Promise<import("mongoose").PaginateResult<(import("mongoose").Document<unknown, {}, import("./saved-jobs-schema").SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & import("./saved-jobs-schema").SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }) | (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./saved-jobs-schema").SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & import("./saved-jobs-schema").SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }, {}, import("mongoose").DefaultSchemaOptions> & import("mongoose").Document<unknown, {}, import("./saved-jobs-schema").SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & import("./saved-jobs-schema").SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }>) | (import("mongoose").Document<unknown, {}, import("./saved-jobs-schema").SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & import("./saved-jobs-schema").SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & {
+        id: string;
+    }) | (import("mongoose").Document<unknown, {}, import("./saved-jobs-schema").SavedJobs, {}, import("mongoose").DefaultSchemaOptions> & import("./saved-jobs-schema").SavedJobs & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    } & {
+        [key: string]: any;
+    })>>;
     getJobById(req: any, jobId: string): Promise<{}>;
     updateJob(req: any, jobId: string, dto: UpdateJobDto): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./jobs.schema").Job, {}, import("mongoose").DefaultSchemaOptions> & import("./jobs.schema").Job & {
         _id: import("mongoose").Types.ObjectId;
