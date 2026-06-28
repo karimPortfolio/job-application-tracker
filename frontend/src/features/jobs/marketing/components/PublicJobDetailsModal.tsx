@@ -111,7 +111,7 @@ export function PublicJobDetailsModal({
       isOpen={open}
       onClose={handleClose}
       loading={false}
-      className="w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-5xl max-h-[88vh] overflow-y-auto"
+      className="max-w-full sm:max-w-md md:max-w-3xl lg:max-w-5xl max-h-[88vh] overflow-y-auto"
     >
       {loading && (
         <div className="space-y-4 p-1">
@@ -129,7 +129,7 @@ export function PublicJobDetailsModal({
         </Alert>
       )}
 
-      {!loading && !apiError && !job && (
+      {!loading && !job && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Job not found</AlertTitle>

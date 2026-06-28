@@ -20,7 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Dispatch, SetStateAction } from "react";
-import type { JobQuery, PaginatedResponse } from "@/features/jobs/types/jobs.types";
+import type {
+  JobQuery,
+  PaginatedResponse,
+} from "@/features/jobs/types/jobs.types";
 
 interface PublicJobsGridProps {
   jobs: Job[];
@@ -29,6 +32,7 @@ interface PublicJobsGridProps {
   meta: PaginatedResponse<Job> | null;
   query: JobQuery;
   setQuery: Dispatch<SetStateAction<JobQuery>>;
+  refetch: () => Promise<any>;
 }
 
 export function PublicJobsGrid({
@@ -38,6 +42,7 @@ export function PublicJobsGrid({
   meta,
   query,
   setQuery,
+  refetch
 }: PublicJobsGridProps) {
   const page = meta?.page ?? 1;
   const totalPages = meta?.totalPages ?? 1;
@@ -61,7 +66,7 @@ export function PublicJobsGrid({
 
   if (!jobs.length) {
     return (
-      <Card className="rounded-2xl border-dashed p-10 text-center">
+      <Card className="rounded-2xl border-dashed p-10 text-center dark:bg-slate-900">
         <p className="text-base font-medium">No jobs found</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Try changing your search or filters to discover more roles.
@@ -74,14 +79,20 @@ export function PublicJobsGrid({
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {jobs.map((job) => (
-          <PublicJobCard key={job.id || job._id} job={job} onViewDetails={onSelectJob} />
+          <PublicJobCard
+            key={job.id || job._id}
+            job={job}
+            onViewDetails={onSelectJob}
+            refetch={refetch}
+            refetching={loading}
+          />
         ))}
       </div>
 
       {meta ? (
         <div className="bg-white dark:bg-slate-900/70 flex flex-col gap-3 rounded-2xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
-            Showing page {meta.page} of {meta.totalPages} • Total {meta.totalDocs}
+            Showing page {meta.page} of {meta.totalPages}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 sm:justify-end">
@@ -90,7 +101,11 @@ export function PublicJobsGrid({
               <Select
                 value={String(query.limit ?? 9)}
                 onValueChange={(value) =>
-                  setQuery((prev) => ({ ...prev, page: 1, limit: Number(value) }))
+                  setQuery((prev) => ({
+                    ...prev,
+                    page: 1,
+                    limit: Number(value),
+                  }))
                 }
               >
                 <SelectTrigger className="h-9 w-24">
@@ -113,7 +128,10 @@ export function PublicJobsGrid({
                   onClick={(event) => {
                     event.preventDefault();
                     if (!canGoPrev) return;
-                    setQuery((prev) => ({ ...prev, page: Math.max(page - 1, 1) }));
+                    setQuery((prev) => ({
+                      ...prev,
+                      page: Math.max(page - 1, 1),
+                    }));
                   }}
                   aria-disabled={!canGoPrev}
                   className={cn(!canGoPrev && "pointer-events-none opacity-50")}

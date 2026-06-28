@@ -2,8 +2,7 @@
 
 export function HeroSection() {
   return (
-    <section className="relative md:pt-10 flex items-center justify-center h-135 px-4 overflow-hidden font-sans">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_60%)] pointer-events-none"></div>
+    <section className="relative pt-32 flex items-center justify-center px-4 overflow-hidden font-sans">
       <div className="max-w-6xl mx-auto text-center relative z-10">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-gray-900 dark:text-white mb-8">
           Simple <span className="text-primary ">Transparent Pricing.</span>

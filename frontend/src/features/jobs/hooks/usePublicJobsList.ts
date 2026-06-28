@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Job, JobQuery, PaginatedResponse } from '../types/jobs.types';
 import { getPublicJobs } from '../services/public-jobs.service';
-import { useApiError } from '@/hooks/useApiError';
 
 export function usePublicJobsList(initialQuery?: JobQuery) {
   const [data, setData] =

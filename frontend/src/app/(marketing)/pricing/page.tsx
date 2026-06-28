@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen font-sans space-y-24 mb-32">
+    <main className="min-h-screen font-sans pb-32">
       <HeroSection />
       <PricingPlansSection />
     </main>

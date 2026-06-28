@@ -27,11 +27,12 @@ import { useJobActions } from "../../hooks/useJobsActions";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useMemo } from "react";
-import { useJobsList } from "../../hooks/useJobsList";
 
 interface PublicJobCardProps {
   job: Job;
   onViewDetails: (job: Job) => void;
+  refetch: () => Promise<any>;
+  refetching: boolean;
 }
 
 const formatEmploymentType = (value: Job["employmentType"]) =>
@@ -45,9 +46,8 @@ const formatSalaryRange = (salaryMin?: number, salaryMax?: number) => {
   return `$${salaryMin.toLocaleString()} - $${salaryMax.toLocaleString()}`;
 };
 
-export function PublicJobCard({ job, onViewDetails }: PublicJobCardProps) {
+export function PublicJobCard({ job, onViewDetails, refetch, refetching }: PublicJobCardProps) {
   const { savePublicJob, unsavePublicJob, loading } = useJobActions();
-  const { refetch, loading: refetching } = useJobsList();
   const { isAuthenticated } = useAuth();
 
   const bookmarkIcon = useMemo(() => {

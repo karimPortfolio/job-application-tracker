@@ -8,10 +8,7 @@ import {
 import type { User } from "@/features/auth/types";
 import {
   ChevronDown,
-  CreditCardIcon,
   LogOutIcon,
-  SettingsIcon,
-  UserIcon,
 } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 import { AvatarDropdownItem } from "@/app/(protected)/onboarding/OnboardingClient";

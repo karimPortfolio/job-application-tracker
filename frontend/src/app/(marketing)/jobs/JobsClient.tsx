@@ -14,7 +14,7 @@ export function JobsClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
-  const { jobs, meta, loading, query, setQuery } = usePublicJobsList({
+  const { jobs, meta, loading, query, setQuery, refetch } = usePublicJobsList({
     limit: 9,
     sortBy: "createdAt",
     order: "desc",
@@ -63,7 +63,7 @@ export function JobsClient() {
   );
 
   const handleCreatePublicApplicationOpen = useCallback(() => {
-    console.log('clicked');
+    console.log("clicked");
     setCreatePublicApplicationOpen(true);
   }, []);
 
@@ -106,21 +106,21 @@ export function JobsClient() {
         onSuccess={onSuccessfulApplicationCreation}
       />
 
-      <div className="mx-auto pt-40 max-w-7xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl text-center font-semibold tracking-tight text-primary">
-            Find your next role
-          </h1>
-          <p className="mt-5 text-sm md:text-lg text-center text-slate-700 dark:text-slate-200 sm:text-base">
-            Browse open opportunities from trusted companies.
-          </p>
-          <p className="text-xs pt-16 font-medium uppercase tracking-wide text-muted-foreground">
-            {title}
-          </p>
-        </div>
+      <div className="mx-auto -mt-10 max-w-7xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
+        <section className="relative mt-32 mb-8 flex items-center justify-center px-4 overflow-hidden font-sans">
+          <div className="max-w-6xl mx-auto text-center relative z-10">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-gray-900 dark:text-white mb-4">
+              Find your <span className="text-primary ">next role.</span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 dark:text-[#8B92A5] max-w-2xl mx-auto leading-relaxed">
+              Browse open opportunities from trusted companies.
+            </p>
+          </div>
+        </section>
 
         <PublicJobsSearchBar
           query={query}
+          meta={meta}
           loading={loading}
           onSearchSubmit={(value) =>
             setQuery((prev) => ({
@@ -148,6 +148,7 @@ export function JobsClient() {
           meta={meta}
           query={query}
           setQuery={setQuery}
+          refetch={refetch}
         />
 
         <PublicJobDetailsModal
