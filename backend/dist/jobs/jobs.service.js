@@ -65,6 +65,17 @@ let JobsService = JobsService_1 = class JobsService {
             lean: true,
             leanWithVirtuals: true,
         });
+        if (!user || !user.sub)
+            return paginatedResult;
+        const savedJobs = await this.savedJobsModel
+            .find({ user: user.sub })
+            .select('job')
+            .lean();
+        const savedJobIdsSet = new Set(savedJobs.map((sj) => sj.job.toString()));
+        paginatedResult.docs = paginatedResult.docs.map((job) => ({
+            ...job,
+            saved: savedJobIdsSet.has(job._id.toString()),
+        }));
         return paginatedResult;
     }
     async getCompanyJobs(companyId, query) {

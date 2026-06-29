@@ -20,8 +20,8 @@ export type SavedJobsDocument = HydratedDocument<SavedJobs>;
   },
 })
 export class SavedJobs {
-    @Prop({ type: String, ref: 'User' }) user: User | String | null;
-    @Prop({ type: String, ref: 'Job' }) job: Job | String | null;
+    @Prop({ type: String, ref: 'User' }) user: User | String;
+    @Prop({ type: String, ref: 'Job' }) job: Job | String;
     createdAt: Date;
 }
 
