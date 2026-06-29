@@ -29,6 +29,7 @@ const ai_feature_decorator_1 = require("../common/decorators/ai-feature.decorato
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const email_verified_guard_1 = require("../auth/email-verified.guard");
 const RecruiterRoleGuard_1 = require("../common/guards/RecruiterRoleGuard");
+const skip_recruiter_guard_check_decorator_1 = require("../common/decorators/skip-recruiter-guard-check.decorator");
 let JobsController = class JobsController {
     jobsService;
     constructor(jobsService) {
@@ -145,6 +146,7 @@ __decorate([
 ], JobsController.prototype, "getCompanyDepartments", null);
 __decorate([
     (0, common_1.Get)('saved-jobs'),
+    (0, skip_recruiter_guard_check_decorator_1.SkipRecruiterGuardCheck)(),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
@@ -201,6 +203,7 @@ __decorate([
 ], JobsController.prototype, "updateJobStatus", null);
 __decorate([
     (0, common_1.Post)(':id/save'),
+    (0, skip_recruiter_guard_check_decorator_1.SkipRecruiterGuardCheck)(),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -209,6 +212,7 @@ __decorate([
 ], JobsController.prototype, "saveJob", null);
 __decorate([
     (0, common_1.Post)(':id/unsave'),
+    (0, skip_recruiter_guard_check_decorator_1.SkipRecruiterGuardCheck)(),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

@@ -33,6 +33,7 @@ interface PublicJobDetailsModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleCreateApplicationOpen?: () => void;
+  refetchJobs: () => void;
 }
 
 const formatEmploymentType = (value: Job["employmentType"]) =>
@@ -51,6 +52,7 @@ export function PublicJobDetailsModal({
   open,
   setOpen,
   handleCreateApplicationOpen,
+  refetchJobs
 }: PublicJobDetailsModalProps) {
   const [job, setJob] = useState<Job | null>(null);
   const { findJob, loading, apiError, clearApiError } = usePublicJobActions();
@@ -84,6 +86,7 @@ export function PublicJobDetailsModal({
         const result = await unsavePublicJob(id);
         if (result && result.unsaved) {
           fetchJob();
+          await refetchJobs();
         }
         return;
       }
@@ -91,6 +94,7 @@ export function PublicJobDetailsModal({
       const result = await savePublicJob(id);
       if (result && result.saved) {
         fetchJob();
+        await refetchJobs();
       }
     } catch (err) {}
   };

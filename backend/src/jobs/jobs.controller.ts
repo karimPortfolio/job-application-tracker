@@ -15,19 +15,19 @@ import { JobsService } from './jobs.service';
 import { JobQueryDto } from './dto/job-query.dto';
 import { CompanyGuard } from '../common/guards/CompanyGuard';
 import { CreateJobDto } from './dto/create-job.dto';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { UpdateJobDto } from './dto/update-job.dto';
 import type { Response } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { JobResponseDto } from './dto/job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
-import { Department } from '../departments/departments.schema';
 import { GenerateJobDto } from './dto/generate-job.dto';
-import { SubscriptionCreditsGuard } from 'src/common/guards/SubscriptionCreditsGuard';
+import { SubscriptionCreditsGuard } from '../common/guards/SubscriptionCreditsGuard';
 import { AIFeature } from '../common/decorators/ai-feature.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { EmailVerifiedGuard } from 'src/auth/email-verified.guard';
-import { RecruiterRoleGuard } from 'src/common/guards/RecruiterRoleGuard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { EmailVerifiedGuard } from '../auth/email-verified.guard';
+import { RecruiterRoleGuard } from '../common/guards/RecruiterRoleGuard';
+import { SkipRecruiterGuardCheck } from 'src/common/decorators/skip-recruiter-guard-check.decorator';
 
 @Controller('jobs')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard, CompanyGuard, RecruiterRoleGuard)
@@ -96,6 +96,7 @@ export class JobsController {
   }
 
   @Get('saved-jobs')
+  @SkipRecruiterGuardCheck()
   async findSavedJobs(
     @CurrentUser() user: { sub: string },
     @Query() query: JobQueryDto,
@@ -149,6 +150,7 @@ export class JobsController {
   }
 
   @Post(':id/save')
+  @SkipRecruiterGuardCheck()
   async saveJob(
     @CurrentUser() user: { sub: string },
     @Param('id') jobId: string,
@@ -157,6 +159,7 @@ export class JobsController {
   }
 
   @Post(':id/unsave')
+  @SkipRecruiterGuardCheck()
   async unsaveJob(
     @CurrentUser() user: { sub: string },
     @Param('id') jobId: string,

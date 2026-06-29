@@ -151,6 +151,7 @@ export function JobsClient() {
           open={isDetailsOpen}
           setOpen={handleDetailsOpen}
           handleCreateApplicationOpen={handleCreatePublicApplicationOpen}
+          refetchJobs={refetch}
         />
       </div>
     </div>
