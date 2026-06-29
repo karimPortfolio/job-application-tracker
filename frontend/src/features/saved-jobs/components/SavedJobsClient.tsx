@@ -1,24 +1,25 @@
 "use client";
 
 import { PublicJobDetailsModal } from "@/features/jobs/marketing/components/PublicJobDetailsModal";
-import { PublicJobsGrid } from "@/features/jobs/marketing/components/PublicJobsGrid";
 import { PublicJobsSearchBar } from "@/features/jobs/marketing/components/PublicJobsSearchBar";
-import { usePublicJobsList } from "@/features/jobs/hooks/usePublicJobsList";
-import { Job } from "@/features/jobs/types/jobs.types";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { CreatePublicApplicationDialog } from "@/features/applications/marketing/components/CreatePublicApplicationDialog";
+import { SavedJobsGrid } from "./SavedJobsGrid";
+import { useSavedJobsList } from "../hooks/useSavedJobsList";
+import { SavedJob } from "../types/saved-jobs.type";
 
-export function JobsClient() {
+export function SavedJobsClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
-  const { jobs, meta, loading, query, setQuery, refetch } = usePublicJobsList({
-    limit: 9,
-    sortBy: "createdAt",
-    order: "desc",
-  });
+  const { savedJobs, meta, loading, query, setQuery, refetch } =
+    useSavedJobsList({
+      limit: 9,
+      sortBy: "createdAt",
+      order: "desc",
+    });
   const [selectedJobId, setSelectedJobId] = useState<string>("");
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [createPublicApplicationOpen, setCreatePublicApplicationOpen] =
@@ -29,8 +30,8 @@ export function JobsClient() {
   const isDetailsOpen = isMobile ? Boolean(mobileJobId) : detailsOpen;
 
   const handleSelectJob = useCallback(
-    (job: Job) => {
-      const id = job.id || job._id;
+    (SavedJob: SavedJob["job"]) => {
+      const id = SavedJob._id;
       if (isMobile) {
         const params = new URLSearchParams(searchParams.toString());
         params.set("jobId", id);
@@ -63,7 +64,6 @@ export function JobsClient() {
   );
 
   const handleCreatePublicApplicationOpen = useCallback(() => {
-    console.log("clicked");
     setCreatePublicApplicationOpen(true);
   }, []);
 
@@ -105,10 +105,11 @@ export function JobsClient() {
         <section className="relative mt-32 mb-8 flex items-center justify-center px-4 overflow-hidden font-sans">
           <div className="max-w-6xl mx-auto text-center relative z-10">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-gray-900 dark:text-white mb-4">
-              Find your <span className="text-primary ">next role.</span>
+              Your saved <span className="text-primary">opportunities.</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 dark:text-[#8B92A5] max-w-2xl mx-auto leading-relaxed">
-              Browse open opportunities from trusted companies.
+              Keep track of positions you’re interested in and apply when you’re
+              ready.
             </p>
           </div>
         </section>
@@ -136,8 +137,8 @@ export function JobsClient() {
           onReset={handleResetFilters}
         />
 
-        <PublicJobsGrid
-          jobs={jobs}
+        <SavedJobsGrid
+          savedJobs={savedJobs}
           loading={loading}
           onSelectJob={handleSelectJob}
           meta={meta}

@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import {
+  Bookmark,
   CreditCardIcon,
   LayoutDashboardIcon,
   Menu,
@@ -20,8 +21,9 @@ import {
   UserIcon,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { redirect } from "next/navigation";
+import { UserRole } from "@/features/auth/types";
 
 export function MarketingNavbar() {
   const { user, logout, loading } = useAuth();
@@ -49,7 +51,7 @@ export function MarketingNavbar() {
     { label: "Contact", href: "/contact" },
   ];
 
-  const userMenuItems = [
+  const recruiterMenuItems = [
     {
       label: "Dashboard",
       icon: <LayoutDashboardIcon />,
@@ -79,6 +81,22 @@ export function MarketingNavbar() {
       disabled: false,
     },
   ];
+
+  const userMenuItems = [
+    {
+      label: "Saved Jobs",
+      icon: <Bookmark />,
+      onClick: () => {},
+      href: "/saved-jobs",
+      disabled: false,
+    },
+  ];
+
+  const menuItems = useMemo(() => {
+    return user?.role === UserRole.RECRUITER
+      ? recruiterMenuItems
+      : userMenuItems;
+  }, [user?.role, recruiterMenuItems, userMenuItems]);
 
   return (
     <nav
@@ -121,7 +139,7 @@ export function MarketingNavbar() {
               user={user}
               logout={logout}
               loading={loading}
-              items={userMenuItems}
+              items={menuItems}
               showUserInfo={false}
             />
           )}
@@ -185,7 +203,7 @@ export function MarketingNavbar() {
                   user={user}
                   logout={logout}
                   loading={loading}
-                  items={userMenuItems}
+                  items={menuItems}
                   showUserInfo={true}
                 />
               ) : (

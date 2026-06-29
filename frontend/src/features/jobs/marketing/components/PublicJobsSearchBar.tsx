@@ -28,10 +28,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { SavedJob } from "@/features/saved-jobs/types/saved-jobs.type";
 
 interface PublicJobsSearchBarProps {
   query: JobQuery;
-  meta: PaginatedResponse<Job> | null;
+  meta: PaginatedResponse<Job|SavedJob> | null;
   loading?: boolean;
   onSearchSubmit: (value: string) => void;
   onEmploymentTypeChange: (
@@ -92,11 +93,11 @@ export function PublicJobsSearchBar({
       <div className="flex justify-between items-center gap-5">
         {meta?.totalDocs ? (
           <div className="w-full md:w-auto flex-1 text-sm font-medium ml-1">
-            All {meta?.totalDocs} jobs found
+            All {meta?.totalDocs} saved jobs found
           </div>
         ) : (
           <div className="w-full md:w-auto flex-1 text-sm font-medium ml-1">
-            All 0 jobs found
+            All 0 saved jobs found
           </div>
         )}
 

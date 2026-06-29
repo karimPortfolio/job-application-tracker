@@ -1,4 +1,3 @@
-// subscription.controller.ts
 import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CompanyGuard } from '../common/guards/CompanyGuard';

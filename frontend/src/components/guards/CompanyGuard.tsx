@@ -22,9 +22,9 @@ export function CompanyGuard({ children }: { children: ReactNode }) {
     redirect(`/onboarding?next=${encodeURIComponent(nextUrl)}`);
   }
 
-  // if (pathname === "/onboarding" && user?.company) {
-  //   redirect(`/dashboard`);
-  // }
+  if (pathname === "/onboarding" && user?.company) {
+    redirect(`/dashboard`);
+  }
 
   return <>{children}</>;
 }
